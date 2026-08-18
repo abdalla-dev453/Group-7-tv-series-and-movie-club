@@ -1,0 +1,115 @@
+@import './variables.css';
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.app-shell {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  min-height: 100vh;
+}
+
+.sidebar {
+  background: rgba(17, 24, 39, 0.9);
+  border-right: 1px solid var(--border);
+  padding: 1.5rem;
+}
+
+.main-panel {
+  padding: 2rem;
+}
+
+.navbar,
+.mobile-navbar,
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.navbar {
+  background: rgba(31, 41, 55, 0.9);
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-links,
+.mobile-navbar {
+  display: flex;
+  gap: 1rem;
+}
+
+.nav-links a,
+.mobile-navbar a {
+  color: var(--text);
+  text-decoration: none;
+}
+
+.page {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 2rem 0;
+}
+
+.button,
+input,
+textarea,
+button {
+  font: inherit;
+}
+
+.button {
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.7rem 1.1rem;
+  cursor: pointer;
+}
+
+.button--secondary {
+  background: transparent;
+  border: 1px solid var(--border);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 1rem;
+}
+
+.field input,
+.field textarea {
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+}
+
+.loader {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(255,255,255,0.2);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
