@@ -4,5 +4,5 @@ const Feed = () => (
     <p>See what your community is watching.</p>
   </main>
 );
-
+ 
 export default Feed;

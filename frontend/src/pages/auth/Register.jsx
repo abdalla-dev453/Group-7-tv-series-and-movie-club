@@ -4,5 +4,5 @@ const Register = () => (
     <p>Join your next movie night.</p>
   </main>
 );
-
+ 
 export default Register;
