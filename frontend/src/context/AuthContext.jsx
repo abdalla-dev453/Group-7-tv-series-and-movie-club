@@ -1,49 +1,67 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
+import * as authService from '../services/authService';
 
 const AuthContext = createContext(null);
 
-export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(() => {
-    const stored = localStorage.getItem('movieClubUser');
-    return stored ? JSON.parse(stored) : null;
-  });
+const TOKEN_KEY = 'reelclub_token';
+const USER_KEY = 'reelclub_user';
 
-  const [jwt, setJwt] = useState(() => localStorage.getItem('movieClubToken') || '');
+export function AuthProvider({ children }) {
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
+  const [loading, setLoading] = useState(true);
 
+  // Restore session on refresh
   useEffect(() => {
-    if (user) {
-      localStorage.setItem('movieClubUser', JSON.stringify(user));
-    } else {
-      localStorage.removeItem('movieClubUser');
+    const storedToken = localStorage.getItem(TOKEN_KEY);
+    const storedUser = localStorage.getItem(USER_KEY);
+    if (storedToken && storedUser) {
+      setToken(storedToken);
+      setUser(JSON.parse(storedUser));
     }
-  }, [user]);
+    setLoading(false);
+  }, []);
 
-  useEffect(() => {
-    if (jwt) {
-      localStorage.setItem('movieClubToken', jwt);
-    } else {
-      localStorage.removeItem('movieClubToken');
+  const login = async (email, password) => {
+    const { data } = await authService.login(email, password);
+    setToken(data.access_token);
+    setUser(data.user);
+    localStorage.setItem(TOKEN_KEY, data.access_token);
+    localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+    return data.user;
+  };
+
+  const signup = async (payload) => {
+    const { data } = await authService.signup(payload);
+    setToken(data.access_token);
+    setUser(data.user);
+    localStorage.setItem(TOKEN_KEY, data.access_token);
+    localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+    return data.user;
+  };
+
+  const logout = async () => {
+    try {
+      // Blocklists the JWT server-side (see backend fix 2.3) —
+      // clearing localStorage alone would leave the token valid until expiry.
+      await authService.logout();
+    } finally {
+      setToken(null);
+      setUser(null);
+      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(USER_KEY);
     }
-  }, [jwt]);
-
-  const login = (nextUser, token) => {
-    setUser(nextUser);
-    setJwt(token || '');
   };
 
-  const logout = () => {
-    setUser(null);
-    setJwt('');
-  };
+  return (
+    <AuthContext.Provider value={{ user, token, loading, login, signup, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
 
-  const signup = (nextUser, token) => {
-    setUser(nextUser);
-    setJwt(token || '');
-  };
-
-  const value = useMemo(() => ({ user, jwt, login, logout, signup }), [user, jwt]);
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-};
-
-export const useAuth = () => useContext(AuthContext);
+export function useAuth() {
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error('useAuth must be used within AuthProvider');
+  return ctx;
+}
