@@ -13,7 +13,7 @@ import ClubManage from './pages/Clubs/ClubManage';
 import Feed from './pages/Feed/Feed';
 import PostDetail from './pages/Feed/PostDetail';
 import WatchedList from './pages/Watched/WatchedList';
-import CreatePost from './pages/posts/CreatePost';
+import CreatePost from './pages/posts/createPost';
 import Movies from './pages/movies/Movies';
 import MovieDetailsPage from './pages/movies/MovieDetails';
 
