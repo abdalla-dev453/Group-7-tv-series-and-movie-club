@@ -15,21 +15,25 @@ function Signup() {
     try {
       await signup(form);
       navigate('/');
-    } catch (err) {
+    } catch {
       setError('Could not create account');
     }
   };
 
   return (
-    <form onSubmit={submit} style={{ maxWidth: 360, margin: '80px auto', display: 'flex', flexDirection: 'column', gap: 12 }}>
-      <h2 style={{ color: 'var(--amber)' }}>Sign up</h2>
-      {error && <p style={{ color: 'var(--danger)' }}>{error}</p>}
-      <input placeholder="Username" value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} />
-      <input type="email" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
-      <input type="password" placeholder="Password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} />
+    <form onSubmit={submit} className="auth-form">
+      <p className="eyebrow">Find your people</p>
+      <h2>Sign up</h2>
+      {error && <p className="form-error" role="alert">{error}</p>}
+      <label htmlFor="signup-username">Username</label>
+      <input id="signup-username" placeholder="Your screen name" value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} required />
+      <label htmlFor="signup-email">Email</label>
+      <input id="signup-email" type="email" placeholder="you@example.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
+      <label htmlFor="signup-password">Password</label>
+      <input id="signup-password" type="password" placeholder="Choose a password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required />
       <Button type="submit">Create account</Button>
-      <p style={{ fontSize: 13, color: 'var(--text-dim)' }}>
-        Already have an account? <Link to="/login" style={{ color: 'var(--amber)' }}>Log in</Link>
+      <p className="form-footer">
+        Already have an account? <Link to="/login">Log in</Link>
       </p>
     </form>
   );
