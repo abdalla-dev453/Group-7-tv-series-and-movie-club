@@ -1,7 +1,7 @@
-const PostDetails = ({ title = 'Post Details' }) => (
+const PostDetails = ({ title = 'Post Details', content = 'Full post content appears here.' }) => (
   <article className='post-details'>
     <h2>{title}</h2>
-    <p>Full post content appears here.</p>
+    <p>{content}</p>
   </article>
 );
 
