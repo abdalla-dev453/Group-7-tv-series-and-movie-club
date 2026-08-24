@@ -1,24 +1,10 @@
 import theme from '../../theme.js';
 
-const UserAvatar = ({
-  user,
-  size = 44,
-}) => {
-  const username =
-    user?.username ||
-    user?.name ||
-    user?.email ||
-    'User';
+const UserAvatar = ({ user, size = 44 }) => {
+  const username = user?.username || 'User';
+  const imageUrl = user?.url;
 
-  const avatarUrl =
-    user?.avatarUrl ||
-    user?.avatar ||
-    user?.profileImage ||
-    user?.profile_image;
-
-  const initial = username
-    .charAt(0)
-    .toUpperCase();
+  const initial = username.charAt(0).toUpperCase();
 
   return (
     <div
@@ -42,9 +28,9 @@ const UserAvatar = ({
         border: `1px solid ${theme.color.coalBorder}`,
       }}
     >
-      {avatarUrl ? (
+      {imageUrl ? (
         <img
-          src={avatarUrl}
+          src={imageUrl}
           alt={`${username}'s profile`}
           style={{
             width: '100%',
