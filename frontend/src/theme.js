@@ -32,4 +32,32 @@ const theme = {
   },
 };
 
+export const buttonStyles = {
+  base: {
+    border: 'none',
+    borderRadius: theme.radius.pill,
+    padding: '8px 16px',
+    fontSize: 14,
+    fontWeight: 600,
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+  },
+
+  primary: {
+    background: theme.color.amber,
+    color: '#1a1204',
+  },
+
+  ghost: {
+    background: 'transparent',
+    color: theme.color.text,
+    border: `1px solid ${theme.color.coalBorder}`,
+  },
+
+  disabled: {
+    opacity: 0.5,
+    cursor: 'not-allowed',
+  },
+};
+
 export default theme;
