@@ -22,14 +22,14 @@ function Login() {
   };
 
   return (
-    <form onSubmit={submit} style={{ maxWidth: 360, margin: '80px auto', display: 'flex', flexDirection: 'column', gap: 12 }}>
-      <h2 style={{ color: 'var(--amber)' }}>Log in</h2>
+    <form onSubmit={submit} className="auth-form">
+      <h2>Log in</h2>
       {error && <p style={{ color: 'var(--danger)' }}>{error}</p>}
       <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
       <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
       <Button type="submit">Log in</Button>
-      <p style={{ fontSize: 13, color: 'var(--text-dim)' }}>
-        No account? <Link to="/signup" style={{ color: 'var(--amber)' }}>Sign up</Link>
+      <p style={{ fontSize: 13 }}>
+        No account? <Link to="/signup">Sign up</Link>
       </p>
     </form>
   );
