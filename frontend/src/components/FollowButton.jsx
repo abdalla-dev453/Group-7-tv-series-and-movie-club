@@ -9,7 +9,6 @@ const FollowButton = ({
   const [following, setFollowing] = useState(initialFollowing);
   const [busy, setBusy] = useState(false);
 
-  // Keep state synchronized with the parent component
   useEffect(() => {
     setFollowing(initialFollowing);
   }, [initialFollowing]);
@@ -19,7 +18,7 @@ const FollowButton = ({
 
     const nextFollowing = !following;
 
-    // Optimistically update the UI
+    // Update the button immediately
     setFollowing(nextFollowing);
     setBusy(true);
 
@@ -30,10 +29,13 @@ const FollowButton = ({
         await followService.unfollowUser(userId);
       }
     } catch (error) {
-      // If the request fails, restore the previous state
+      // Restore previous state if the request fails
       setFollowing(!nextFollowing);
 
-      console.error('Failed to update follow status:', error);
+      console.error(
+        'Failed to update follow status:',
+        error
+      );
     } finally {
       setBusy(false);
     }

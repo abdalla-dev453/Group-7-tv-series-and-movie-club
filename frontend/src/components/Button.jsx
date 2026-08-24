@@ -31,7 +31,6 @@ const Button = ({
         ...(buttonStyles[variant] || buttonStyles.primary),
         ...(disabled ? buttonStyles.disabled : {}),
         ...style,
-        transition: 'transform 0.15s ease, opacity 0.15s ease',
       }}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
