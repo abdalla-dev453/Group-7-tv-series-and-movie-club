@@ -6,6 +6,7 @@ import theme from '../theme.js';
 const links = [
   { to: '/', label: 'Feed' },
   { to: '/clubs', label: 'Clubs' },
+  { to: '/movies', label: 'Movies' },
   { to: '/watched', label: 'Watched' },
 ];
 
@@ -111,7 +112,7 @@ const Navbar = () => {
             whiteSpace: 'nowrap',
           }}
         >
-          CineClub
+          🎬 Reel Club
         </Link>
 
         {/* Desktop Navigation */}
@@ -129,7 +130,7 @@ const Navbar = () => {
               gap: 18,
             }}
           >
-            {user && links.map((link) => (
+            {links.map((link) => (
               <NavLink
                 key={link.to}
                 to={link.to}
@@ -335,7 +336,7 @@ const Navbar = () => {
           }}
           className="mobile-navigation"
         >
-          {user && links.map((link) => (
+          {links.map((link) => (
             <NavLink
               key={link.to}
               to={link.to}

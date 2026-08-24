@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { getPost } from '../../services/postService';
 import { getReviewsForPost, createReview, updateReview } from '../../services/reviewService';
 import { useAuth } from '../../context/AuthContext';
@@ -41,7 +41,15 @@ function PostDetail() {
 
   return (
     <div style={{ maxWidth: 640, margin: '0 auto', padding: 24 }}>
-      <h2>{post.movie_title}</h2>
+      {/* tmdb_id is optional — older posts or ones created without a movie
+          pick won't have it, so fall back to plain text rather than a dead link */}
+      {post.tmdb_id ? (
+        <Link to={`/movies/${post.tmdb_id}`}>
+          <h2 style={{ color: 'var(--amber)' }}>{post.movie_title}</h2>
+        </Link>
+      ) : (
+        <h2>{post.movie_title}</h2>
+      )}
       <p style={{ color: 'var(--text-dim)' }}>{post.author_name}</p>
       <p>{post.description}</p>
 
