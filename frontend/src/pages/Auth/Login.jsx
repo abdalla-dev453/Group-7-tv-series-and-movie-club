@@ -16,23 +16,20 @@ function Login() {
     try {
       await login(email, password);
       navigate('/');
-    } catch {
+    } catch (err) {
       setError('Invalid email or password');
     }
   };
 
   return (
-    <form onSubmit={submit} className="auth-form">
-      <p className="eyebrow">Welcome back</p>
-      <h2>Log in</h2>
-      {error && <p className="form-error" role="alert">{error}</p>}
-      <label htmlFor="login-email">Email</label>
-      <input id="login-email" type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
-      <label htmlFor="login-password">Password</label>
-      <input id="login-password" type="password" placeholder="Your password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+    <form onSubmit={submit} style={{ maxWidth: 360, margin: '80px auto', display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <h2 style={{ color: 'var(--amber)' }}>Log in</h2>
+      {error && <p style={{ color: 'var(--danger)' }}>{error}</p>}
+      <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+      <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
       <Button type="submit">Log in</Button>
-      <p className="form-footer">
-        No account? <Link to="/signup">Sign up</Link>
+      <p style={{ fontSize: 13, color: 'var(--text-dim)' }}>
+        No account? <Link to="/signup" style={{ color: 'var(--amber)' }}>Sign up</Link>
       </p>
     </form>
   );

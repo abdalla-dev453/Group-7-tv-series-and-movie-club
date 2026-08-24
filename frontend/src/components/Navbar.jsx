@@ -111,7 +111,7 @@ const Navbar = () => {
             whiteSpace: 'nowrap',
           }}
         >
-          CineClub
+          🎬 Reel Club
         </Link>
 
         {/* Desktop Navigation */}
@@ -123,7 +123,7 @@ const Navbar = () => {
           }}
           className="desktop-navigation"
         >
-          {user && <div
+          <div
             style={{
               display: 'flex',
               gap: 18,
@@ -139,7 +139,7 @@ const Navbar = () => {
                 {link.label}
               </NavLink>
             ))}
-          </div>}
+          </div>
 
           {/* Authenticated User */}
           {user ? (
@@ -335,7 +335,7 @@ const Navbar = () => {
           }}
           className="mobile-navigation"
         >
-          {user && links.map((link) => (
+          {links.map((link) => (
             <NavLink
               key={link.to}
               to={link.to}

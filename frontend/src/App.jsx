@@ -10,9 +10,9 @@ import ClubList from './pages/Clubs/ClubList';
 import ClubDetail from './pages/Clubs/ClubDetail';
 import ClubCreate from './pages/Clubs/ClubCreate';
 import ClubManage from './pages/Clubs/ClubManage';
+import Feed from './pages/Feed/Feed';
 import PostDetail from './pages/Feed/PostDetail';
 import WatchedList from './pages/Watched/WatchedList';
-import Home from './pages/Home';
 
 function App() {
   return (
@@ -25,7 +25,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
 
           {/* Protected */}
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<ProtectedRoute><Feed /></ProtectedRoute>} />
           <Route path="/posts/:id" element={<ProtectedRoute><PostDetail /></ProtectedRoute>} />
           <Route path="/clubs" element={<ProtectedRoute><ClubList /></ProtectedRoute>} />
           <Route path="/clubs/new" element={<ProtectedRoute><ClubCreate /></ProtectedRoute>} />
