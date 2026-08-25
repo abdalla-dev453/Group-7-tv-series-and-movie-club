@@ -11,7 +11,7 @@ import ClubDetail from './pages/Clubs/ClubDetail';
 import ClubCreate from './pages/Clubs/ClubCreate';
 import ClubManage from './pages/Clubs/ClubManage';
 import Feed from './pages/Feed/Feed';
-import PostDetail from './pages/Feed/PostDetail';
+import PostDetail from './pages/posts/PostDetail';
 import WatchedList from './pages/Watched/WatchedList';
 import CreatePost from './pages/posts/CreatePost';
 import Movies from './pages/movies/Movies';
