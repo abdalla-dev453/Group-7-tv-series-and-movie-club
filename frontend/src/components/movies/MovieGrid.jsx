@@ -63,7 +63,7 @@ const MovieGrid = ({
     >
       {movies.map((movie) => (
         <MovieCard
-          key={movie.id}
+          key={movie.tmdb_id}
           movie={movie}
         />
       ))}

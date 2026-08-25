@@ -42,7 +42,9 @@ function MovieSearch({ onSelect, placeholder = 'Search for a movie or show' }) {
   const [results, setResults] = useState([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const debounceRef = useRef(null);
+  const requestIdRef = useRef(0);
 
   useEffect(() => {
     if (!query.trim()) {
@@ -52,13 +54,20 @@ function MovieSearch({ onSelect, placeholder = 'Search for a movie or show' }) {
     }
     clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(async () => {
+      const requestId = ++requestIdRef.current;
       setLoading(true);
+      setError(null);
       try {
         const res = await searchMovies(query);
+        if (requestId !== requestIdRef.current) return; // a newer request has since started
         setResults(res.data.items);
         setOpen(true);
+      } catch {
+        if (requestId !== requestIdRef.current) return;
+        setError('Search failed — try again');
+        setResults([]);
       } finally {
-        setLoading(false);
+        if (requestId === requestIdRef.current) setLoading(false);
       }
     }, 350);
     return () => clearTimeout(debounceRef.current);
@@ -83,7 +92,8 @@ function MovieSearch({ onSelect, placeholder = 'Search for a movie or show' }) {
       {open && (
         <div style={styles.results}>
           {loading && <div style={{ padding: 10, fontSize: 13, color: 'var(--text-dim)' }}>Searching...</div>}
-          {!loading && results.length === 0 && (
+          {!loading && error && <div style={{ padding: 10, fontSize: 13, color: 'var(--danger)' }}>{error}</div>}
+          {!loading && !error && results.length === 0 && (
             <div style={{ padding: 10, fontSize: 13, color: 'var(--text-dim)' }}>No matches</div>
           )}
           {results.map((movie) => (

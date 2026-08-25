@@ -6,11 +6,12 @@ const AuthContext = createContext(null);
 const TOKEN_KEY = 'reelclub_token';
 const USER_KEY = 'reelclub_user';
 
-const saveSession = (data, fallbackUser) => {
+const saveSession = (data) => {
   const accessToken = data.access_token || data.token || data.accessToken;
-  const authenticatedUser = data.user || fallbackUser;
+  const authenticatedUser = data.user;
 
-  if (!accessToken) throw new Error('Login response did not include a token');
+  if (!accessToken) throw new Error('Auth response did not include a token');
+  if (!authenticatedUser) throw new Error('Auth response did not include a user');
 
   localStorage.setItem(TOKEN_KEY, accessToken);
   localStorage.setItem(USER_KEY, JSON.stringify(authenticatedUser));
@@ -40,7 +41,7 @@ export function AuthProvider({ children }) {
 
   const login = async (email, password) => {
     const { data } = await authService.login(email, password);
-    const session = saveSession(data, { email });
+    const session = saveSession(data);
     setToken(session.accessToken);
     setUser(session.authenticatedUser);
     return session.authenticatedUser;
@@ -48,7 +49,7 @@ export function AuthProvider({ children }) {
 
   const signup = async (payload) => {
     const { data } = await authService.signup(payload);
-    const session = saveSession(data, payload);
+    const session = saveSession(data); // no fallback to the raw signup form
     setToken(session.accessToken);
     setUser(session.authenticatedUser);
     return session.authenticatedUser;
