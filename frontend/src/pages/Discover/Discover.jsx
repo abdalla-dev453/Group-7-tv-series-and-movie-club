@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import MovieCard from '../../components/movies/MovieCard';
-import ClubCard from '../../components/ClubCard';
+import ClubCard from '../Clubs/ClubCard';
 import { getTrendingMovies } from '../../services/movieService';
 import { getClubs } from '../../services/clubService';
 import { getUsers } from '../../services/userService';
