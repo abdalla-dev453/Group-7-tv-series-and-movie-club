@@ -4,35 +4,36 @@ import { useAuth } from '../../context/AuthContext';
 import Button from '../../components/Button';
 
 function Login() {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const submit = async (e) => {
     e.preventDefault();
+    if (submitting) return;
+
     setError(null);
+    setSubmitting(true);
     try {
-      await login(email, password);
-      navigate('/');
-    } catch {
-      setError('Invalid email or password');
+      await login(username.trim(), password);
+      navigate('/', { replace: true });
+    } catch (err) {
+      const status = err.response?.status;
+      setError(
+        status === 401 ? 'Invalid username or password.'
+          : status === 400 ? err.response?.data?.error || 'Please correct the form.'
+            : !err.response ? 'Network error. Check your connection and try again.'
+              : 'The service is unavailable. Please try again shortly.',
+      );
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  return (
-    <form onSubmit={submit} className="auth-form">
-      <h2>Log in</h2>
-      {error && <p style={{ color: 'var(--danger)' }}>{error}</p>}
-      <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-      <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-      <Button type="submit">Log in</Button>
-      <p style={{ fontSize: 13 }}>
-        No account? <Link to="/signup">Sign up</Link>
-      </p>
-    </form>
-  );
+  return <section className="auth-shell"><aside className="auth-poster"><p className="eyebrow">The after-credits club</p><h1>Stories are better when they linger.</h1><p>Find the people who notice the details you do.</p></aside><form className="auth-form" onSubmit={submit}><p className="eyebrow">Welcome back</p><h2>Take your seat.</h2>{error && <p className="error-message">{error}</p>}<div className="form-stack"><label><span className="field-label">Username</span><input autoComplete="username" placeholder="Your screen name" value={username} onChange={(e) => setUsername(e.target.value)} required /></label><label><span className="field-label">Password</span><input type="password" autoComplete="current-password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required /></label><Button type="submit" disabled={submitting}>{submitting ? 'Logging in…' : 'Enter Reel Club'} <span>→</span></Button></div><p>No account? <Link to="/signup">Join the club</Link></p></form></section>;
 }
 
 export default Login;

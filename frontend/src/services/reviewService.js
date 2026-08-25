@@ -1,10 +1,11 @@
 import api from './api';
 
-export const getReviewsForPost = (postId) => api.get(`/posts/${postId}/reviews`);
-
-export const createReview = (data) => api.post('/reviews', data);
-
-// Reviews are now editable this avoids delete+recreate losing history
-export const updateReview = (id, data) => api.put(`/reviews/${id}`, data);
-
-export const deleteReview = (id) => api.delete(`/reviews/${id}`);
+export const getReview = (id, signal) => api.get(`/reviews/${id}`, { signal });
+export const getReviewsForPost = (postId, signal) => api.get('/reviews', { params: { post_id: postId }, signal });
+export const createReview = ({ postId, rating, commentText }) => api.post('/reviews', {
+  post_id: Number(postId),
+  rating: Number(rating),
+  comment_text: commentText || null,
+});
+export const updateReview = async (id, data) => api.put(`/reviews/${id}`, data);
+export const deleteReview = async (id) => api.delete(`/reviews/${id}`);
