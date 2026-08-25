@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import ClubGrid from '../../components/clubs/ClubGrid';
+import ClubGrid from './ClubGrid';
 import { getClubs } from '../../services/clubService';
 import './ClubList.css';
 

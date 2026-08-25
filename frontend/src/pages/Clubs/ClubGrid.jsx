@@ -1,60 +1,43 @@
-import ClubCard from './ClubCard';
-import './ClubGrid.css';
+import ClubCard from './ClubCard.jsx';
+import theme from '../../theme.js';
 
-const ClubGrid = ({
-  clubs = [],
-  loading = false,
-  error = null,
-  onMembershipChange,
-}) => {
+const ClubGrid = ({ clubs = [], loading = false }) => {
   if (loading) {
     return (
-      <div className="club-grid">
-        {Array.from({ length: 6 }).map((_, index) => (
-          <div className="club-skeleton" key={index}>
-            <div className="club-skeleton__cover" />
-
-            <div className="club-skeleton__body">
-              <div className="club-skeleton__line club-skeleton__line--large" />
-              <div className="club-skeleton__line" />
-              <div className="club-skeleton__line club-skeleton__line--small" />
-            </div>
-          </div>
-        ))}
+      <div style={{ padding: 40, textAlign: 'center', color: theme.color.textDim }}>
+        Loading clubs...
       </div>
     );
   }
 
-  if (error) {
+  if (!clubs.length) {
     return (
-      <div className="club-grid__state">
-        <div className="club-grid__icon">!</div>
-        <h3>Couldn't load clubs</h3>
-        <p>{error}</p>
-      </div>
-    );
-  }
-
-  if (clubs.length === 0) {
-    return (
-      <div className="club-grid__state">
-        <div className="club-grid__icon">🎬</div>
-        <h3>No clubs yet</h3>
-        <p>
-          Be the first person to create a community.
-        </p>
+      <div
+        style={{
+          background: theme.color.coalCard,
+          border: `1px solid ${theme.color.coalBorder}`,
+          borderRadius: theme.radius.md,
+          padding: 40,
+          textAlign: 'center',
+          color: theme.color.textDim,
+        }}
+      >
+        <div style={{ fontSize: 32, marginBottom: 10 }}>🎬</div>
+        <p style={{ margin: 0, fontSize: 14 }}>No clubs found.</p>
       </div>
     );
   }
 
   return (
-    <div className="club-grid">
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
+        gap: 20,
+      }}
+    >
       {clubs.map((club) => (
-        <ClubCard
-          key={club.id}
-          club={club}
-          onMembershipChange={onMembershipChange}
-        />
+        <ClubCard key={club.id} club={club} />
       ))}
     </div>
   );
