@@ -1,8 +1,7 @@
-const MovieSearch = ({ value = '', onChange, disabled = false }) => (
-  <div className='movie-search'>
-    <input type='search' value={value} onChange={onChange} disabled={disabled} placeholder='Search movies or shows' aria-label='Search movies or shows' />
-  </div>
-);
+import { useState, useEffect, useRef } from 'react';
+import theme from '../../theme';
+import { searchMovies } from '../../services/movieService';
+
 
 const styles = {
   wrap: {

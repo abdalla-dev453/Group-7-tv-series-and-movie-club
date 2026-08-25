@@ -5,3 +5,6 @@ export const searchMovies = (query, signal) =>
 
 export const getMovie = (tmdbId, signal) =>
   api.get(`/api/movies/${tmdbId}`, { signal });
+
+export const getTrendingMovies = (signal) =>
+  api.get('/api/movies/trending', { signal });
