@@ -1,76 +1,27 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-
-import ClubGrid from './ClubGrid';
-import { getClubs } from '../../services/clubService';
-import './ClubList.css';
+import { getClubs } from '../../services/clubService.js';
+import Loader from '../../components/common/Loader.jsx';
+import EmptyState from '../../components/common/EmptyState.jsx';
+import ErrorMessage from '../../components/common/ErrorMessage.jsx';
 
 const ClubList = () => {
-  const [clubs, setClubs] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
-  const loadClubs = async () => {
-    try {
-      setLoading(true);
-      setError('');
-
-      const response = await getClubs();
-
-      const data =
-        response.data?.clubs ??
-        response.data ??
-        [];
-
-      setClubs(
-        Array.isArray(data)
-          ? data
-          : data.items ?? []
-      );
-    } catch (err) {
-      console.error('Failed to load clubs:', err);
-      setError('Unable to load clubs right now.');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [state, setState] = useState({ status: 'loading', clubs: [] });
 
   useEffect(() => {
-    loadClubs();
+    const controller = new AbortController();
+    getClubs(1, 20, controller.signal)
+      .then(({ data }) => setState({ status: 'success', clubs: Array.isArray(data?.items) ? data.items : [] }))
+      .catch((error) => {
+        if (error.code !== 'ERR_CANCELED') setState({ status: 'error', clubs: [] });
+      });
+    return () => controller.abort();
   }, []);
 
-  return (
-    <main className="clubs-page">
-      <header className="clubs-page__header">
-        <div>
-          <span className="clubs-page__eyebrow">
-            COMMUNITY
-          </span>
+  if (state.status === 'loading') return <Loader />;
+  if (state.status === 'error') return <ErrorMessage message="Could not load clubs. Please try again." />;
 
-          <h1>Find your club.</h1>
-
-          <p>
-            Join communities built around the movies
-            and TV shows you love.
-          </p>
-        </div>
-
-        <Link
-          to="/clubs/new"
-          className="button button--primary"
-        >
-          + Create Club
-        </Link>
-      </header>
-
-      <ClubGrid
-        clubs={clubs}
-        loading={loading}
-        error={error}
-        onMembershipChange={loadClubs}
-      />
-    </main>
-  );
+  return <section className="page-panel"><header className="page-heading"><div><p className="eyebrow">Find your people</p><h1>Every genre needs a room.</h1></div><Link className="nav-cta" to="/clubs/new">Start a club</Link></header>{state.clubs.length === 0 ? <EmptyState title="No clubs yet" message="Create the first club for your favourite genre." /> : <div className="club-grid">{state.clubs.map((club) => <Link className="club-tile" key={club.id} to={`/clubs/${club.id}`}><span className="club-genre">{club.genre || 'Open genre'}</span><h2>{club.name}</h2><p>{club.description || 'A new circle is waiting for its first conversation.'}</p></Link>)}</div>}</section>;
 };
 
 export default ClubList;

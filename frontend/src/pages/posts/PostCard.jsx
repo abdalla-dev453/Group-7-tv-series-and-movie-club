@@ -19,13 +19,13 @@ const PostCard = ({ post }) => {
   const {
     id,
     title,
-    movieTitle,
+    movieTitle: legacyMovieTitle,
     caption,
     body,
     rating = 0,
     author,
     club,
-    createdAt,
+    createdAt: legacyCreatedAt,
     posterUrl,
   } = post || {};
 
@@ -42,16 +42,14 @@ const PostCard = ({ post }) => {
 
   const roundedRating = Math.round(safeRating);
 
-  const displayTitle =
-    title ||
-    caption ||
-    movieTitle ||
-    'Untitled post';
-
-  const displayBody =
-    body ||
-    caption ||
-    '';
+  const movieTitle = post?.movie_title || legacyMovieTitle;
+  const displayTitle = movieTitle || title || caption || 'Untitled post';
+  const rawBody = post?.description ?? body ?? caption ?? '';
+  const displayBody = typeof rawBody === 'string' ? rawBody : '';
+  const createdAt = post?.created_at ?? legacyCreatedAt;
+  const createdDate = createdAt && !Number.isNaN(Date.parse(createdAt))
+    ? new Date(createdAt).toLocaleDateString()
+    : null;
 
   const authorName =
     author?.username ||
@@ -59,7 +57,7 @@ const PostCard = ({ post }) => {
     'Anonymous';
 
   return (
-    <article
+    <article className="post-card"
       style={{
         background: theme.color.coalCard,
         border: `1px solid ${theme.color.coalBorder}`,
@@ -203,10 +201,10 @@ const PostCard = ({ post }) => {
           >
             @{authorName}
 
-            {createdAt && (
+            {createdDate && (
               <>
                 {' · '}
-                {new Date(createdAt).toLocaleDateString()}
+                {createdDate}
               </>
             )}
           </span>
