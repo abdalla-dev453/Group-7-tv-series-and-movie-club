@@ -12,6 +12,13 @@ const ProtectedRoute = ({ children }) => {
     return <Navigate to="/login" replace state={{ from: location }} />;
   }
 
+  if (requireClubAdmin) {
+    const isClubAdmin = user.adminClubIds?.includes(Number(clubId));
+    if (!isClubAdmin) {
+      return <Navigate to={`/clubs/${clubId}`} replace />;
+    }
+  }
+
   return children;
 };
 

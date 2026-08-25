@@ -1,0 +1,31 @@
+.club-card .button,
+.club-header .button {
+  min-width: 120px;
+}
+
+.club-card .button--primary,
+.club-header .button--primary {
+  background: #f5b942;
+  color: #0f0f0f;
+  border: 1px solid #f5b942;
+  font-weight: 700;
+}
+
+.club-card .button--primary:hover,
+.club-header .button--primary:hover {
+  background: #ffd978;
+  border-color: #ffd978;
+}
+
+.club-card .button--secondary,
+.club-header .button--secondary {
+  background: transparent;
+  color: #f3ece0;
+  border: 1px solid #303030;
+}
+
+.club-card .button--secondary:hover,
+.club-header .button--secondary:hover {
+  border-color: #f5b942;
+  color: #f5b942;
+}

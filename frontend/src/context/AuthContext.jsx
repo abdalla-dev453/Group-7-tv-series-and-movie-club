@@ -42,11 +42,10 @@ export function AuthProvider({ children }) {
 
   const signup = async (payload) => {
     const { data } = await authService.signup(payload);
-    setToken(data.access_token);
-    setUser(data.user);
-    localStorage.setItem(TOKEN_KEY, data.access_token);
-    localStorage.setItem(USER_KEY, JSON.stringify(data.user));
-    return data.user;
+    const session = saveSession(data); // no fallback to the raw signup form
+    setToken(session.accessToken);
+    setUser(session.authenticatedUser);
+    return session.authenticatedUser;
   };
 
   const logout = async () => {
