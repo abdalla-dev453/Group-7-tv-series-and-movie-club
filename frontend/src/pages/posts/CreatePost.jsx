@@ -8,12 +8,14 @@ function CreatePost() {
   const [movie, setMovie] = useState(null); // { tmdb_id, title, year, poster_url }
   const [description, setDescription] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   const submit = async (e) => {
     e.preventDefault();
     if (!movie) return;
     setSubmitting(true);
+    setError(null);
     try {
       const { data } = await createPost({
         movie_title: movie.title,
@@ -21,6 +23,8 @@ function CreatePost() {
         description,
       });
       navigate(`/posts/${data.id}`);
+    } catch (err) {
+      setError('Could not post — please try again');
     } finally {
       setSubmitting(false);
     }
@@ -52,6 +56,7 @@ function CreatePost() {
       <Button type="submit" disabled={!movie || submitting}>
         {submitting ? 'Posting...' : 'Post'}
       </Button>
+      {error && <p style={{ color: 'var(--danger)' }}>{error}</p>}
     </form>
   );
 }
