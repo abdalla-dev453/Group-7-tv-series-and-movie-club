@@ -19,6 +19,7 @@ import Movies from './pages/movies/Movies';
 import MovieDetailsPage from './pages/movies/MovieDetails';
 import Home from './pages/Home';
 import Discover from './pages/Discover/Discover';
+import NotFound from './pages/NotFound/NotFound';
 
 function App() {
   return (
@@ -45,6 +46,7 @@ function App() {
           <Route path="/profile/:id" element={<ProtectedRoute><ProfileView /></ProtectedRoute>} />
           <Route path="/profile/:id/edit" element={<ProtectedRoute><ProfileEdit /></ProtectedRoute>} />
           <Route path="/watched" element={<ProtectedRoute><WatchedList /></ProtectedRoute>} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
       <Footer />
