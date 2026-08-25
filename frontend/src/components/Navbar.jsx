@@ -5,6 +5,7 @@ import theme from '../theme.js';
 
 const links = [
   { to: '/', label: 'Feed' },
+  { to: '/discover', label: 'Discover' },
   { to: '/clubs', label: 'Clubs' },
   { to: '/movies', label: 'Movies' },
   { to: '/watched', label: 'Watched' },
