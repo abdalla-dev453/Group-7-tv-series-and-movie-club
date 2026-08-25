@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import theme from '../theme.js';
+import theme from '../../theme.js';
 
 const Star = ({ filled }) => (
   <span

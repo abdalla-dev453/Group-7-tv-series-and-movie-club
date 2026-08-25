@@ -12,13 +12,20 @@ function PostDetail() {
   const [draft, setDraft] = useState('');
   const [rating, setRating] = useState(5);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    Promise.all([getPost(id), getReviewsForPost(id)]).then(([postRes, reviewsRes]) => {
-      setPost(postRes.data);
-      setReviews(reviewsRes.data.items || reviewsRes.data);
-      setLoading(false);
-    });
+    setLoading(true);
+    setError(null);
+    Promise.all([getPost(id), getReviewsForPost(id)])
+      .then(([postRes, reviewsRes]) => {
+        setPost(postRes.data);
+        setReviews(reviewsRes.data.items || reviewsRes.data);
+      })
+      .catch((err) => {
+        setError(err.response?.status === 404 ? 'Post not found' : 'Could not load this post');
+      })
+      .finally(() => setLoading(false));
   }, [id]);
 
   // Backend rejects this for the post's own author (self-review guard, fix 1.2) —
@@ -37,7 +44,9 @@ function PostDetail() {
     setDraft('');
   };
 
-  if (loading || !post) return <p style={{ padding: 24 }}>Loading...</p>;
+  if (loading) return <p style={{ padding: 24 }}>Loading...</p>;
+  if (error) return <p style={{ padding: 24, color: 'var(--danger)' }}>{error}</p>;
+  if (!post) return null;
 
   return (
     <div style={{ maxWidth: 640, margin: '0 auto', padding: 24 }}>
