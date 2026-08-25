@@ -1,4 +1,4 @@
-import api from './api.js';
+import api from './api';
 
 export const getReview = (id, signal) => api.get(`/reviews/${id}`, { signal });
 export const createReview = ({ postId, rating, commentText }) => api.post('/reviews', {
