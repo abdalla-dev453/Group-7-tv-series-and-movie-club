@@ -17,7 +17,7 @@ export default function Navbar() {
   };
 
   return <header className="site-nav"><div className="nav-inner">
-    <Link className="brand" to="/" onClick={() => setMobileOpen(false)}><span className="brand-mark">R</span>REEL<em>CLUB</em></Link>
+    <Link className="brand" to="/" onClick={() => setMobileOpen(false)}><span className="brand-mark">C</span><em>CineClub</em></Link>
     <nav className={`nav-links ${mobileOpen ? 'is-open' : ''}`} aria-label="Main navigation">
       {links.map((link) => <NavLink key={link.to} to={link.to} end={link.to === '/'} onClick={() => setMobileOpen(false)}>{link.label}</NavLink>)}
     </nav>
