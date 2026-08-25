@@ -7,3 +7,5 @@ export const searchMovies = (query) =>
   api.get('/movies/search', { params: { query } });
 
 export const getMovie = (tmdbId) => api.get(`/movies/${tmdbId}`);
+
+export const getTrendingMovies = () => api.get('/movies/trending');
