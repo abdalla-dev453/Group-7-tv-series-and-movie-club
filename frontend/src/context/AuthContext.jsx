@@ -6,6 +6,17 @@ const AuthContext = createContext(null);
 const TOKEN_KEY = 'reelclub_token';
 const USER_KEY = 'reelclub_user';
 
+const saveSession = (data, fallbackUser) => {
+  const accessToken = data.access_token || data.token || data.accessToken;
+  const authenticatedUser = data.user || fallbackUser;
+
+  if (!accessToken) throw new Error('Login response did not include a token');
+
+  localStorage.setItem(TOKEN_KEY, accessToken);
+  localStorage.setItem(USER_KEY, JSON.stringify(authenticatedUser));
+  return { accessToken, authenticatedUser };
+};
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
@@ -16,28 +27,31 @@ export function AuthProvider({ children }) {
     const storedToken = localStorage.getItem(TOKEN_KEY);
     const storedUser = localStorage.getItem(USER_KEY);
     if (storedToken && storedUser) {
-      setToken(storedToken);
-      setUser(JSON.parse(storedUser));
+      try {
+        setToken(storedToken);
+        setUser(JSON.parse(storedUser));
+      } catch {
+        localStorage.removeItem(TOKEN_KEY);
+        localStorage.removeItem(USER_KEY);
+      }
     }
     setLoading(false);
   }, []);
 
   const login = async (email, password) => {
     const { data } = await authService.login(email, password);
-    setToken(data.access_token);
-    setUser(data.user);
-    localStorage.setItem(TOKEN_KEY, data.access_token);
-    localStorage.setItem(USER_KEY, JSON.stringify(data.user));
-    return data.user;
+    const session = saveSession(data, { email });
+    setToken(session.accessToken);
+    setUser(session.authenticatedUser);
+    return session.authenticatedUser;
   };
 
   const signup = async (payload) => {
     const { data } = await authService.signup(payload);
-    setToken(data.access_token);
-    setUser(data.user);
-    localStorage.setItem(TOKEN_KEY, data.access_token);
-    localStorage.setItem(USER_KEY, JSON.stringify(data.user));
-    return data.user;
+    const session = saveSession(data, payload);
+    setToken(session.accessToken);
+    setUser(session.authenticatedUser);
+    return session.authenticatedUser;
   };
 
   const logout = async () => {

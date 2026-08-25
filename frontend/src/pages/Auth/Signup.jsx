@@ -21,15 +21,15 @@ function Signup() {
   };
 
   return (
-    <form onSubmit={submit} style={{ maxWidth: 360, margin: '80px auto', display: 'flex', flexDirection: 'column', gap: 12 }}>
-      <h2 style={{ color: 'var(--amber)' }}>Sign up</h2>
+    <form onSubmit={submit} className="auth-form">
+      <h2>Sign up</h2>
       {error && <p style={{ color: 'var(--danger)' }}>{error}</p>}
       <input placeholder="Username" value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} />
       <input type="email" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
       <input type="password" placeholder="Password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} />
       <Button type="submit">Create account</Button>
-      <p style={{ fontSize: 13, color: 'var(--text-dim)' }}>
-        Already have an account? <Link to="/login" style={{ color: 'var(--amber)' }}>Log in</Link>
+      <p style={{ fontSize: 13 }}>
+        Already have an account? <Link to="/login">Log in</Link>
       </p>
     </form>
   );
