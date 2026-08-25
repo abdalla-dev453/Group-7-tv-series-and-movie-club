@@ -23,7 +23,7 @@ function CreatePost() {
         description,
       });
       navigate(`/posts/${data.id}`);
-    } catch (err) {
+    } catch {
       setError('Could not post — please try again');
     } finally {
       setSubmitting(false);

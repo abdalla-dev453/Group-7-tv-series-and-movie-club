@@ -15,7 +15,7 @@ function Signup() {
     try {
       await signup(form);
       navigate('/');
-    } catch (err) {
+    } catch {
       setError('Could not create account');
     }
   };

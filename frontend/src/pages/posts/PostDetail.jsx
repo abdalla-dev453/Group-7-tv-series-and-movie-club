@@ -10,7 +10,7 @@ function PostDetail() {
   const [post, setPost] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [draft, setDraft] = useState('');
-  const [rating, setRating] = useState(5);
+  const [rating] = useState(5);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
