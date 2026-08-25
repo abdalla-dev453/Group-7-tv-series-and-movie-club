@@ -1,0 +1,55 @@
+.clubs-page {
+  width: min(1200px, 100%);
+  margin: 0 auto;
+  padding: 32px 24px 60px;
+}
+
+.clubs-page__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+
+  margin-bottom: 36px;
+}
+
+.clubs-page__eyebrow {
+  display: block;
+  margin-bottom: 8px;
+
+  color: #f5b942;
+
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+}
+
+.clubs-page__header h1 {
+  margin: 0 0 8px;
+
+  color: #f3ece0;
+
+  font-family: Inter, system-ui, sans-serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.1;
+}
+
+.clubs-page__header p {
+  max-width: 600px;
+  margin: 0;
+
+  color: #aaa29a;
+
+  line-height: 1.6;
+}
+
+@media (max-width: 700px) {
+  .clubs-page {
+    padding: 24px 16px 40px;
+  }
+
+  .clubs-page__header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
