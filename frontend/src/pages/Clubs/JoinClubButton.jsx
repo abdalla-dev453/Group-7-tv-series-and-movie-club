@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Button from '../common/Button';
+import Button from "../../components/Button";
 import { joinClub, leaveClub } from '../../services/clubService';
 import './JoinClubButton.css';
 
