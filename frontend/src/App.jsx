@@ -20,7 +20,7 @@ import MovieDetailsPage from './pages/movies/MovieDetails';
 import Home from './pages/Home';
 import Discover from './pages/Discover/Discover';
 import NotFound from './pages/NotFound/NotFound';
-
+import './App.css';
 function App() {
   return (
     <>
