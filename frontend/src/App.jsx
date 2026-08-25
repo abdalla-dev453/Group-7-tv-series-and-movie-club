@@ -16,7 +16,7 @@ import WatchedList from './pages/Watched/WatchedList';
 import CreatePost from './pages/posts/CreatePost';
 import Movies from './pages/movies/Movies';
 import MovieDetailsPage from './pages/movies/MovieDetails';
-
+import Home from './pages/Home';
 function App() {
   return (
     <>
@@ -28,7 +28,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
 
           {/* Protected */}
-          <Route path="/" element={<ProtectedRoute><Feed /></ProtectedRoute>} />
+          <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
           <Route path="/posts/:id" element={<ProtectedRoute><PostDetail /></ProtectedRoute>} />
           <Route path="/posts/new" element={<ProtectedRoute><CreatePost /></ProtectedRoute>} />
           <Route path="/movies" element={<ProtectedRoute><Movies /></ProtectedRoute>} />
