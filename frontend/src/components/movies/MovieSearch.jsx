@@ -1,73 +1,156 @@
 import { useState, useEffect, useRef } from 'react';
-import { searchMovies } from '../../services/movieService';
+import { searchMovies } from '../../services/movieService.js';
+import theme from '../../theme.js';
 
 const styles = {
-  wrap: { position: 'relative' },
+  wrap: {
+    position: 'relative',
+    width: '100%',
+  },
+
   input: {
     width: '100%',
+    boxSizing: 'border-box',
     padding: '10px 12px',
-    borderRadius: 8,
-    border: '1px solid var(--border)',
-    background: 'var(--surface)',
-    color: 'var(--text)',
+    borderRadius: theme.radius.sm,
+    border: `1px solid ${theme.color.coalBorder}`,
+    background: theme.color.coalCard,
+    color: theme.color.text,
+    fontSize: 14,
+    outline: 'none',
   },
+
   results: {
     position: 'absolute',
     top: '110%',
     left: 0,
     right: 0,
-    background: 'var(--surface)',
-    border: '1px solid var(--border)',
-    borderRadius: 8,
+    background: theme.color.coalCard,
+    border: `1px solid ${theme.color.coalBorder}`,
+    borderRadius: theme.radius.sm,
     maxHeight: 280,
     overflowY: 'auto',
     zIndex: 10,
+    boxShadow: theme.shadow.card,
   },
+
   item: {
     display: 'flex',
     alignItems: 'center',
     gap: 10,
     padding: '8px 10px',
     cursor: 'pointer',
+    borderBottom: `1px solid ${theme.color.coalBorder}`,
   },
-  poster: { width: 32, height: 48, objectFit: 'cover', borderRadius: 4, background: 'var(--surface-raised)' },
-  title: { fontSize: 14 },
-  year: { fontSize: 12, color: 'var(--text-dim)' },
+
+  poster: {
+    width: 32,
+    height: 48,
+    objectFit: 'cover',
+    borderRadius: 4,
+    background: theme.color.coalSoft,
+    flexShrink: 0,
+  },
+
+  title: {
+    fontSize: 14,
+    color: theme.color.text,
+    fontWeight: 600,
+  },
+
+  year: {
+    fontSize: 12,
+    color: theme.color.textDim,
+    marginTop: 3,
+  },
+
+  message: {
+    padding: 10,
+    fontSize: 13,
+    color: theme.color.textDim,
+  },
+
+  error: {
+    padding: 10,
+    fontSize: 13,
+    color: '#ef4444',
+  },
 };
 
-// Debounced TMDB search-as-you-type. Calls onSelect({ tmdb_id, title, year, poster_url })
-// when a result is picked — the caller decides what to do with it (e.g. attach to a post draft).
-function MovieSearch({ onSelect, placeholder = 'Search for a movie or show' }) {
+function MovieSearch({
+  onSelect,
+  placeholder = 'Search for a movie or show',
+}) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const debounceRef = useRef(null);
+  const [error, setError] = useState('');
+
+  // Keeps track of the latest request
+  const requestIdRef = useRef(0);
 
   useEffect(() => {
-    if (!query.trim()) {
+    const trimmedQuery = query.trim();
+
+    // Empty search
+    if (!trimmedQuery) {
       setResults([]);
       setOpen(false);
+      setLoading(false);
+      setError('');
       return;
     }
-    clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(async () => {
+
+    const currentRequestId = ++requestIdRef.current;
+
+    const timeoutId = setTimeout(async () => {
       setLoading(true);
+      setError('');
+
       try {
-        const res = await searchMovies(query);
-        setResults(res.data.items);
+        const res = await searchMovies(trimmedQuery);
+
+        // Ignore results from an old request
+        if (currentRequestId !== requestIdRef.current) {
+          return;
+        }
+
+        const items = res?.data?.items || [];
+
+        setResults(items);
         setOpen(true);
+      } catch (err) {
+        // Ignore errors from an old request
+        if (currentRequestId !== requestIdRef.current) {
+          return;
+        }
+
+        console.error('Movie search failed:', err);
+
+        setResults([]);
+        setOpen(true);
+        setError('Unable to search movies. Please try again.');
       } finally {
-        setLoading(false);
+        if (currentRequestId === requestIdRef.current) {
+          setLoading(false);
+        }
       }
     }, 350);
-    return () => clearTimeout(debounceRef.current);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
   }, [query]);
 
   const handleSelect = (movie) => {
-    onSelect(movie);
-    setQuery(movie.title);
+    if (!movie) return;
+
+    onSelect?.(movie);
+
+    setQuery(movie.title || '');
     setOpen(false);
+    setError('');
   };
 
   return (
@@ -77,28 +160,86 @@ function MovieSearch({ onSelect, placeholder = 'Search for a movie or show' }) {
         type="search"
         value={query}
         placeholder={placeholder}
-        onChange={(e) => setQuery(e.target.value)}
-        onFocus={() => results.length && setOpen(true)}
+        onChange={(event) => setQuery(event.target.value)}
+        onFocus={() => {
+          if (results.length > 0 || error) {
+            setOpen(true);
+          }
+        }}
+        aria-label="Search for a movie or TV show"
       />
+
       {open && (
         <div style={styles.results}>
-          {loading && <div style={{ padding: 10, fontSize: 13, color: 'var(--text-dim)' }}>Searching...</div>}
-          {!loading && results.length === 0 && (
-            <div style={{ padding: 10, fontSize: 13, color: 'var(--text-dim)' }}>No matches</div>
-          )}
-          {results.map((movie) => (
-            <div key={movie.tmdb_id} style={styles.item} onClick={() => handleSelect(movie)}>
-              {movie.poster_url ? (
-                <img src={movie.poster_url} alt="" style={styles.poster} />
-              ) : (
-                <div style={styles.poster} />
-              )}
-              <div>
-                <div style={styles.title}>{movie.title}</div>
-                <div style={styles.year}>{movie.year}</div>
-              </div>
+          {loading && (
+            <div style={styles.message}>
+              Searching...
             </div>
-          ))}
+          )}
+
+          {!loading && error && (
+            <div style={styles.error}>
+              {error}
+            </div>
+          )}
+
+          {!loading &&
+            !error &&
+            results.length === 0 && (
+              <div style={styles.message}>
+                No matches found.
+              </div>
+            )}
+
+          {!loading &&
+            !error &&
+            results.map((movie) => (
+              <div
+                key={movie.tmdb_id}
+                style={styles.item}
+                onClick={() => handleSelect(movie)}
+                onMouseEnter={(event) => {
+                  event.currentTarget.style.background =
+                    theme.color.coalSoft;
+                }}
+                onMouseLeave={(event) => {
+                  event.currentTarget.style.background =
+                    'transparent';
+                }}
+              >
+                {movie.poster_url ? (
+                  <img
+                    src={movie.poster_url}
+                    alt={movie.title || 'Movie poster'}
+                    style={styles.poster}
+                  />
+                ) : (
+                  <div
+                    style={{
+                      ...styles.poster,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: 18,
+                    }}
+                  >
+                    🎬
+                  </div>
+                )}
+
+                <div>
+                  <div style={styles.title}>
+                    {movie.title || 'Untitled'}
+                  </div>
+
+                  {movie.year && (
+                    <div style={styles.year}>
+                      {movie.year}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
         </div>
       )}
     </div>
