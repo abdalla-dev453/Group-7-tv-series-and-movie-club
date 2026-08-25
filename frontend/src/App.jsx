@@ -16,6 +16,7 @@ import WatchedList from './pages/Watched/WatchedList';
 import CreatePost from './pages/posts/CreatePost';
 import Movies from './pages/movies/Movies';
 import MovieDetailsPage from './pages/movies/MovieDetails';
+import Discover from './pages/Discover/Discover';
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
           <Route path="/posts/:id" element={<ProtectedRoute><PostDetail /></ProtectedRoute>} />
           <Route path="/posts/new" element={<ProtectedRoute><CreatePost /></ProtectedRoute>} />
           <Route path="/movies" element={<ProtectedRoute><Movies /></ProtectedRoute>} />
+          <Route path="/discover" element={<ProtectedRoute><Discover /></ProtectedRoute>} />
           <Route path="/movies/:tmdbId" element={<ProtectedRoute><MovieDetailsPage /></ProtectedRoute>} />
           <Route path="/clubs" element={<ProtectedRoute><ClubList /></ProtectedRoute>} />
           <Route path="/clubs/new" element={<ProtectedRoute><ClubCreate /></ProtectedRoute>} />
