@@ -1,10 +1,8 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import * as authService from '../services/authService';
+import { TOKEN_KEY, USER_KEY } from '../services/api';
 
 const AuthContext = createContext(null);
-
-const TOKEN_KEY = 'reelclub_token';
-const USER_KEY = 'reelclub_user';
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -13,17 +11,28 @@ export function AuthProvider({ children }) {
 
   // Restore session on refresh
   useEffect(() => {
-    const storedToken = localStorage.getItem(TOKEN_KEY);
-    const storedUser = localStorage.getItem(USER_KEY);
-    if (storedToken && storedUser) {
+    try {
+      const storedToken = localStorage.getItem(TOKEN_KEY);
+      const storedUser = localStorage.getItem(USER_KEY);
+      if (!storedToken || !storedUser) return;
+
+      const parsedUser = JSON.parse(storedUser);
+      if (!parsedUser || typeof parsedUser !== 'object' || !parsedUser.id) {
+        throw new Error('Invalid stored session');
+      }
+
       setToken(storedToken);
-      setUser(JSON.parse(storedUser));
+      setUser(parsedUser);
+    } catch {
+      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(USER_KEY);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }, []);
 
-  const login = async (email, password) => {
-    const { data } = await authService.login(email, password);
+  const login = async (username, password) => {
+    const { data } = await authService.login({ username, password });
     setToken(data.access_token);
     setUser(data.user);
     localStorage.setItem(TOKEN_KEY, data.access_token);
@@ -53,8 +62,13 @@ export function AuthProvider({ children }) {
     }
   };
 
+  const updateStoredUser = (nextUser) => {
+    setUser(nextUser);
+    localStorage.setItem(USER_KEY, JSON.stringify(nextUser));
+  };
+
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, signup, logout }}>
+    <AuthContext.Provider value={{ user, token, loading, login, signup, logout, updateStoredUser }}>
       {children}
     </AuthContext.Provider>
   );

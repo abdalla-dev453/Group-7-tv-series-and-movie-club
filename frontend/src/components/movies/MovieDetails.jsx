@@ -1,7 +1,9 @@
-const MovieDetails = ({ title = 'Movie Title' }) => (
+const MovieDetails = ({ movie = {} }) => (
   <section className='movie-details'>
-    <h2>{title}</h2>
-    <p>Plot summary and cast details go here.</p>
+    <h2>{movie.title || 'Untitled movie'}</h2>
+    {movie.overview ? <p>{movie.overview}</p> : <p>No plot summary is available.</p>}
+    {Array.isArray(movie.genres) && movie.genres.length > 0 && <p>{movie.genres.join(', ')}</p>}
+    {Array.isArray(movie.cast) && movie.cast.length > 0 && <p>Cast: {movie.cast.map((member) => member?.name).filter(Boolean).join(', ')}</p>}
   </section>
 );
 

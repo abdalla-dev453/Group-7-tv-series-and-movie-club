@@ -1,6 +1,6 @@
-const MovieSearch = () => (
+const MovieSearch = ({ value = '', onChange, disabled = false }) => (
   <div className='movie-search'>
-    <input type='search' placeholder='Search movies or shows' />
+    <input type='search' value={value} onChange={onChange} disabled={disabled} placeholder='Search movies or shows' aria-label='Search movies or shows' />
   </div>
 );
 

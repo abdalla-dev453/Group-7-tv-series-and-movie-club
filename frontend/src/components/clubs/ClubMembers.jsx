@@ -1,6 +1,6 @@
-const ClubMembers = ({ members = [] }) => (
+const ClubMembers = ({ members }) => (
   <ul className='club-members'>
-    {members.map((member) => <li key={member}>{member}</li>)}
+    {Array.isArray(members) && members.map((member) => <li key={member.id || member.user_id}>{member.user?.username || member.username || 'Unknown member'}</li>)}
   </ul>
 );
 
