@@ -16,8 +16,12 @@ import WatchedList from './pages/Watched/WatchedList';
 import CreatePost from './pages/posts/CreatePost';
 import Movies from './pages/movies/Movies';
 import MovieDetailsPage from './pages/movies/MovieDetails';
+<<<<<<< HEAD
+import Home from './pages/Home';
+=======
 import Discover from './pages/Discover/Discover';
 
+>>>>>>> c17eee5c57d192a2b9df28b8ec062baeb34890d9
 function App() {
   return (
     <>
@@ -29,7 +33,8 @@ function App() {
           <Route path="/signup" element={<Signup />} />
 
           {/* Protected */}
-          <Route path="/" element={<ProtectedRoute><Feed /></ProtectedRoute>} />
+          <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+          <Route path="/feed" element={<ProtectedRoute><Feed /></ProtectedRoute>} />
           <Route path="/posts/:id" element={<ProtectedRoute><PostDetail /></ProtectedRoute>} />
           <Route path="/posts/new" element={<ProtectedRoute><CreatePost /></ProtectedRoute>} />
           <Route path="/movies" element={<ProtectedRoute><Movies /></ProtectedRoute>} />
