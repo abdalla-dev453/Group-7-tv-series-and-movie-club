@@ -29,10 +29,7 @@ function App() {
 
           {/* Protected */}
           <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-<<<<<<< Updated upstream
-=======
           <Route path="/feed" element={<ProtectedRoute><Feed /></ProtectedRoute>} />
->>>>>>> Stashed changes
           <Route path="/posts/:id" element={<ProtectedRoute><PostDetail /></ProtectedRoute>} />
           <Route path="/posts/new" element={<ProtectedRoute><CreatePost /></ProtectedRoute>} />
           <Route path="/movies" element={<ProtectedRoute><Movies /></ProtectedRoute>} />
