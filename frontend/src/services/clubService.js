@@ -7,3 +7,4 @@ export const updateClub = async (id, data) => api.put(`/api/clubs/${id}`, data);
 export const deleteClub = async (id) => api.delete(`/api/clubs/${id}`);
 export const joinClub = async (id) => api.post(`/api/clubs/${id}/join`);
 export const leaveClub = async (id) => api.delete(`/api/clubs/${id}/leave`);
+export const getClubMembers = async (id) => api.get(`/api/clubs/${id}/members`);

@@ -1,16 +1,16 @@
-import { Navigate, useParams } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
+import Loader from './common/Loader.jsx';
 
 const ProtectedRoute = ({ children, requireClubAdmin = false }) => {
   const { user, loading } = useAuth();
-  const { id: clubId } = useParams();
+  const location = useLocation();
+  const clubId = location.pathname.split('/')[2];
 
-  if (loading) {
-    return <div className="route-loading" aria-live="polite">Loading...</div>;
-  }
+  if (loading) return <Loader />;
 
   if (!user) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login" replace state={{ from: location }} />;
   }
 
   if (requireClubAdmin) {

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import { searchMovies } from '../../services/movieService.js';
-import theme from '../../theme.js';
+import theme from '../../theme';
+import { searchMovies } from '../../services/movieService';
+
 
 const styles = {
   wrap: {
