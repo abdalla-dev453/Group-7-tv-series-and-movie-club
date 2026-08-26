@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import Button from '../../components/Button';
 
 function Login() {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const { login } = useAuth();
@@ -14,7 +14,7 @@ function Login() {
     e.preventDefault();
     setError(null);
     try {
-      await login(email, password);
+      await login(username, password);
       navigate('/');
     } catch {
       setError('Invalid email or password');
@@ -25,7 +25,7 @@ function Login() {
     <form onSubmit={submit} className="auth-form">
       <h2>Log in</h2>
       {error && <p style={{ color: 'var(--danger)' }}>{error}</p>}
-      <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+      <input placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
       <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
       <Button type="submit">Log in</Button>
       <p style={{ fontSize: 13 }}>
