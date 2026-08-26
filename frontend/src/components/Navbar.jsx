@@ -209,7 +209,7 @@ export default function Navbar() {
                 fontSize: 13,
               }}
             >
-              Join the club
+              Sign up
             </Link>
           </>
         )}
