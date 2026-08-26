@@ -1,4 +1,4 @@
-const Loader = () => <div className='loader' aria-label='Loading' />;
+const Loader = () => <div className='loader' aria-label='Loading'>Loading...</div>;
 
 export default Loader;
 

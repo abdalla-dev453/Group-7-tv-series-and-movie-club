@@ -20,6 +20,8 @@ import MovieDetailsPage from './pages/movies/MovieDetails';
 import Home from './pages/Home';
 import Discover from './pages/Discover/Discover';
 import NotFound from './pages/NotFound/NotFound';
+import Settings from './pages/Settings/Settings';
+import Help from './pages/Help/Help';
 import './App.css';
 function App() {
   return (
@@ -46,6 +48,8 @@ function App() {
           <Route path="/profile/:id" element={<ProtectedRoute><ProfileView /></ProtectedRoute>} />
           <Route path="/profile/:id/edit" element={<ProtectedRoute><ProfileEdit /></ProtectedRoute>} />
           <Route path="/watched" element={<ProtectedRoute><WatchedList /></ProtectedRoute>} />
+          <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+          <Route path="/help" element={<Help />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

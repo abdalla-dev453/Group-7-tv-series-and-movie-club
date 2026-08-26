@@ -156,6 +156,11 @@ export default function Navbar() {
         </Link>
       )}
 
+      <div className="rail-links">
+        <NavLink to="/settings">⚙ Settings</NavLink>
+        <NavLink to="/help">? Help</NavLink>
+      </div>
+
       {/* ACCOUNT ACTIONS */}
       <div
         style={{

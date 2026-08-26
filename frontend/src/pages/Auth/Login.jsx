@@ -7,29 +7,17 @@ function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
-  const [submitting, setSubmitting] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const submit = async (e) => {
     e.preventDefault();
-    if (submitting) return;
-
     setError(null);
-    setSubmitting(true);
     try {
-      await login(username.trim(), password);
-      navigate('/', { replace: true });
-    } catch (err) {
-      const status = err.response?.status;
-      setError(
-        status === 401 ? 'Invalid username or password.'
-          : status === 400 ? err.response?.data?.error || 'Please correct the form.'
-            : !err.response ? 'Network error. Check your connection and try again.'
-              : 'The service is unavailable. Please try again shortly.',
-      );
-    } finally {
-      setSubmitting(false);
+      await login(username, password);
+      navigate('/');
+    } catch {
+      setError('Invalid email or password');
     }
   };
 

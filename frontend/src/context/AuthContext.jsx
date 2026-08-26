@@ -4,6 +4,13 @@ import { TOKEN_KEY, USER_KEY } from '../services/api';
 
 const AuthContext = createContext(null);
 
+const saveSession = (data) => {
+  if (!data?.access_token || !data?.user) throw new Error('Invalid auth response');
+  localStorage.setItem(TOKEN_KEY, data.access_token);
+  localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+  return { accessToken: data.access_token, authenticatedUser: data.user };
+};
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
@@ -32,12 +39,11 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = async (username, password) => {
-    const { data } = await authService.login({ username, password });
-    setToken(data.access_token);
-    setUser(data.user);
-    localStorage.setItem(TOKEN_KEY, data.access_token);
-    localStorage.setItem(USER_KEY, JSON.stringify(data.user));
-    return data.user;
+    const { data } = await authService.login(username, password);
+    const session = saveSession(data);
+    setToken(session.accessToken);
+    setUser(session.authenticatedUser);
+    return session.authenticatedUser;
   };
 
   const signup = async (payload) => {

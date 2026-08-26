@@ -1,9 +1,10 @@
 import api from './api.js';
 
-export const getClubs = (page = 1, perPage = 20, signal) => api.get('/clubs', { params: { page, per_page: perPage }, signal });
-export const getClub = (id, signal) => api.get(`/clubs/${id}`, { signal });
-export const createClub = async (data) => api.post('/clubs', data);
-export const updateClub = async (id, data) => api.put(`/clubs/${id}`, data);
-export const joinClub = async (id) => api.post(`/clubs/${id}/join`);
-export const leaveClub = async (id) => api.delete(`/clubs/${id}/leave`);
-export const getClubMembers = (id, signal) => api.get(`/clubs/${id}/members`, { signal });
+export const getClubs = async (page = 1, perPage = 10) => api.get('/api/clubs', { params: { page, perPage } });
+export const getClub = async (id) => api.get(`/api/clubs/${id}`);
+export const createClub = async (data) => api.post('/api/clubs', data);
+export const updateClub = async (id, data) => api.put(`/api/clubs/${id}`, data);
+export const deleteClub = async (id) => api.delete(`/api/clubs/${id}`);
+export const joinClub = async (id) => api.post(`/api/clubs/${id}/join`);
+export const leaveClub = async (id) => api.delete(`/api/clubs/${id}/leave`);
+export const getClubMembers = async (id) => api.get(`/api/clubs/${id}/members`);
