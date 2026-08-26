@@ -1,41 +1,49 @@
 import { useEffect, useState } from 'react';
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
-import { updateProfile } from '../../services/userService.js';
-import { useAuth } from '../../context/AuthContext.jsx';
-import ErrorMessage from '../../components/common/ErrorMessage.jsx';
-import Button from '../../components/Button.jsx';
+import { useNavigate, useParams } from 'react-router-dom';
+import { getProfile, updateProfile } from '../../services/userService';
 
 const ProfileEdit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { user, updateStoredUser } = useAuth();
-  const [form, setForm] = useState({ bio: '', avatarUrl: '' });
-  const [error, setError] = useState(null);
-  const [submitting, setSubmitting] = useState(false);
+  const [form, setForm] = useState({ username: '', bio: '' });
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    setForm({ bio: user?.bio || '', avatarUrl: user?.avatar_url || '' });
-  }, [user]);
-
-  if (!user || Number(id) !== user.id) return <Navigate to={`/profile/${id}`} replace />;
+    getProfile(id)
+      .then(({ data }) => {
+        const profile = data?.user || data;
+        setForm({ username: profile.username || '', bio: profile.bio || '' });
+      })
+      .catch(() => setError('Could not load your profile.'))
+      .finally(() => setLoading(false));
+  }, [id]);
 
   const submit = async (event) => {
     event.preventDefault();
-    if (submitting) return;
-    setSubmitting(true);
-    setError(null);
+    setSaving(true);
+    setError('');
     try {
-      const { data } = await updateProfile(id, { bio: form.bio.trim() || null, avatar_url: form.avatarUrl.trim() || null });
-      updateStoredUser(data);
-      navigate(`/profile/${id}`, { replace: true });
-    } catch (requestError) {
-      setError(requestError.response?.data?.error || 'Could not update your profile. Please try again.');
+      await updateProfile(id, form);
+      navigate(`/profile/${id}`);
+    } catch {
+      setError('Could not save your profile.');
     } finally {
-      setSubmitting(false);
+      setSaving(false);
     }
   };
 
-  return <form className="page-panel" onSubmit={submit}><h1>Edit profile</h1>{error && <ErrorMessage message={error} />}<textarea placeholder="Bio" value={form.bio} onChange={(event) => setForm({ ...form, bio: event.target.value })} /><input type="url" placeholder="Avatar URL" value={form.avatarUrl} onChange={(event) => setForm({ ...form, avatarUrl: event.target.value })} /><Button type="submit" disabled={submitting}>{submitting ? 'Saving…' : 'Save profile'}</Button></form>;
+  if (loading) return <section className="page-panel"><p className="muted">Loading profile...</p></section>;
+  return (
+    <form className="page-panel profile-form" onSubmit={submit}>
+      <h1>Edit profile</h1>
+      <label>Username<input value={form.username} onChange={(event) => setForm({ ...form, username: event.target.value })} required /></label>
+      <label>Bio<textarea value={form.bio} onChange={(event) => setForm({ ...form, bio: event.target.value })} rows="4" /></label>
+      {error && <p className="error-message">{error}</p>}
+      <button className="button" type="submit" disabled={saving}>{saving ? 'Saving...' : 'Save profile'}</button>
+    </form>
+  );
 };
 
 export default ProfileEdit;

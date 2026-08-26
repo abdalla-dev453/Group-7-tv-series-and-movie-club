@@ -19,15 +19,26 @@ const PostCard = ({ post }) => {
   const {
     id,
     title,
-    movieTitle: legacyMovieTitle,
+    movieTitle: rawMovieTitle,
+    movie_title: backendMovieTitle,
     caption,
-    body,
+    body: rawBody,
+    description,
     rating = 0,
-    author,
+    author: rawAuthor,
+    author_name: authorNameField,
     club,
-    createdAt: legacyCreatedAt,
-    posterUrl,
+    createdAt: rawCreatedAt,
+    created_at: backendCreatedAt,
+    posterUrl: rawPosterUrl,
+    poster_url: backendPosterUrl,
   } = post || {};
+
+  const movieTitle = rawMovieTitle || backendMovieTitle;
+  const body = rawBody || description || '';
+  const author = rawAuthor || (authorNameField ? { username: authorNameField } : undefined);
+  const createdAt = rawCreatedAt || backendCreatedAt;
+  const posterUrl = rawPosterUrl || backendPosterUrl;
 
   // Safely convert rating to a number between 0 and 5
   const safeRating = Math.min(
@@ -42,14 +53,16 @@ const PostCard = ({ post }) => {
 
   const roundedRating = Math.round(safeRating);
 
-  const movieTitle = post?.movie_title || legacyMovieTitle;
-  const displayTitle = movieTitle || title || caption || 'Untitled post';
-  const rawBody = post?.description ?? body ?? caption ?? '';
-  const displayBody = typeof rawBody === 'string' ? rawBody : '';
-  const createdAt = post?.created_at ?? legacyCreatedAt;
-  const createdDate = createdAt && !Number.isNaN(Date.parse(createdAt))
-    ? new Date(createdAt).toLocaleDateString()
-    : null;
+  const displayTitle =
+    title ||
+    caption ||
+    movieTitle ||
+    'Untitled post';
+
+  const displayBody =
+    body ||
+    caption ||
+    '';
 
   const authorName =
     author?.username ||
@@ -57,7 +70,7 @@ const PostCard = ({ post }) => {
     'Anonymous';
 
   return (
-    <article className="post-card"
+    <article
       style={{
         background: theme.color.coalCard,
         border: `1px solid ${theme.color.coalBorder}`,
@@ -201,10 +214,10 @@ const PostCard = ({ post }) => {
           >
             @{authorName}
 
-            {createdDate && (
+            {createdAt && (
               <>
                 {' · '}
-                {createdDate}
+                {new Date(createdAt).toLocaleDateString()}
               </>
             )}
           </span>

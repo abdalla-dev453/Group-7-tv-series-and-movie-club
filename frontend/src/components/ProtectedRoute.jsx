@@ -2,9 +2,10 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import Loader from './common/Loader.jsx';
 
-const ProtectedRoute = ({ children }) => {
+const ProtectedRoute = ({ children, requireClubAdmin = false }) => {
   const { user, loading } = useAuth();
   const location = useLocation();
+  const clubId = location.pathname.split('/')[2];
 
   if (loading) return <Loader />;
 

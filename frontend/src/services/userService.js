@@ -1,5 +1,8 @@
 import api from './api';
 
-export const getProfile = (id, config) => api.get(`/users/${id}`, config);
-export const updateProfile = async (id, data) => api.put(`/users/${id}`, data);
-export const getUsers = (page = 1, limit = 10, signal) => api.get('/users', { params: { page, limit }, signal });
+export const getProfile = (id) => api.get(`/api/users/${id}`);
+
+export const updateProfile = (id, data) => api.put(`/api/users/${id}`, data);
+
+export const getUsers = (page = 1, perPage = 6) =>
+	api.get('/api/users', { params: { page, perPage } });
