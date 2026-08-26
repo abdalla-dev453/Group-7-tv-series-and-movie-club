@@ -15,8 +15,8 @@ function Signup() {
     try {
       await signup(form);
       navigate('/');
-    } catch {
-      setError('Could not create account');
+    } catch (requestError) {
+      setError(requestError.response?.data?.error || 'Could not create account');
     }
   };
 
@@ -24,9 +24,9 @@ function Signup() {
     <form onSubmit={submit} className="auth-form">
       <h2>Sign up</h2>
       {error && <p style={{ color: 'var(--danger)' }}>{error}</p>}
-      <input placeholder="Username" value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} />
-      <input type="email" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
-      <input type="password" placeholder="Password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} />
+      <input placeholder="Username" value={form.username} minLength={3} required onChange={(e) => setForm({ ...form, username: e.target.value })} />
+      <input type="email" placeholder="Email" value={form.email} required onChange={(e) => setForm({ ...form, email: e.target.value })} />
+      <input type="password" placeholder="Password (8+ characters)" value={form.password} minLength={8} required onChange={(e) => setForm({ ...form, password: e.target.value })} />
       <Button type="submit">Create account</Button>
       <p style={{ fontSize: 13 }}>
         Already have an account? <Link to="/login">Log in</Link>
