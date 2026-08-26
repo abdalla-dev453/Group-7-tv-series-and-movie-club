@@ -1,18 +1,18 @@
 const theme = {
   color: {
-    amber: '#f5b942',
-    amberSoft: '#ffd978',
-    gold: '#f5b942',
+    amber: '#ffc21a',
+    amberSoft: '#ffe28a',
+    gold: '#ffc21a',
     goldDeep: '#c58a17',
 
-    coal: '#0f0f0f',
-    coalSoft: '#171717',
-    coalCard: '#1e1e1e',
-    coalBorder: '#303030',
+    coal: '#0d0c08',
+    coalSoft: '#17150e',
+    coalCard: '#242016',
+    coalBorder: '#3a3324',
 
-    text: '#f3ece0',
-    textDim: '#aaa29a',
-    textFaint: '#77716a',
+    text: '#f7f0df',
+    textDim: '#c0b7a5',
+    textFaint: '#8f866f',
   },
 
   radius: {
@@ -27,8 +27,8 @@ const theme = {
   },
 
   font: {
-    heading: 'Inter, system-ui, sans-serif',
-    body: 'Inter, system-ui, sans-serif',
+    heading: 'Georgia, Times New Roman, serif',
+    body: 'Trebuchet MS, Segoe UI, sans-serif',
   },
 };
 

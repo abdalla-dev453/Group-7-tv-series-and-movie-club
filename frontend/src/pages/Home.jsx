@@ -72,8 +72,8 @@ const discussions = [
 const Home = () => {
   return (
     <main
+      className="home-page"
       style={{
-        marginLeft: '220px',
         minHeight: '100vh',
         boxSizing: 'border-box',
         background: theme.color.coal,
@@ -201,7 +201,7 @@ const Home = () => {
         </section>
 
         {/* ================= MAIN GRID ================= */}
-        <div
+        <div className="home-main-grid"
           style={{
             display: 'grid',
             gridTemplateColumns: 'minmax(0, 1fr) 280px',
@@ -211,7 +211,7 @@ const Home = () => {
         >
 
           {/* LEFT CONTENT */}
-          <div>
+          <div className="home-content-column">
 
             {/* ================= CLUBS ================= */}
             <section style={{ marginBottom: '30px' }}>
@@ -245,7 +245,7 @@ const Home = () => {
                 </Link>
               </div>
 
-              <div
+              <div className="home-club-grid"
                 style={{
                   display: 'grid',
                   gridTemplateColumns:
@@ -321,7 +321,7 @@ const Home = () => {
 
             {/* ================= RECOMMENDED ================= */}
             <section>
-              <div
+              <div className="home-recommendations"
                 style={{
                   display: 'flex',
                   justifyContent: 'space-between',
@@ -416,7 +416,7 @@ const Home = () => {
           </div>
 
           {/* ================= TRENDING THREADS ================= */}
-          <aside
+          <aside className="home-thread-panel"
             style={{
               background: theme.color.coalCard,
               border: `1px solid ${theme.color.coalBorder}`,
