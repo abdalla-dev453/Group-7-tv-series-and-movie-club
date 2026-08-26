@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  background: #0f0f0f;
+  background: #11100c;
 }
 
 #root {
@@ -9,4 +9,9 @@ body {
 
 main {
   margin-left: 220px;
+  min-height: 100vh;
+}
+
+@media (max-width: 720px) {
+  main { margin-left: 0; }
 }
