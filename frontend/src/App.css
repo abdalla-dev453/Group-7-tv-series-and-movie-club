@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  background: #11100c;
+  background: #0f0f0f;
 }
 
 #root {
@@ -8,7 +8,7 @@ body {
 }
 
 main {
-  margin-left: 220px;
+  margin-left: 140px;
   min-height: 100vh;
 }
 
