@@ -308,11 +308,64 @@ input:focus {
 .discover-follow:disabled { border-color: var(--border); color: var(--muted); cursor: default; }
 .discover-muted { color: var(--muted); }
 
+.feed-page,
+.profile-page,
+.profile-form,
+.watched-page {
+  max-width: 900px;
+  margin: 2rem auto;
+}
+
+.feed-heading,
+.watched-add {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.feed-heading h1,
+.profile-page h1,
+.profile-form h1,
+.watched-page h1 { margin-top: 0; }
+
+.feed-heading p { color: var(--muted); }
+.feed-list { display: grid; gap: 1rem; margin-top: 1.5rem; }
+.muted { color: var(--muted); }
+.error-message { color: var(--danger); }
+
+.profile-avatar {
+  display: grid;
+  width: 4rem;
+  height: 4rem;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #1a1204;
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.profile-stats { display: flex; gap: 1.5rem; margin: 1.5rem 0; color: var(--muted); }
+.profile-stats strong { color: var(--text); margin-right: 0.3rem; }
+.profile-form { max-width: 540px; }
+.profile-form textarea { width: 100%; margin-top: 0.4rem; padding: 0.75rem; border: 1px solid var(--border); border-radius: 8px; background: var(--panel); color: var(--text); resize: vertical; }
+.watched-add { align-items: end; margin: 1.5rem 0; }
+.watched-add > div { flex: 1; }
+.watched-grid { display: grid; gap: 0.75rem; }
+.watched-item { display: flex; align-items: center; gap: 1rem; padding: 1rem; border: 1px solid var(--border); border-radius: 8px; }
+.watched-item strong { flex: 1; }
+.watched-item span { color: var(--muted); }
+.watched-item button { border: 0; background: transparent; color: var(--danger); cursor: pointer; }
+
 @media (max-width: 850px) {
   .discover-movies { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
 @media (max-width: 640px) {
+  .feed-page, .profile-page, .profile-form, .watched-page { margin: 1rem; }
+  .feed-heading, .watched-add { align-items: stretch; flex-direction: column; }
+  .profile-stats { flex-wrap: wrap; gap: 0.8rem 1rem; }
   .discover-page { padding: 2.25rem 1.1rem 3rem; }
   .discover-header { display: block; }
   .discover-search-link { display: inline-block; margin-top: 1.5rem; }
