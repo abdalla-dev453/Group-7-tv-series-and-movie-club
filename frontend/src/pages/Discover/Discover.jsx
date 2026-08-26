@@ -5,7 +5,7 @@ import ClubCard from '../Clubs/ClubCard';
 import { getTrendingMovies } from '../../services/movieService';
 import { getClubs } from '../../services/clubService';
 import { getUsers } from '../../services/userService';
-import { followUser } from '../../services/followService';
+import { followUser, unfollowUser } from '../../services/followService';
 
 const getItems = (response) => {
   const data = response?.data;
@@ -23,7 +23,7 @@ function PersonCard({ person, followed, onFollow }) {
         <span className="discover-person__avatar">{name.charAt(0).toUpperCase()}</span>
         <span><strong>{name}</strong><small>{person.bio || 'Cinema enthusiast'}</small></span>
       </Link>
-      <button type="button" className="discover-follow" disabled={!id || followed} onClick={() => onFollow(id)}>
+      <button type="button" className="discover-follow" disabled={!id} onClick={() => onFollow(id)}>
         {followed ? 'Following' : 'Follow'}
       </button>
     </article>
@@ -56,8 +56,13 @@ function Discover() {
 
   const handleFollow = async (id) => {
     try {
-      await followUser(id);
-      setFollowed((current) => [...current, id]);
+      if (followed.includes(id)) {
+        await unfollowUser(id);
+        setFollowed((current) => current.filter((personId) => personId !== id));
+      } else {
+        await followUser(id);
+        setFollowed((current) => [...current, id]);
+      }
     } catch {
       setError('Could not follow that person. Please try again.');
     }
