@@ -19,15 +19,26 @@ const PostCard = ({ post }) => {
   const {
     id,
     title,
-    movieTitle,
+    movieTitle: rawMovieTitle,
+    movie_title: backendMovieTitle,
     caption,
-    body,
+    body: rawBody,
+    description,
     rating = 0,
-    author,
+    author: rawAuthor,
+    author_name: authorNameField,
     club,
-    createdAt,
-    posterUrl,
+    createdAt: rawCreatedAt,
+    created_at: backendCreatedAt,
+    posterUrl: rawPosterUrl,
+    poster_url: backendPosterUrl,
   } = post || {};
+
+  const movieTitle = rawMovieTitle || backendMovieTitle;
+  const body = rawBody || description || '';
+  const author = rawAuthor || (authorNameField ? { username: authorNameField } : undefined);
+  const createdAt = rawCreatedAt || backendCreatedAt;
+  const posterUrl = rawPosterUrl || backendPosterUrl;
 
   // Safely convert rating to a number between 0 and 5
   const safeRating = Math.min(
