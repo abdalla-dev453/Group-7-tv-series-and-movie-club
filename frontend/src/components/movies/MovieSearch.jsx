@@ -116,7 +116,10 @@ function MovieSearch({
           return;
         }
 
-        const items = res?.data?.items || [];
+        const payload = res?.data;
+        const items = Array.isArray(payload)
+          ? payload
+          : payload?.items || payload?.results || payload?.data || [];
 
         setResults(items);
         setOpen(true);
