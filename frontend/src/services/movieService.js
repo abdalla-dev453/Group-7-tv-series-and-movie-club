@@ -4,8 +4,8 @@ import api from './api';
 // key stays server-side, never ships to the browser.
 
 export const searchMovies = (query) =>
-  api.get('/movies/search', { params: { query } });
+  api.get('/api/movies/search', { params: { query } });
 
-export const getMovie = (tmdbId) => api.get(`/movies/${tmdbId}`);
+export const getMovie = (tmdbId) => api.get(`/api/movies/${tmdbId}`);
 
-export const getTrendingMovies = () => api.get('/movies/trending');
+export const getTrendingMovies = () => api.get('/api/movies/trending');
