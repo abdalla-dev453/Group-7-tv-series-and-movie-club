@@ -8,7 +8,6 @@ function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
-
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -19,25 +18,11 @@ function Login() {
 
     setError(null);
     setSubmitting(true);
-
     try {
-      await login(username.trim(), password);
-
-      navigate('/', { replace: true });
-    } catch (err) {
-      console.error('Login error:', err);
-
-      const status = err.response?.status;
-
-      if (status === 401 || status === 400) {
-        setError('Invalid username or password.');
-      } else if (!err.response) {
-        setError(
-          'Unable to connect to the server. Please check your connection.'
-        );
-      } else {
-        setError('Something went wrong. Please try again.');
-      }
+      await login(username, password);
+      navigate('/');
+    } catch {
+      setError('Invalid email or password');
     } finally {
       setSubmitting(false);
     }

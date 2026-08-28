@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Button from "../../components/Button";
 import { joinClub, leaveClub } from '../../services/clubService';
 import './JoinClubButton.css';
@@ -11,6 +11,10 @@ const JoinClubButton = ({
 }) => {
   const [joined, setJoined] = useState(isMember);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setJoined(isMember);
+  }, [isMember]);
 
   const handleMembership = async (event) => {
     event.preventDefault();
