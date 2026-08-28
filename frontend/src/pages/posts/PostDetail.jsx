@@ -13,6 +13,7 @@ function PostDetail() {
   const [rating] = useState(5);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [reviewError, setReviewError] = useState('');
 
   useEffect(() => {
     setLoading(true);
@@ -34,14 +35,19 @@ function PostDetail() {
   const myReview = reviews.find((r) => r.user_id === user?.id);
 
   const submitReview = async () => {
-    if (myReview) {
-      const { data } = await updateReview(myReview.id, { rating, comment_text: draft });
-      setReviews(reviews.map((r) => (r.id === data.id ? data : r)));
-    } else {
-      const { data } = await createReview({ post_id: id, rating, comment_text: draft });
-      setReviews([...reviews, data]);
+    setReviewError('');
+    try {
+      if (myReview) {
+        const { data } = await updateReview(myReview.id, { rating, comment_text: draft });
+        setReviews(reviews.map((r) => (r.id === data.id ? data : r)));
+      } else {
+        const { data } = await createReview({ post_id: id, rating, comment_text: draft });
+        setReviews([...reviews, data]);
+      }
+      setDraft('');
+    } catch (requestError) {
+      setReviewError(requestError.response?.data?.error || 'Could not submit review');
     }
-    setDraft('');
   };
 
   if (loading) return <p style={{ padding: 24 }}>Loading...</p>;
@@ -78,7 +84,8 @@ function PostDetail() {
             placeholder={myReview ? 'Edit your review...' : 'Write a review...'}
             style={{ width: '100%', minHeight: 80 }}
           />
-          <button onClick={submitReview}>{myReview ? 'Update review' : 'Post review'}</button>
+          <button type="button" onClick={submitReview}>{myReview ? 'Update review' : 'Post review'}</button>
+          {reviewError && <p style={{ color: 'var(--danger)' }}>{reviewError}</p>}
         </div>
       )}
     </div>

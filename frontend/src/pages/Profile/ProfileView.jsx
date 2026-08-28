@@ -9,10 +9,15 @@ const ProfileView = () => {
 
   useEffect(() => {
     let active = true;
-    getProfile(id)
+    const loadProfile = () => getProfile(id)
       .then(({ data }) => active && setProfile(data?.user || data))
       .catch(() => active && setError('Could not load this profile.'));
-    return () => { active = false; };
+    loadProfile();
+    window.addEventListener('focus', loadProfile);
+    return () => {
+      active = false;
+      window.removeEventListener('focus', loadProfile);
+    };
   }, [id]);
 
   if (error) return <section className="page-panel"><p className="error-message">{error}</p></section>;

@@ -4,7 +4,7 @@ import theme from '../theme.js';
 
 const links = [
   { to: '/', label: 'Home', icon: '⌂' },
-  { to: '/feed', label: 'Discover', icon: '⌕' },
+  { to: '/discover', label: 'Discover', icon: '⌕' },
   { to: '/clubs', label: 'Clubs', icon: '♟' },
   { to: '/watched', label: 'Watched', icon: '▣' },
 ];
@@ -41,7 +41,7 @@ export default function Navbar() {
     >
       {/* LOGO */}
       <Link
-        to="/"
+        to={user ? '/' : '/login'}
         style={{
           textDecoration: 'none',
           color: theme.color.amber,
@@ -63,7 +63,7 @@ export default function Navbar() {
           gap: 6,
         }}
       >
-        {links.map((link) => (
+        {user && links.map((link) => (
           <NavLink
             key={link.to}
             to={link.to}
@@ -156,10 +156,12 @@ export default function Navbar() {
         </Link>
       )}
 
-      <div className="rail-links">
-        <NavLink to="/settings">⚙ Settings</NavLink>
-        <NavLink to="/help">? Help</NavLink>
-      </div>
+      {user && (
+        <div className="rail-links">
+          <NavLink to="/settings">⚙ Settings</NavLink>
+          <NavLink to="/help">? Help</NavLink>
+        </div>
+      )}
 
       {/* ACCOUNT ACTIONS */}
       <div

@@ -8,8 +8,9 @@ body {
 }
 
 main {
-  margin-left: 220px;
+  margin-left: 140px;
   min-height: 100vh;
+  max-width: 100%;
 }
 
 @media (max-width: 720px) {
