@@ -7,17 +7,21 @@ function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const submit = async (e) => {
     e.preventDefault();
     setError(null);
+    setSubmitting(true);
     try {
       await login(username, password);
       navigate('/');
     } catch {
       setError('Invalid email or password');
+    } finally {
+      setSubmitting(false);
     }
   };
 

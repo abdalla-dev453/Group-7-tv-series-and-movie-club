@@ -16,26 +16,11 @@ export function AuthProvider({ children }) {
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Restore session on refresh
+  // Require a fresh sign-in whenever the app starts.
   useEffect(() => {
-    try {
-      const storedToken = localStorage.getItem(TOKEN_KEY);
-      const storedUser = localStorage.getItem(USER_KEY);
-      if (!storedToken || !storedUser) return;
-
-      const parsedUser = JSON.parse(storedUser);
-      if (!parsedUser || typeof parsedUser !== 'object' || !parsedUser.id) {
-        throw new Error('Invalid stored session');
-      }
-
-      setToken(storedToken);
-      setUser(parsedUser);
-    } catch {
-      localStorage.removeItem(TOKEN_KEY);
-      localStorage.removeItem(USER_KEY);
-    } finally {
-      setLoading(false);
-    }
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
+    setLoading(false);
   }, []);
 
   const login = async (username, password) => {
