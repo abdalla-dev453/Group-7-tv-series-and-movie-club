@@ -34,7 +34,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
 
           {/* Protected */}
-          <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+          <Route path="/" element={<Home />} />
           <Route path="/feed" element={<ProtectedRoute><Feed /></ProtectedRoute>} />
           <Route path="/posts/:id" element={<ProtectedRoute><PostDetail /></ProtectedRoute>} />
           <Route path="/posts/new" element={<ProtectedRoute><CreatePost /></ProtectedRoute>} />

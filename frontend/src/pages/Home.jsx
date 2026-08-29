@@ -1,8 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useEffect, useState } from 'react';
 import theme from '../theme.js';
-import { useAuth } from '../context/AuthContext.jsx';
-import { getClubs } from '../services/clubService.js';
 
 const clubs = [
   {icon: 'https://plus.unsplash.com/premium_photo-1764691504277-6d9d4a9d1ba4?q=80&w=1032&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
@@ -69,19 +66,6 @@ const discussions = [
 ];
 
 const Home = () => {
-  const { user } = useAuth();
-  const [activeClubs, setActiveClubs] = useState([]);
-
-  useEffect(() => {
-    let active = true;
-    getClubs(1, 20)
-      .then(({ data }) => {
-        if (active) setActiveClubs((data?.items || []).filter((club) => club.is_member));
-      })
-      .catch(() => active && setActiveClubs([]));
-    return () => { active = false; };
-  }, []);
-
   return (
     <main
       className="home-page"
@@ -242,7 +226,7 @@ const Home = () => {
                     margin: 0,
                   }}
                 >
-                  {user?.username || 'Your'} Active Clubs
+                  My Active Clubs
                 </h2>
 
                 <Link
@@ -265,10 +249,10 @@ const Home = () => {
                   gap: '12px',
                 }}
               >
-                {activeClubs.map((club) => (
+                {clubs.map((club) => (
                   <Link
-                    key={club.id}
-                    to={`/clubs/${club.id}`}
+                    key={club.name}
+                    to="/clubs"
                     style={{
                       textDecoration: 'none',
                       color: theme.color.text,
@@ -295,14 +279,14 @@ const Home = () => {
                         fontSize: '20px',
                       }}
                     >
-                      {club.cover_image ? (
-  <img
-    src={club.cover_image}
+                      {typeof club.icon === 'string' && club.icon.startsWith('http') ? (
+  <img 
+    src={club.icon} 
     alt={club.name} 
     style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '6px' }} 
   />
 ) : (
-  club.name?.slice(0, 1).toUpperCase()
+  club.icon
 )}
                     </div>
 
@@ -323,13 +307,12 @@ const Home = () => {
                           fontSize: '11px',
                         }}
                       >
-                        {club.member_count ?? 0} members
+                        {club.members}
                       </div>
                     </div>
                   </Link>
                 ))}
               </div>
-              {activeClubs.length === 0 && <p style={{ color: theme.color.textDim, fontSize: '13px' }}>You have not joined any clubs yet.</p>}
             </section>
 
             {/* ================= RECOMMENDED ================= */}

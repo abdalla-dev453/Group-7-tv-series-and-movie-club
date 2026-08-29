@@ -10,10 +10,9 @@ function PostDetail() {
   const [post, setPost] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [draft, setDraft] = useState('');
-  const [rating] = useState(5);
+  const [rating, setRating] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [reviewError, setReviewError] = useState('');
 
   useEffect(() => {
     setLoading(true);
@@ -34,20 +33,19 @@ function PostDetail() {
   const isOwnPost = post && user && post.user_id === user.id;
   const myReview = reviews.find((r) => r.user_id === user?.id);
 
+  useEffect(() => {
+    if (myReview) setRating(myReview.rating);
+  }, [myReview]);
+
   const submitReview = async () => {
-    setReviewError('');
-    try {
-      if (myReview) {
-        const { data } = await updateReview(myReview.id, { rating, comment_text: draft });
-        setReviews(reviews.map((r) => (r.id === data.id ? data : r)));
-      } else {
-        const { data } = await createReview({ post_id: id, rating, comment_text: draft });
-        setReviews([...reviews, data]);
-      }
-      setDraft('');
-    } catch (requestError) {
-      setReviewError(requestError.response?.data?.error || 'Could not submit review');
+    if (myReview) {
+      const { data } = await updateReview(myReview.id, { rating, comment_text: draft });
+      setReviews(reviews.map((r) => (r.id === data.id ? data : r)));
+    } else {
+      const { data } = await createReview({ post_id: Number(id), rating, comment_text: draft });
+      setReviews([...reviews, data]);
     }
+    setDraft('');
   };
 
   if (loading) return <p style={{ padding: 24 }}>Loading...</p>;
@@ -71,21 +69,48 @@ function PostDetail() {
       <h3 style={{ marginTop: 32 }}>Reviews ({reviews.length})</h3>
       {reviews.map((r) => (
         <div key={r.id} style={{ borderBottom: '1px solid var(--border)', padding: '12px 0' }}>
-          <strong>{r.author_name}</strong> — {r.rating}★
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <strong>{r.author_name}</strong>
+            <span aria-label={`${r.rating} out of 5 stars`}>
+              {[1, 2, 3, 4, 5].map((value) => (
+                <span key={value} style={{ color: value <= r.rating ? 'var(--amber)' : 'var(--text-dim)' }}>★</span>
+              ))}
+            </span>
+          </div>
           <p>{r.comment_text}</p>
         </div>
       ))}
 
       {!isOwnPost && (
         <div style={{ marginTop: 20 }}>
+          <div role="group" aria-label="Rating">
+            {[1, 2, 3, 4, 5].map((value) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => setRating(value)}
+                aria-label={`${value} out of 5 stars`}
+                aria-pressed={rating === value}
+                style={{
+                  border: 0,
+                  background: 'transparent',
+                  color: value <= rating ? 'var(--amber)' : 'var(--text-dim)',
+                  cursor: 'pointer',
+                  fontSize: 28,
+                  padding: '0 3px',
+                }}
+              >
+                ★
+              </button>
+            ))}
+          </div>
           <textarea
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             placeholder={myReview ? 'Edit your review...' : 'Write a review...'}
             style={{ width: '100%', minHeight: 80 }}
           />
-          <button type="button" onClick={submitReview}>{myReview ? 'Update review' : 'Post review'}</button>
-          {reviewError && <p style={{ color: 'var(--danger)' }}>{reviewError}</p>}
+          <button type="button" disabled={!rating} onClick={submitReview}>{myReview ? 'Update review' : 'Post review'}</button>
         </div>
       )}
     </div>
