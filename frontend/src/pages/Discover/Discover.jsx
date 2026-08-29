@@ -6,7 +6,6 @@ import { getTrendingMovies } from '../../services/movieService';
 import { getClubs } from '../../services/clubService';
 import { getUsers } from '../../services/userService';
 import { followUser, unfollowUser } from '../../services/followService';
-import { useAuth } from '../../context/AuthContext';
 
 const getItems = (response) => {
   const data = response?.data;
@@ -14,7 +13,7 @@ const getItems = (response) => {
   return data?.items || data?.results || data?.data || [];
 };
 
-function PersonCard({ person, followed, onFollow, canFollow }) {
+function PersonCard({ person, followed, onFollow }) {
   const id = person.id || person.user_id;
   const name = person.username || person.name || person.email || 'Movie fan';
 
@@ -24,7 +23,7 @@ function PersonCard({ person, followed, onFollow, canFollow }) {
         <span className="discover-person__avatar">{name.charAt(0).toUpperCase()}</span>
         <span><strong>{name}</strong><small>{person.bio || 'Cinema enthusiast'}</small></span>
       </Link>
-      <button type="button" className="discover-follow" disabled={!id || !canFollow} onClick={() => onFollow(id)}>
+      <button type="button" className="discover-follow" disabled={!id} onClick={() => onFollow(id)}>
         {followed ? 'Following' : 'Follow'}
       </button>
     </article>
@@ -32,7 +31,6 @@ function PersonCard({ person, followed, onFollow, canFollow }) {
 }
 
 function Discover() {
-  const { user } = useAuth();
   const [content, setContent] = useState({ movies: [], clubs: [], people: [] });
   const [loading, setLoading] = useState(true);
   const [followed, setFollowed] = useState([]);
@@ -93,7 +91,7 @@ function Discover() {
         </section>
         <section className="discover-section" aria-labelledby="people-heading">
           <div className="discover-section__heading"><div><p className="discover-kicker">Make a connection</p><h2 id="people-heading">People to follow</h2></div></div>
-          <div className="discover-people">{content.people.map((person) => <PersonCard key={person.id || person.user_id} person={person} followed={followed.includes(person.id || person.user_id)} onFollow={handleFollow} canFollow={Boolean(user) && (person.id || person.user_id) !== user.id} />)}</div>
+          <div className="discover-people">{content.people.map((person) => <PersonCard key={person.id || person.user_id} person={person} followed={followed.includes(person.id || person.user_id)} onFollow={handleFollow} />)}</div>
           {!loading && content.people.length === 0 && <p className="discover-muted">No people to suggest yet.</p>}
         </section>
       </div>
