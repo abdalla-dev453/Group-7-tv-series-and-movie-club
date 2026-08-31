@@ -3,10 +3,13 @@ import { useAuth } from "../context/AuthContext.jsx";
 import theme from "../theme.js";
 
 const links = [
-  { to: "/", label: "Home", icon: "⌂" },
-  { to: "/feed", label: "Discover", icon: "⌕" },
-  { to: "/clubs", label: "Clubs", icon: "♟" },
-  { to: "/watched", label: "Watched", icon: "▣" },
+
+  { to: '/', label: 'Home', icon: '⌂' },
+  { to: '/feed', label: 'Feed', icon: '+' },
+  { to: '/discover', label: 'Discover', icon: '⌕' },
+  { to: '/clubs', label: 'Clubs', icon: '♟' },
+  { to: '/watched', label: 'Watched', icon: '▣' },
+
 ];
 
 export default function Navbar() {

@@ -3,26 +3,27 @@ import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 
-import "./App.css";
-import Login from "./pages/Auth/Login";
-import Signup from "./pages/Auth/Signup";
-import ClubCreate from "./pages/Clubs/ClubCreate";
-import ClubDetail from "./pages/Clubs/ClubDetail";
-import ClubList from "./pages/Clubs/ClubList";
-import ClubManage from "./pages/Clubs/ClubManage";
-import Discover from "./pages/Discover/Discover";
-import Feed from "./pages/Feed/Feed";
-import Help from "./pages/Help/Help";
-import Home from "./pages/Home";
-import MovieDetailsPage from "./pages/movies/MovieDetails";
-import Movies from "./pages/movies/Movies";
-import NotFound from "./pages/NotFound/NotFound";
-import CreatePost from "./pages/posts/CreatePost";
-import PostDetail from "./pages/posts/PostDetail";
-import ProfileEdit from "./pages/Profile/ProfileEdit";
-import ProfileView from "./pages/Profile/ProfileView";
-import Settings from "./pages/Settings/Settings";
-import WatchedList from "./pages/Watched/WatchedList";
+import Login from './pages/Auth/Login';
+import Signup from './pages/Auth/Signup';
+import ProfileView from './pages/Profile/ProfileView';
+import ProfileEdit from './pages/Profile/ProfileEdit';
+import ClubList from './pages/Clubs/ClubList';
+import ClubDetail from './pages/Clubs/ClubDetail';
+import ClubCreate from './pages/Clubs/ClubCreate';
+import ClubManage from './pages/Clubs/ClubManage';
+import Feed from './pages/Feed/Feed';
+import PostDetail from './pages/posts/PostDetail';
+import WatchedList from './pages/Watched/WatchedList';
+import CreatePost from './pages/posts/CreatePost';
+import Movies from './pages/movies/Movies';
+import MovieDetailsPage from './pages/movies/MovieDetails';
+import Home from './pages/Home';
+import Discover from './pages/Discover/Discover';
+import NotFound from './pages/NotFound/NotFound';
+import Settings from './pages/Settings/Settings';
+import Help from './pages/Help/Help';
+import './App.css';
+
 function App() {
   return (
     <>

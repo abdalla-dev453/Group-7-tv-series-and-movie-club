@@ -4,6 +4,8 @@ import { getProfile } from '../../services/userService';
 import { useAuth } from '../../context/AuthContext.jsx';
 import FollowButton from '../../components/users/FollowButton.jsx';
 import UserAvatar from '../../components/users/UserAvatar.jsx';
+import { getWatched } from '../../services/watchedService';
+import theme from '../../theme.js';
 
 const ProfileView = () => {
   const { id } = useParams();
@@ -11,6 +13,7 @@ const ProfileView = () => {
 
   const [profile, setProfile] = useState(null);
   const [error, setError] = useState('');
+  const [watched, setWatched] = useState([]);
 
   useEffect(() => {
     let active = true;
@@ -29,6 +32,23 @@ const ProfileView = () => {
       active = false;
     };
   }, [id]);
+
+  useEffect(() => {
+  if (!profile) return;
+  const isOwn = Number(user?.id) === Number(profile.id || id);
+  if (!isOwn) return;
+
+  let active = true;
+  getWatched()
+    .then(({ data }) => {
+      if (!active) return;
+      setWatched((data?.items || data || []).slice(0, 6));
+    })
+    .catch(() => {});
+  return () => {
+    active = false;
+  };
+}, [profile, user, id]);
 
   if (error) {
     return (
@@ -98,6 +118,40 @@ const ProfileView = () => {
         </span>
       </div>
 
+{isOwnProfile && watched.length > 0 && (
+  <>
+    <p style={{ color: theme.color.textFaint, fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '24px 0 12px' }}>
+      Recently watched
+    </p>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
+      {watched.map((movie) => (
+        <div key={movie.id} style={{ borderRadius: theme.radius.sm, overflow: 'hidden', background: theme.color.coalCard }}>
+          <div
+            style={{
+              aspectRatio: '2 / 3',
+              background: movie.poster_url
+                ? `url(${movie.poster_url}) center/cover no-repeat`
+                : `linear-gradient(160deg, ${theme.color.coalBorder}, ${theme.color.coalSoft})`,
+              display: 'flex',
+              alignItems: 'flex-end',
+              padding: 8,
+            }}
+          >
+            <span style={{ color: theme.color.text, fontSize: 12, fontWeight: 600 }}>
+              {movie.movie_title || movie.title}
+            </span>
+          </div>
+          {movie.personal_rating != null && (
+            <div style={{ padding: '6px 8px', display: 'flex', alignItems: 'center', gap: 4 }}>
+              <span style={{ color: theme.color.amber, fontSize: 13 }}>★</span>
+              <span style={{ color: theme.color.amber, fontSize: 12 }}>{movie.personal_rating}</span>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  </>
+)}
       {/* ACTIONS */}
       <div
         style={{
