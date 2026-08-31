@@ -23,6 +23,7 @@ import NotFound from './pages/NotFound/NotFound';
 import Settings from './pages/Settings/Settings';
 import Help from './pages/Help/Help';
 import './App.css';
+
 function App() {
   return (
     <>
