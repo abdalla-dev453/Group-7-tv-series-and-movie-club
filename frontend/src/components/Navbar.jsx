@@ -1,55 +1,41 @@
-import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext.jsx';
-import theme from '../theme.js';
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext.jsx";
+import theme from "../theme.js";
 
 const links = [
+
   { to: '/', label: 'Home', icon: '⌂' },
   { to: '/feed', label: 'Feed', icon: '+' },
   { to: '/discover', label: 'Discover', icon: '⌕' },
   { to: '/clubs', label: 'Clubs', icon: '♟' },
   { to: '/watched', label: 'Watched', icon: '▣' },
+
 ];
 
 export default function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
-  const profilePath = user?.id
-    ? `/profile/${user.id}`
-    : '/login';
+  const profilePath = user?.id ? `/profile/${user.id}` : "/login";
 
   const signOut = async () => {
     await logout();
-    navigate('/login');
+    navigate("/login");
   };
 
   return (
-    <aside
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        bottom: 0,
-        width: 220,
-        background: theme.color.coal,
-        borderRight: `1px solid ${theme.color.coalBorder}`,
-        display: 'flex',
-        flexDirection: 'column',
-        zIndex: 1000,
-        boxSizing: 'border-box',
-        padding: '24px 16px',
-      }}
-    >
+    <aside className="app-navbar">
       {/* LOGO */}
       <Link
         to="/"
         style={{
-          textDecoration: 'none',
+          textDecoration: "none",
           color: theme.color.amber,
           fontFamily: theme.font.heading,
-          fontSize: 22,
-          fontWeight: 800,
-          padding: '0 10px',
+          fontSize: 26,
+          fontWeight: 700,
+          fontStyle: "italic",
+          padding: "0 10px",
           marginBottom: 40,
         }}
       >
@@ -59,8 +45,8 @@ export default function Navbar() {
       {/* NAVIGATION */}
       <nav
         style={{
-          display: 'flex',
-          flexDirection: 'column',
+          display: "flex",
+          flexDirection: "column",
           gap: 6,
         }}
       >
@@ -68,36 +54,32 @@ export default function Navbar() {
           <NavLink
             key={link.to}
             to={link.to}
-            end={link.to === '/'}
+            end={link.to === "/"}
             style={({ isActive }) => ({
-              display: 'flex',
-              alignItems: 'center',
+              display: "flex",
+              alignItems: "center",
               gap: 12,
-              textDecoration: 'none',
-              padding: '11px 12px',
+              textDecoration: "none",
+              padding: "11px 12px",
               borderRadius: theme.radius.sm,
 
-              color: isActive
-                ? theme.color.amber
-                : theme.color.textDim,
+              color: isActive ? theme.color.amber : theme.color.textDim,
 
-              background: isActive
-                ? 'rgba(245, 185, 66, 0.10)'
-                : 'transparent',
+              background: isActive ? "rgba(245, 185, 66, 0.10)" : "transparent",
 
               borderLeft: isActive
                 ? `2px solid ${theme.color.amber}`
-                : '2px solid transparent',
+                : "2px solid transparent",
 
               fontSize: 14,
               fontWeight: isActive ? 700 : 500,
-              transition: 'all 0.2s ease',
+              transition: "all 0.2s ease",
             })}
           >
             <span
               style={{
                 width: 18,
-                textAlign: 'center',
+                textAlign: "center",
                 fontSize: 15,
               }}
             >
@@ -117,12 +99,12 @@ export default function Navbar() {
         <Link
           to={profilePath}
           style={{
-            display: 'flex',
-            alignItems: 'center',
+            display: "flex",
+            alignItems: "center",
             gap: 10,
-            textDecoration: 'none',
+            textDecoration: "none",
             color: theme.color.textDim,
-            padding: '10px 12px',
+            padding: "10px 12px",
             borderTop: `1px solid ${theme.color.coalBorder}`,
             marginBottom: 10,
             paddingTop: 18,
@@ -132,27 +114,27 @@ export default function Navbar() {
             style={{
               width: 30,
               height: 30,
-              borderRadius: '50%',
+              borderRadius: "50%",
               background: theme.color.amber,
-              color: '#1a1204',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
+              color: "#1a1204",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
               fontWeight: 800,
               fontSize: 13,
             }}
           >
-            {(user.username || 'U')[0].toUpperCase()}
+            {(user.username || "U")[0].toUpperCase()}
           </div>
 
           <span
             style={{
               fontSize: 13,
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
+              overflow: "hidden",
+              textOverflow: "ellipsis",
             }}
           >
-            @{user.username || 'member'}
+            @{user.username || "member"}
           </span>
         </Link>
       )}
@@ -165,8 +147,8 @@ export default function Navbar() {
       {/* ACCOUNT ACTIONS */}
       <div
         style={{
-          display: 'flex',
-          flexDirection: 'column',
+          display: "flex",
+          flexDirection: "column",
           gap: 8,
         }}
       >
@@ -175,13 +157,13 @@ export default function Navbar() {
             type="button"
             onClick={signOut}
             style={{
-              width: '100%',
-              padding: '11px',
+              width: "100%",
+              padding: "11px",
               borderRadius: theme.radius.sm,
               border: `1px solid ${theme.color.coalBorder}`,
-              background: 'transparent',
+              background: "transparent",
               color: theme.color.textDim,
-              cursor: 'pointer',
+              cursor: "pointer",
               fontSize: 13,
             }}
           >
@@ -192,10 +174,10 @@ export default function Navbar() {
             <Link
               to="/login"
               style={{
-                textDecoration: 'none',
-                textAlign: 'center',
+                textDecoration: "none",
+                textAlign: "center",
                 color: theme.color.textDim,
-                padding: '9px',
+                padding: "9px",
                 fontSize: 13,
               }}
             >
@@ -205,11 +187,11 @@ export default function Navbar() {
             <Link
               to="/signup"
               style={{
-                textDecoration: 'none',
-                textAlign: 'center',
+                textDecoration: "none",
+                textAlign: "center",
                 background: theme.color.amber,
-                color: '#1a1204',
-                padding: '11px',
+                color: "#1a1204",
+                padding: "11px",
                 borderRadius: theme.radius.sm,
                 fontWeight: 700,
                 fontSize: 13,
