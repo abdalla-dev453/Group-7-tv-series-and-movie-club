@@ -1,62 +1,63 @@
 const theme = {
   color: {
-    amber: '#ffc21a',
-    amberSoft: '#ffe28a',
-    gold: '#ffc21a',
-    goldDeep: '#c58a17',
+    amber: "#D4AF37",
+    amberSoft: "#E6C669",
+    gold: "#D4AF37",
+    goldDeep: "#997a00",
 
-    coal: '#0d0c08',
-    coalSoft: '#17150e',
-    coalCard: '#242016',
-    coalBorder: '#3a3324',
+    coal: "#09090b",
+    coalSoft: "#131316",
+    coalCard: "#18181b",
+    coalBorder: "#27272a",
 
-    text: '#f7f0df',
-    textDim: '#c0b7a5',
-    textFaint: '#8f866f',
+    text: "#f4f4f5",
+    textDim: "#a1a1aa",
+    textFaint: "#71717a",
   },
 
   radius: {
-    sm: '8px',
-    md: '12px',
-    lg: '16px',
-    pill: '999px',
+    sm: "8px",
+    md: "12px",
+    lg: "16px",
+    pill: "999px",
   },
 
   shadow: {
-    card: '0 8px 24px rgba(0, 0, 0, 0.25)',
+    card: "0 8px 30px rgba(0, 0, 0, 0.4)",
+    glass: "0 4px 30px rgba(0, 0, 0, 0.1)",
   },
 
   font: {
-    heading: 'Georgia, Times New Roman, serif',
-    body: 'Trebuchet MS, Segoe UI, sans-serif',
+    heading: '"Playfair Display", serif',
+    body: '"Inter", sans-serif',
   },
 };
 
 export const buttonStyles = {
   base: {
-    border: 'none',
+    border: "none",
     borderRadius: theme.radius.pill,
-    padding: '8px 16px',
+    padding: "8px 16px",
     fontSize: 14,
     fontWeight: 600,
-    cursor: 'pointer',
-    transition: 'all 0.2s ease',
+    cursor: "pointer",
+    transition: "all 0.2s ease",
   },
 
   primary: {
     background: theme.color.amber,
-    color: '#1a1204',
+    color: "#1a1204",
   },
 
   ghost: {
-    background: 'transparent',
+    background: "transparent",
     color: theme.color.text,
     border: `1px solid ${theme.color.coalBorder}`,
   },
 
   disabled: {
     opacity: 0.5,
-    cursor: 'not-allowed',
+    cursor: "not-allowed",
   },
 };
 
