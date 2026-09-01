@@ -1,4 +1,5 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
+import { useAuth } from './context/AuthContext.jsx';
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -24,6 +25,14 @@ import Settings from './pages/Settings/Settings';
 import Help from './pages/Help/Help';
 import './App.css';
 
+function AuthOnlyRoute({ children }) {
+  const { user, loading } = useAuth();
+
+  if (loading) return null;
+  if (user) return <Navigate to="/" replace />;
+  return children;
+}
+
 function App() {
   return (
     <>
@@ -31,8 +40,8 @@ function App() {
       <main className="animate-fade-in-up">
         <Routes>
           {/* Public */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<AuthOnlyRoute><Login /></AuthOnlyRoute>} />
+          <Route path="/signup" element={<AuthOnlyRoute><Signup /></AuthOnlyRoute>} />
 
           {/* Protected */}
           <Route path="/" element={<Home />} />

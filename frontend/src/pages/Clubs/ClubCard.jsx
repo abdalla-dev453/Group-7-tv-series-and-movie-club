@@ -40,6 +40,7 @@ const ClubCard = ({ club, onMembershipChange }) => {
     0;
 
   const image =
+    club.background_url ||
     club.cover_image ||
     club.coverImage ||
     club.image ||
