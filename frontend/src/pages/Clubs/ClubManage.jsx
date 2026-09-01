@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Navigate, useParams } from 'react-router-dom';
+import { Navigate, useParams, useNavigate } from 'react-router-dom';
 import {
   getClub,
   getClubMembers,
@@ -53,6 +53,7 @@ const toBannerDataUrl = (file) => new Promise((resolve, reject) => {
 
 const ClubManage = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { user } = useAuth();
 
   const [state, setState] = useState({
@@ -66,6 +67,7 @@ const ClubManage = () => {
     background_url: '',
     description: '',
   });
+  const [selectedBackgroundFile, setSelectedBackgroundFile] = useState('');
   const [actionError, setActionError] = useState('');
   const [processingId, setProcessingId] = useState(null);
   const [saving, setSaving] = useState(false);
@@ -146,6 +148,8 @@ const ClubManage = () => {
     const file = event.target.files?.[0];
     if (!file) return;
 
+    setSelectedBackgroundFile(file.name);
+
     try {
       const bannerUrl = await toBannerDataUrl(file);
       setForm((current) => ({ ...current, background_url: bannerUrl }));
@@ -172,6 +176,7 @@ const ClubManage = () => {
         background_url: data.background_url || '',
         description: data.description || '',
       });
+      navigate(`/clubs/${id}`);
     } catch (error) {
       setActionError(error.response?.data?.error || 'Could not save this club settings.');
     } finally {
@@ -355,20 +360,60 @@ const ClubManage = () => {
           <div style={{ display: 'grid', gap: '12px' }}>
             <label style={{ display: 'grid', gap: '8px' }}>
               <span style={{ color: '#f4efe5', fontWeight: 600 }}>Club background</span>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleBackgroundUpload}
+              <div
                 style={{
+                  position: 'relative',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
                   width: '100%',
                   boxSizing: 'border-box',
                   background: '#181611',
-                  color: '#f4efe5',
                   border: '1px solid #4a4436',
-                  borderRadius: '8px',
-                  padding: '10px 12px',
+                  borderRadius: '10px',
+                  minHeight: '52px',
+                  overflow: 'hidden',
                 }}
-              />
+              >
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleBackgroundUpload}
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    opacity: 0,
+                    cursor: 'pointer',
+                  }}
+                />
+                <span
+                  style={{
+                    background: '#ffbf1a',
+                    color: '#1a1208',
+                    borderRadius: '8px',
+                    padding: '10px 14px',
+                    margin: '8px 0 8px 10px',
+                    fontWeight: 800,
+                    fontSize: '13px',
+                    lineHeight: 1,
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  Choose File
+                </span>
+                <span
+                  style={{
+                    color: selectedBackgroundFile ? '#f4efe5' : '#aaa49a',
+                    fontSize: '14px',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    paddingRight: '12px',
+                  }}
+                >
+                  {selectedBackgroundFile || 'No file chosen'}
+                </span>
+              </div>
             </label>
 
             <label style={{ display: 'grid', gap: '8px' }}>
@@ -385,8 +430,9 @@ const ClubManage = () => {
                   background: '#181611',
                   color: '#f4efe5',
                   border: '1px solid #4a4436',
-                  borderRadius: '8px',
-                  padding: '10px 12px',
+                  borderRadius: '10px',
+                  padding: '12px 14px',
+                  outline: 'none',
                 }}
               />
             </label>
