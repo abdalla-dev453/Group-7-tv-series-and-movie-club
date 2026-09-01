@@ -88,6 +88,8 @@ const ClubCard = ({ club, onMembershipChange }) => {
                 height: '100%',
                 maxWidth: '100%',
                 objectFit: 'cover',
+                objectPosition: 'center',
+                backgroundColor: '#181611',
               }}
             />
           ) : (
@@ -130,6 +132,8 @@ const ClubCard = ({ club, onMembershipChange }) => {
                   width: '100%',
                   height: '100%',
                   objectFit: 'cover',
+                  objectPosition: 'center',
+                  backgroundColor: '#181611',
                 }}
               />
             ) : (

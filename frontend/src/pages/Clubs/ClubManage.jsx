@@ -399,8 +399,9 @@ const ClubManage = () => {
                 overflow: 'hidden',
                 border: '1px solid #4a4436',
                 background: '#181611',
-                height: '180px',
+                height: '200px',
                 position: 'relative',
+                boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.04)',
               }}
             >
               <img
@@ -411,6 +412,8 @@ const ClubManage = () => {
                   width: '100%',
                   height: '100%',
                   objectFit: 'cover',
+                  objectPosition: 'center',
+                  backgroundColor: '#181611',
                 }}
               />
             </div>
