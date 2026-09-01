@@ -5,7 +5,8 @@ import ClubCard from '../Clubs/ClubCard';
 import { getTrendingMovies } from '../../services/movieService';
 import { getClubs } from '../../services/clubService';
 import { getUsers } from '../../services/userService';
-import { followUser, unfollowUser } from '../../services/followService';
+import { followUser, unfollowUser, getFollowing } from '../../services/followService';
+import { useAuth } from '../../context/AuthContext.jsx';
 
 const getItems = (response) => {
   const data = response?.data;
@@ -46,12 +47,39 @@ function PersonCard({ person, followed, onFollow }) {
 }
 
 function Discover() {
+  const { user } = useAuth();
   const [content, setContent] = useState({ movies: [], clubs: [], people: [] });
   const [loading, setLoading] = useState(true);
   const [peopleLoading, setPeopleLoading] = useState(false);
   const [peopleQuery, setPeopleQuery] = useState('');
   const [followed, setFollowed] = useState([]);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (!user?.id) {
+      setFollowed([]);
+      return undefined;
+    }
+
+    let active = true;
+    getFollowing(user.id)
+      .then(({ data }) => {
+        if (!active) return;
+        const ids = Array.isArray(data)
+          ? data
+              .map((person) => Number(person.id ?? person.user_id))
+              .filter((value) => Number.isFinite(value))
+          : [];
+        setFollowed(ids);
+      })
+      .catch(() => {
+        if (active) setFollowed([]);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [user?.id]);
 
   useEffect(() => {
     let active = true;
@@ -91,13 +119,16 @@ function Discover() {
   }, [peopleQuery]);
 
   const handleFollow = async (id) => {
+    const numericId = Number(id);
+    if (!Number.isFinite(numericId)) return;
+
     try {
-      if (followed.includes(id)) {
-        await unfollowUser(id);
-        setFollowed((current) => current.filter((personId) => personId !== id));
+      if (followed.includes(numericId)) {
+        await unfollowUser(numericId);
+        setFollowed((current) => current.filter((personId) => personId !== numericId));
       } else {
-        await followUser(id);
-        setFollowed((current) => [...current, id]);
+        await followUser(numericId);
+        setFollowed((current) => [...current, numericId]);
       }
     } catch {
       setError('Could not follow that person. Please try again.');
@@ -145,7 +176,17 @@ function Discover() {
               }}
             />
           </div>
-          {peopleLoading ? <p className="discover-muted">Searching members…</p> : <div className="discover-people">{content.people.map((person) => <PersonCard key={person.id || person.user_id} person={person} followed={followed.includes(person.id || person.user_id)} onFollow={handleFollow} />)}</div>}
+          {peopleLoading ? <p className="discover-muted">Searching members…</p> : <div className="discover-people">{content.people.map((person) => {
+            const personId = Number(person.id ?? person.user_id);
+            return (
+              <PersonCard
+                key={person.id || person.user_id}
+                person={person}
+                followed={followed.includes(personId)}
+                onFollow={handleFollow}
+              />
+            );
+          })}</div>}
           {!loading && !peopleLoading && content.people.length === 0 && <p className="discover-muted">No people matched that search yet.</p>}
         </section>
       </div>
