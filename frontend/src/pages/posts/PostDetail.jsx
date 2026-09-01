@@ -91,6 +91,23 @@ function PostDetail() {
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', marginBottom: 8 }}>
                   <strong style={{ color: theme.color.text }}>{r.author_name}</strong>
+                  {r.club && (
+                    <span
+                      style={{
+                        fontSize: 11,
+                        fontWeight: 700,
+                        letterSpacing: '0.04em',
+                        textTransform: 'uppercase',
+                        color: theme.color.amberSoft,
+                        background: 'rgba(255,191,68,0.12)',
+                        border: `1px solid ${theme.color.coalBorder}`,
+                        borderRadius: 999,
+                        padding: '4px 8px',
+                      }}
+                    >
+                      {r.club.name}
+                    </span>
+                  )}
                   <span aria-label={`${r.rating} out of 5 stars`} style={{ display: 'inline-flex', gap: 2 }}>
                     {[1, 2, 3, 4, 5].map((value) => (
                       <span key={value} style={{ color: value <= r.rating ? theme.color.amber : theme.color.textFaint, fontSize: 13 }}>★</span>
