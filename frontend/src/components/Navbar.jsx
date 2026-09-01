@@ -110,23 +110,32 @@ export default function Navbar() {
             paddingTop: 18,
           }}
         >
-          <div
-            style={{
-              width: 30,
-              height: 30,
-              borderRadius: "50%",
-              background: theme.color.amber,
-              color: "#1a1204",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontWeight: 800,
-              fontSize: 13,
-            }}
-          >
-            {(user.username || "U")[0].toUpperCase()}
-          </div>
-
+          {user.profile_image_url || user.profileImageUrl || user.avatar_url || user.avatarUrl || user.image_url || user.imageUrl ? (
+            <img
+              src={user.profile_image_url || user.profileImageUrl || user.avatar_url || user.avatarUrl || user.image_url || user.imageUrl}
+              alt={`${user.username || 'User'} profile picture`}
+              width={30}
+              height={30}
+              style={{ width: 30, height: 30, objectFit: 'cover', borderRadius: '50%' }}
+            />
+          ) : (
+            <div
+              style={{
+                width: 30,
+                height: 30,
+                borderRadius: '50%',
+                background: theme.color.amber,
+                color: '#1a1204',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 800,
+                fontSize: 13,
+              }}
+            >
+              {(user.username || 'U')[0].toUpperCase()}
+            </div>
+          )}
           <span
             style={{
               fontSize: 13,
