@@ -3,6 +3,9 @@ import { Link, useParams } from 'react-router-dom';
 import {
   getClub,
   getClubMembers,
+  getClubMessages,
+  createClubMessage,
+  deleteClubMessage,
   joinClub,
   leaveClub,
 } from '../../services/clubService.js';
@@ -24,6 +27,9 @@ const ClubDetail = () => {
 
   const [actionLoading, setActionLoading] = useState(false);
   const [actionError, setActionError] = useState('');
+  const [messages, setMessages] = useState([]);
+  const [messageDraft, setMessageDraft] = useState('');
+  const [sendingMessage, setSendingMessage] = useState(false);
 
   const loadClub = async () => {
     const [clubResponse, membersResponse] = await Promise.all([
@@ -102,6 +108,28 @@ const ClubDetail = () => {
     };
   }, [id, user?.id]);
 
+  useEffect(() => {
+    if (!state.isMember || !id) {
+      setMessages([]);
+      return;
+    }
+
+    let active = true;
+
+    getClubMessages(id)
+      .then((response) => {
+        if (!active) return;
+        setMessages(Array.isArray(response.data) ? response.data : []);
+      })
+      .catch(() => {
+        if (active) setMessages([]);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [id, state.isMember]);
+
   const handleJoin = async () => {
     if (actionLoading) return;
 
@@ -143,6 +171,41 @@ const ClubDetail = () => {
       );
     } finally {
       setActionLoading(false);
+    }
+  };
+
+  const handleSendMessage = async () => {
+    if (!messageDraft.trim() || sendingMessage) return;
+
+    setSendingMessage(true);
+    setActionError('');
+
+    try {
+      const { data } = await createClubMessage(id, messageDraft.trim());
+      setMessages((current) => [...current, data]);
+      setMessageDraft('');
+    } catch (error) {
+      setActionError(
+        error.response?.data?.error ||
+          'Could not send your message.'
+      );
+    } finally {
+      setSendingMessage(false);
+    }
+  };
+
+  const handleDeleteMessage = async (messageId) => {
+    const confirmed = window.confirm('Delete this message?');
+    if (!confirmed) return;
+
+    try {
+      await deleteClubMessage(id, messageId);
+      setMessages((current) => current.filter((message) => message.id !== messageId));
+    } catch (error) {
+      setActionError(
+        error.response?.data?.error ||
+          'Could not delete this message.'
+      );
     }
   };
 
@@ -383,6 +446,132 @@ const ClubDetail = () => {
             </div>
           )}
         </section>
+
+        {state.isMember && (
+          <section
+            style={{
+              background: '#211f18',
+              border: '1px solid #3a3528',
+              borderRadius: '12px',
+              padding: '22px',
+              marginBottom: '22px',
+            }}
+          >
+            <div style={{ marginBottom: '18px' }}>
+              <p
+                style={{
+                  margin: '0 0 5px',
+                  color: '#ffbf1a',
+                  fontSize: '11px',
+                  fontWeight: 800,
+                  letterSpacing: '1px',
+                  textTransform: 'uppercase',
+                }}
+              >
+                Club chat
+              </p>
+              <h2 style={{ margin: 0, fontSize: '20px' }}>Messages</h2>
+            </div>
+
+            <div
+              style={{
+                display: 'grid',
+                gap: '12px',
+                marginBottom: '16px',
+                maxHeight: '320px',
+                overflowY: 'auto',
+                paddingRight: '4px',
+              }}
+            >
+              {messages.length === 0 ? (
+                <p style={{ margin: 0, color: '#aaa49a' }}>No messages yet. Start the conversation.</p>
+              ) : (
+                messages.map((message) => {
+                  const isOwnMessage = message.user_id === user?.id;
+                  const canDelete = isOwnMessage || state.isAdmin;
+
+                  return (
+                    <div
+                      key={message.id}
+                      style={{
+                        background: '#181611',
+                        border: '1px solid #3a3528',
+                        borderRadius: '10px',
+                        padding: '12px 14px',
+                        display: 'grid',
+                        gap: '6px',
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px' }}>
+                        <strong style={{ color: '#f4efe5', fontSize: '14px' }}>{message.username || 'Member'}</strong>
+                        {canDelete && (
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteMessage(message.id)}
+                            style={{
+                              background: 'transparent',
+                              border: '1px solid #713535',
+                              borderRadius: '999px',
+                              color: '#ffb4b4',
+                              padding: '4px 8px',
+                              fontSize: '11px',
+                              cursor: 'pointer',
+                            }}
+                          >
+                            Delete
+                          </button>
+                        )}
+                      </div>
+
+                      <p style={{ margin: 0, color: '#d9d2c5', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>{message.message}</p>
+                      <small style={{ color: '#aaa49a' }}>
+                        {new Date(message.created_at).toLocaleString()}
+                      </small>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+
+            <div style={{ display: 'grid', gap: '10px' }}>
+              <textarea
+                value={messageDraft}
+                onChange={(event) => setMessageDraft(event.target.value)}
+                rows={4}
+                placeholder="Write a message to the club..."
+                style={{
+                  width: '100%',
+                  boxSizing: 'border-box',
+                  resize: 'vertical',
+                  background: '#181611',
+                  color: '#f4efe5',
+                  border: '1px solid #4a4436',
+                  borderRadius: '10px',
+                  padding: '12px 14px',
+                }}
+              />
+
+              <button
+                type="button"
+                onClick={handleSendMessage}
+                disabled={sendingMessage || !messageDraft.trim()}
+                style={{
+                  justifySelf: 'flex-start',
+                  background: '#ffbf1a',
+                  color: '#181207',
+                  border: 'none',
+                  borderRadius: '8px',
+                  padding: '10px 16px',
+                  fontWeight: 700,
+                  cursor: sendingMessage || !messageDraft.trim() ? 'not-allowed' : 'pointer',
+                  opacity: sendingMessage || !messageDraft.trim() ? 0.7 : 1,
+                }}
+              >
+                {sendingMessage ? 'Sending...' : 'Send message'}
+              </button>
+            </div>
+          </section>
+        )}
 
         {/* MEMBERS */}
         <section
