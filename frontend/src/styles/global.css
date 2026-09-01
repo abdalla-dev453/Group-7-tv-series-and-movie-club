@@ -423,22 +423,36 @@ input:focus {
 .muted { color: var(--muted); }
 .error-message { color: var(--danger); }
 
+.user-avatar,
 .profile-avatar {
   display: grid;
-  width: 4rem;
-  height: 4rem;
   place-items: center;
   border-radius: 50%;
   background: var(--accent);
   color: #1a1204;
-  font-size: 1.5rem;
   font-weight: 800;
+  overflow: hidden;
+}
+
+.user-avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: 1rem;
+}
+
+.profile-avatar {
+  width: 16rem;
+  height: 16rem;
+  font-size: 5rem;
+  border: 3px solid rgba(245, 185, 66, 0.35);
 }
 
 .profile-stats { display: flex; gap: 1.5rem; margin: 1.5rem 0; color: var(--muted); }
 .profile-stats strong { color: var(--text); margin-right: 0.3rem; }
 .profile-form { max-width: 540px; }
 .profile-form textarea { width: 100%; margin-top: 0.4rem; padding: 0.75rem; border: 1px solid var(--border); border-radius: 8px; background: var(--panel); color: var(--text); resize: vertical; }
+.profile-form .upload-input { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1rem; }
+.profile-form .upload-input input[type="file"] { width: 100%; padding: 0.7rem 0.8rem; border: 1px solid var(--border); border-radius: 8px; background: var(--panel); color: var(--text); }
 .watched-add { align-items: end; margin: 1.5rem 0; }
 .watched-add > div { flex: 1; }
 .watched-grid { display: grid; gap: 0.75rem; }
