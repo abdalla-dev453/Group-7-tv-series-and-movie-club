@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Film, Plus, Trash2, CheckCircle2, AlertCircle, Popcorn, Calendar } from 'lucide-react';
+import theme from '../../theme';
 import MovieSearch from '../../components/movies/MovieSearch';
 import { deleteWatched, getWatched, logWatched } from '../../services/watchedService';
 
@@ -188,35 +189,36 @@ const styles = {
     width: '48px',
     height: '48px',
     borderRadius: '14px',
-    background: 'rgba(229, 9, 20, 0.15)',
-    color: 'var(--accent, #e50914)',
+    background: 'rgba(212, 175, 55, 0.14)',
+    color: theme.color.amber,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    border: '1px solid rgba(229, 9, 20, 0.3)',
+    border: `1px solid ${theme.color.coalBorder}`,
   },
   title: {
     fontSize: '1.8rem',
     fontWeight: '800',
     margin: 0,
+    color: theme.color.text,
   },
   subtitle: {
     fontSize: '0.9rem',
-    color: '#a1a1aa',
+    color: theme.color.textDim,
     margin: '0.2rem 0 0 0',
   },
   counter: {
     fontSize: '0.85rem',
     fontWeight: '700',
-    color: '#d4d4d8',
-    background: 'rgba(255, 255, 255, 0.06)',
-    border: '1px solid rgba(255, 255, 255, 0.1)',
+    color: theme.color.text,
+    background: theme.color.coalCard,
+    border: `1px solid ${theme.color.coalBorder}`,
     padding: '0.4rem 0.9rem',
     borderRadius: '20px',
   },
   searchCard: {
-    background: 'rgba(255, 255, 255, 0.03)',
-    border: '1px solid rgba(255, 255, 255, 0.08)',
+    background: theme.color.coalCard,
+    border: `1px solid ${theme.color.coalBorder}`,
     borderRadius: '16px',
     padding: '1.25rem',
     marginBottom: '2rem',
@@ -231,12 +233,12 @@ const styles = {
     display: 'inline-flex',
     alignItems: 'center',
     gap: '0.5rem',
-    background: 'var(--accent, #e50914)',
-    color: '#fff',
+    background: theme.color.amber,
+    color: '#1a1204',
     border: 'none',
     padding: '0.75rem 1.25rem',
     borderRadius: '10px',
-    fontWeight: '600',
+    fontWeight: '700',
     fontSize: '0.9rem',
     whiteSpace: 'nowrap',
     transition: 'transform 0.2s',
@@ -247,10 +249,10 @@ const styles = {
     gap: '0.5rem',
     marginTop: '0.8rem',
     padding: '0.6rem 0.8rem',
-    background: 'rgba(229, 9, 20, 0.08)',
+    background: 'rgba(212, 175, 55, 0.08)',
     borderRadius: '8px',
     fontSize: '0.85rem',
-    color: '#f4f4f5',
+    color: theme.color.text,
   },
   toast: {
     display: 'flex',
@@ -275,18 +277,18 @@ const styles = {
   emptyState: {
     textAlign: 'center',
     padding: '4rem 2rem',
-    background: 'rgba(255, 255, 255, 0.015)',
+    background: theme.color.coalCard,
     borderRadius: '16px',
-    border: '1px dashed rgba(255, 255, 255, 0.1)',
+    border: `1px dashed ${theme.color.coalBorder}`,
   },
   emptyTitle: {
     margin: '0 0 0.4rem 0',
     fontSize: '1.2rem',
-    color: '#fff',
+    color: theme.color.text,
   },
   emptySub: {
     margin: 0,
-    color: '#71717a',
+    color: theme.color.textFaint,
     fontSize: '0.9rem',
   },
   grid: {
@@ -295,8 +297,8 @@ const styles = {
     gap: '1.25rem',
   },
   card: {
-    background: 'rgba(255, 255, 255, 0.03)',
-    border: '1px solid rgba(255, 255, 255, 0.08)',
+    background: theme.color.coalCard,
+    border: `1px solid ${theme.color.coalBorder}`,
     borderRadius: '14px',
     padding: '1.2rem',
     display: 'flex',
@@ -314,16 +316,16 @@ const styles = {
     width: '32px',
     height: '32px',
     borderRadius: '8px',
-    background: 'rgba(255, 255, 255, 0.06)',
+    background: 'rgba(212, 175, 55, 0.12)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    color: '#a1a1aa',
+    color: theme.color.amber,
   },
   deleteBtn: {
     background: 'none',
     border: 'none',
-    color: '#71717a',
+    color: theme.color.textDim,
     cursor: 'pointer',
     padding: '0.3rem',
     borderRadius: '6px',
@@ -340,7 +342,7 @@ const styles = {
   movieTitle: {
     fontSize: '1rem',
     fontWeight: '700',
-    color: '#fff',
+    color: theme.color.text,
     lineHeight: '1.3',
   },
   dateTag: {
@@ -348,7 +350,7 @@ const styles = {
     alignItems: 'center',
     gap: '0.3rem',
     fontSize: '0.78rem',
-    color: '#71717a',
+    color: theme.color.textDim,
   },
 };
 
