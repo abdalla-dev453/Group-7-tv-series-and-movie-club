@@ -35,7 +35,10 @@ const WatchedList = () => {
     setActionLoading(true);
     setError('');
     try {
-      const { data } = await logWatched({ movie_title: selected.title });
+      const { data } = await logWatched({
+        movie_title: selected.title,
+        poster_url: selected.poster_url || selected.image_url || selected.backdrop_url || null,
+      });
       setWatched((current) => [data, ...current]);
       setSelected(null);
       showToast(setSuccessMsg, `Added "${selected.title}" to your watched list!`);
@@ -130,7 +133,21 @@ const WatchedList = () => {
               <article key={item.id} style={styles.card}>
                 <div style={styles.cardHeader}>
                   <div style={styles.movieIconBox}>
-                    <Film size={18} />
+                    {item.poster_url ? (
+                      <img
+                        src={item.poster_url}
+                        alt={item.movie_title}
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                          borderRadius: '8px',
+                          display: 'block',
+                        }}
+                      />
+                    ) : (
+                      <Film size={18} />
+                    )}
                   </div>
                   <button
                     type="button"

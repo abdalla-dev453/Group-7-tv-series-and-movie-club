@@ -152,7 +152,8 @@ function MovieSearch({
 
     onSelect?.(movie);
 
-    setQuery(movie.title || '');
+    setQuery('');
+    setResults([]);
     setOpen(false);
     setError('');
   };
