@@ -4,6 +4,11 @@ import { TOKEN_KEY, USER_KEY } from '../services/api';
 
 const AuthContext = createContext(null);
 
+const clearSession = () => {
+  localStorage.removeItem(TOKEN_KEY);
+  localStorage.removeItem(USER_KEY);
+};
+
 const saveSession = (data) => {
   if (!data?.access_token || !data?.user) throw new Error('Invalid auth response');
   localStorage.setItem(TOKEN_KEY, data.access_token);
@@ -16,11 +21,25 @@ export function AuthProvider({ children }) {
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Require a fresh sign-in whenever the app starts.
+  // Restore session on refresh
   useEffect(() => {
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(USER_KEY);
-    setLoading(false);
+    try {
+      const storedToken = localStorage.getItem(TOKEN_KEY);
+      const storedUser = localStorage.getItem(USER_KEY);
+      if (!storedToken || !storedUser) return;
+
+      const parsedUser = JSON.parse(storedUser);
+      if (!parsedUser || typeof parsedUser !== 'object' || !parsedUser.id) {
+        throw new Error('Invalid stored session');
+      }
+
+      setToken(storedToken);
+      setUser(parsedUser);
+    } catch {
+      clearSession();
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   const login = async (username, password) => {
@@ -47,8 +66,7 @@ export function AuthProvider({ children }) {
     } finally {
       setToken(null);
       setUser(null);
-      localStorage.removeItem(TOKEN_KEY);
-      localStorage.removeItem(USER_KEY);
+      clearSession();
     }
   };
 

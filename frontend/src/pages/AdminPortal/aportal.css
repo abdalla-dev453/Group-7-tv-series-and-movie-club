@@ -1,0 +1,456 @@
+/* Admin Portal Styles */
+.aportal-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 24px;
+  color: var(--color-text, #f7f0df);
+  font-family: var(--font-body, 'Trebuchet MS', sans-serif);
+}
+
+.aportal-header {
+  background: linear-gradient(135deg, #242016 0%, #17150e 100%);
+  border: 1px solid #3a3324;
+  border-radius: 12px;
+  padding: 24px 32px;
+  margin-bottom: 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.aportal-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.aportal-title {
+  font-size: 28px;
+  font-family: var(--font-heading, Georgia, serif);
+  color: #ffc21a;
+  margin: 0;
+}
+
+.aportal-badge {
+  background: #ffc21a;
+  color: #1a1204;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.aportal-subtitle {
+  margin: 0;
+  color: #c0b7a5;
+  font-size: 14px;
+}
+
+.aportal-notice {
+  background: rgba(255, 194, 26, 0.15);
+  border: 1px solid #ffc21a;
+  color: #ffc21a;
+  padding: 12px 18px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.aportal-error-wrapper {
+  margin-bottom: 20px;
+}
+
+/* Tabs */
+.aportal-tabs {
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid #3a3324;
+  margin-bottom: 24px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.aportal-tab-btn {
+  background: transparent;
+  color: #c0b7a5;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 10px 18px;
+  border-radius: 8px 8px 0 0;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.aportal-tab-btn.active {
+  background: #242016;
+  color: #ffc21a;
+  border-bottom-color: #ffc21a;
+  font-weight: 700;
+}
+
+/* Overview Grid */
+.aportal-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.aportal-stat-card {
+  background: #242016;
+  border: 1px solid #3a3324;
+  border-radius: 12px;
+  padding: 20px 24px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.aportal-stat-icon {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.aportal-stat-label {
+  font-size: 13px;
+  color: #c0b7a5;
+  margin-bottom: 4px;
+}
+
+.aportal-stat-value {
+  font-size: 26px;
+  font-weight: 800;
+  color: #ffc21a;
+}
+
+.aportal-summary-card {
+  background: #242016;
+  border: 1px solid #3a3324;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.aportal-summary-title {
+  margin: 0 0 16px 0;
+  font-family: var(--font-heading, Georgia, serif);
+  color: #ffc21a;
+}
+
+.aportal-summary-list {
+  margin: 0;
+  padding-left: 20px;
+  color: #c0b7a5;
+  line-height: 1.8;
+}
+
+/* Search Input */
+.aportal-search-input {
+  width: 100%;
+  max-width: 400px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1px solid #3a3324;
+  background: #17150e;
+  color: #f7f0df;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+/* Table */
+.aportal-table-wrapper {
+  background: #242016;
+  border: 1px solid #3a3324;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.aportal-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 14px;
+}
+
+.aportal-table th {
+  background: #17150e;
+  border-bottom: 1px solid #3a3324;
+  color: #c0b7a5;
+  padding: 12px 16px;
+}
+
+.aportal-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #3a3324;
+}
+
+.aportal-actions-cell {
+  text-align: right;
+}
+
+.aportal-actions-wrapper {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.aportal-user-subtext {
+  font-size: 12px;
+  color: #c0b7a5;
+  font-weight: 400;
+}
+
+.aportal-empty-cell {
+  padding: 24px;
+  text-align: center;
+  color: #c0b7a5;
+}
+
+/* Clubs Grid */
+.aportal-clubs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.aportal-club-card {
+  background: #242016;
+  border: 1px solid #3a3324;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.aportal-club-title {
+  margin: 0 0 8px 0;
+  color: #ffc21a;
+  font-size: 18px;
+}
+
+.aportal-club-desc {
+  margin: 0 0 16px 0;
+  font-size: 13px;
+  color: #c0b7a5;
+  line-height: 1.4;
+}
+
+.aportal-club-footer {
+  border-top: 1px solid #3a3324;
+  padding-top: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.aportal-club-members {
+  font-size: 12px;
+  color: #8f866f;
+}
+
+.aportal-empty-state {
+  color: #c0b7a5;
+  grid-column: 1 / -1;
+}
+
+/* Moderation List */
+.aportal-mod-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.aportal-mod-card {
+  background: #242016;
+  border: 1px solid #3a3324;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.aportal-mod-header {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.aportal-badge-report {
+  background: rgba(255, 194, 26, 0.2);
+  color: #ffc21a;
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.aportal-mod-meta {
+  font-size: 12px;
+  color: #8f866f;
+}
+
+.aportal-mod-content {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.aportal-mod-clean-box {
+  background: #242016;
+  border: 1px solid #3a3324;
+  border-radius: 12px;
+  padding: 32px;
+  text-align: center;
+  color: #c0b7a5;
+}
+
+/* System Settings */
+.aportal-settings-form {
+  background: #242016;
+  border: 1px solid #3a3324;
+  border-radius: 12px;
+  padding: 28px;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.aportal-settings-title {
+  margin: 0;
+  color: #ffc21a;
+  font-family: var(--font-heading, Georgia, serif);
+}
+
+.aportal-settings-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.aportal-settings-name {
+  font-weight: 600;
+}
+
+.aportal-settings-desc {
+  font-size: 12px;
+  color: #c0b7a5;
+}
+
+.aportal-checkbox {
+  width: 18px;
+  height: 18px;
+  accent-color: #ffc21a;
+}
+
+.aportal-number-input {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #3a3324;
+  background: #17150e;
+  color: #f7f0df;
+  box-sizing: border-box;
+}
+
+.aportal-input-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+/* Button Classes */
+.aportal-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.aportal-btn-primary {
+  background: #ffc21a;
+  color: #1a1204;
+}
+
+.aportal-btn-ghost {
+  background: transparent;
+  color: #f7f0df;
+  border: 1px solid #3a3324;
+}
+
+.aportal-btn-small {
+  font-size: 12px;
+  padding: 4px 10px;
+}
+
+.aportal-btn-ban {
+  background: rgba(255, 107, 107, 0.2);
+  color: #ff6b6b;
+}
+
+.aportal-btn-unban {
+  background: rgba(81, 207, 102, 0.2);
+  color: #51cf66;
+}
+
+.aportal-btn-danger-solid {
+  background: #ff6b6b;
+  color: #ffffff;
+}
+
+.aportal-btn-submit-settings {
+  margin-top: 10px;
+  align-self: flex-start;
+}
+
+/* Status Colors & Badges */
+.aportal-status-superuser {
+  color: #ffc21a;
+  font-weight: 700;
+}
+
+.aportal-status-member {
+  color: #c0b7a5;
+}
+
+.aportal-status-banned {
+  color: #ff6b6b;
+  font-weight: 700;
+}
+
+.aportal-status-active {
+  color: #51cf66;
+  font-weight: 600;
+}
+
+.aportal-id-cell {
+  color: #8f866f;
+}
+
+.aportal-modal-text {
+  color: #c0b7a5;
+  margin-bottom: 20px;
+}
+
+.aportal-modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+

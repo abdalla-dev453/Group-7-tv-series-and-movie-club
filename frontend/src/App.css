@@ -1,18 +1,100 @@
 body {
   margin: 0;
-  background: #0f0f0f;
+  background: var(--bg, #09090b);
 }
-
 #root {
   min-height: 100vh;
 }
 
 main {
-  margin-left: 140px;
+  margin-left: 220px;
+
   min-height: 100vh;
-  max-width: 100%;
 }
 
 @media (max-width: 720px) {
-  main { margin-left: 0; }
+  main {
+    margin-left: 0;
+  }
+}
+
+/* ================================
+
+   PAGE LAYOUT
+
+================================ */
+
+.page-container {
+  margin-left: 220px;
+
+  min-height: 100vh;
+
+  box-sizing: border-box;
+
+  padding: 32px;
+}
+
+/* Main panel used by pages */
+
+.page-panel {
+  width: 100%;
+
+  max-width: 1250px;
+
+  margin: 0 auto;
+
+  box-sizing: border-box;
+}
+
+/* Forms */
+
+.page-panel.form-stack {
+  max-width: 700px;
+}
+
+/* ================================
+
+   RESPONSIVE
+
+================================ */
+
+@media (max-width: 900px) {
+  .page-container {
+    margin-left: 0;
+
+    padding: 24px;
+  }
+}
+
+@media (max-width: 600px) {
+  .page-container {
+    padding: 16px;
+  }
+}
+
+.app-content {
+  margin-left: 220px;
+
+  min-height: 100vh;
+
+  box-sizing: border-box;
+}
+
+.auth-poster {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 40px;
+  box-sizing: border-box;
+}
+
+.auth-poster h1 {
+  margin: 12px 0 18px;
+}
+
+.auth-poster p {
+  margin-left: auto;
+  margin-right: auto;
 }

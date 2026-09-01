@@ -16,14 +16,29 @@ const getItems = (response) => {
 function PersonCard({ person, followed, onFollow }) {
   const id = person.id || person.user_id;
   const name = person.username || person.name || person.email || 'Movie fan';
+  const initials = name.slice(0, 2).toUpperCase();
 
   return (
-    <article className="discover-person">
-      <Link to={id ? `/profile/${id}` : '/profile'} className="discover-person__identity">
-        <span className="discover-person__avatar">{name.charAt(0).toUpperCase()}</span>
-        <span><strong>{name}</strong><small>{person.bio || 'Cinema enthusiast'}</small></span>
+    <article className="discover-person" style={{
+      background: 'rgba(24, 24, 27, 0.9)',
+      border: '1px solid rgba(255,255,255,0.08)',
+      borderRadius: '14px',
+      padding: '12px 14px',
+    }}>
+      <Link to={id ? `/profile/${id}` : '/profile'} className="discover-person__identity" style={{ color: '#f4f4f5', textDecoration: 'none' }}>
+        <span className="discover-person__avatar" style={{
+          background: 'linear-gradient(135deg, #d4af37, #8b6b18)',
+          color: '#181207',
+          fontWeight: 800,
+        }}>{initials}</span>
+        <span><strong style={{ color: '#f4f4f5' }}>{name}</strong><small style={{ color: '#a1a1aa' }}>{person.bio || 'Cinema enthusiast'}</small></span>
       </Link>
-      <button type="button" className="discover-follow" disabled={!id} onClick={() => onFollow(id)}>
+      <button type="button" className="discover-follow" disabled={!id} onClick={() => onFollow(id)} style={{
+        background: followed ? 'transparent' : '#d4af37',
+        color: followed ? '#f4f4f5' : '#181207',
+        border: followed ? '1px solid rgba(255,255,255,0.15)' : '1px solid #d4af37',
+        fontWeight: 700,
+      }}>
         {followed ? 'Following' : 'Follow'}
       </button>
     </article>
@@ -33,26 +48,47 @@ function PersonCard({ person, followed, onFollow }) {
 function Discover() {
   const [content, setContent] = useState({ movies: [], clubs: [], people: [] });
   const [loading, setLoading] = useState(true);
+  const [peopleLoading, setPeopleLoading] = useState(false);
+  const [peopleQuery, setPeopleQuery] = useState('');
   const [followed, setFollowed] = useState([]);
   const [error, setError] = useState('');
 
   useEffect(() => {
     let active = true;
-    Promise.allSettled([getTrendingMovies(), getClubs(1, 4), getUsers(1, 6)])
+    Promise.allSettled([getTrendingMovies(), getClubs(1, 4)])
       .then((results) => {
         if (!active) return;
-        const [movies, clubs, people] = results;
-        setContent({
+        const [movies, clubs] = results;
+        setContent((current) => ({
+          ...current,
           movies: movies.status === 'fulfilled' ? getItems(movies.value).slice(0, 6) : [],
           clubs: clubs.status === 'fulfilled' ? getItems(clubs.value).slice(0, 4) : [],
-          people: people.status === 'fulfilled' ? getItems(people.value).slice(0, 6) : [],
-        });
+        }));
         if (results.every((result) => result.status === 'rejected')) setError('Discover content is unavailable right now.');
       })
       .finally(() => active && setLoading(false));
 
     return () => { active = false; };
   }, []);
+
+  useEffect(() => {
+    let active = true;
+    setPeopleLoading(true);
+
+    getUsers(1, 12, peopleQuery)
+      .then(({ data }) => {
+        if (!active) return;
+        const list = Array.isArray(data?.items) ? data.items : [];
+        setContent((current) => ({ ...current, people: list.slice(0, 12) }));
+      })
+      .catch(() => {
+        if (!active) return;
+        setContent((current) => ({ ...current, people: [] }));
+      })
+      .finally(() => active && setPeopleLoading(false));
+
+    return () => { active = false; };
+  }, [peopleQuery]);
 
   const handleFollow = async (id) => {
     try {
@@ -91,8 +127,26 @@ function Discover() {
         </section>
         <section className="discover-section" aria-labelledby="people-heading">
           <div className="discover-section__heading"><div><p className="discover-kicker">Make a connection</p><h2 id="people-heading">People to follow</h2></div></div>
-          <div className="discover-people">{content.people.map((person) => <PersonCard key={person.id || person.user_id} person={person} followed={followed.includes(person.id || person.user_id)} onFollow={handleFollow} />)}</div>
-          {!loading && content.people.length === 0 && <p className="discover-muted">No people to suggest yet.</p>}
+          <div style={{ marginBottom: '12px' }}>
+            <input
+              type="text"
+              value={peopleQuery}
+              onChange={(event) => setPeopleQuery(event.target.value.trimStart())}
+              placeholder="Search for a user by username"
+              style={{
+                width: '100%',
+                boxSizing: 'border-box',
+                borderRadius: '10px',
+                border: '1px solid rgba(255,255,255,0.12)',
+                background: 'rgba(9,9,11,0.5)',
+                color: '#f4f4f5',
+                padding: '10px 12px',
+                outline: 'none',
+              }}
+            />
+          </div>
+          {peopleLoading ? <p className="discover-muted">Searching members…</p> : <div className="discover-people">{content.people.map((person) => <PersonCard key={person.id || person.user_id} person={person} followed={followed.includes(person.id || person.user_id)} onFollow={handleFollow} />)}</div>}
+          {!loading && !peopleLoading && content.people.length === 0 && <p className="discover-muted">No people matched that search yet.</p>}
         </section>
       </div>
     </div>
