@@ -1,4 +1,7 @@
+import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { User, Activity, MessageSquare, LogOut, ChevronRight, Shield } from 'lucide-react';
+import theme from '../../theme';
 import { useAuth } from '../../context/AuthContext';
 
 const Settings = () => {
@@ -6,33 +9,132 @@ const Settings = () => {
   const navigate = useNavigate();
   const profileId = user?.id || user?.user_id;
 
-  const signOut = async () => {
+  const handleSignOut = async () => {
     await logout();
     navigate('/login');
   };
 
+  const navItems = [
+    {
+      to: `/profile/${profileId}/edit`,
+      icon: User,
+      title: 'Account Management',
+      desc: 'Update profile details and preferences',
+    },
+    {
+      to: '/watched',
+      icon: Activity,
+      title: 'Activity & Content',
+      desc: 'Review watched titles and history',
+    },
+    {
+      to: '/feed',
+      icon: MessageSquare,
+      title: 'Community Activity',
+      desc: 'Open feed and community discussions',
+    },
+  ];
+
   return (
-    <section className="page-panel utility-page">
-      <p className="eyebrow">Your account</p>
-      <h1>Settings</h1>
-      <p className="utility-intro">Manage your CineClub account preferences and activity.</p>
-      <div className="settings-list">
-        <Link className="settings-row" to={`/profile/${profileId}/edit`}>
-          <div><strong>Account management</strong><span>Update your profile details and preferences.</span></div><span aria-hidden="true">›</span>
-        </Link>
-        <Link className="settings-row" to="/watched">
-          <div><strong>Activity and content</strong><span>Review your watched titles and community posts.</span></div><span aria-hidden="true">›</span>
-        </Link>
-        <Link className="settings-row" to="/feed">
-          <div><strong>Community activity</strong><span>Open your feed and continue the conversation.</span></div><span aria-hidden="true">›</span>
-        </Link>
-        <div className="settings-row settings-row--danger">
-          <div><strong>Session</strong><span>Sign out of this device.</span></div>
-          <button type="button" onClick={signOut}>Log out</button>
+    <section style={styles.container}>
+      <div style={styles.header}>
+        <span style={styles.eyebrow}><Shield size={13} /> Account</span>
+        <h1 style={styles.title}>Settings</h1>
+        <p style={styles.intro}>Manage your account preferences and activity.</p>
+      </div>
+
+      <div style={styles.list}>
+        {navItems.map(({ to, icon: Icon, title, desc }) => (
+          <Link key={to} to={to} style={styles.row}>
+            <div style={styles.iconBox}><Icon size={18} /></div>
+            <div style={styles.textGroup}>
+              <strong style={styles.rowTitle}>{title}</strong>
+              <span style={styles.rowDesc}>{desc}</span>
+            </div>
+            <ChevronRight size={18} style={styles.chevron} />
+          </Link>
+        ))}
+
+        {/* Danger Zone: Logout */}
+        <div style={{ ...styles.row, ...styles.dangerRow }}>
+          <div style={{ ...styles.iconBox, color: '#ef4444', background: 'rgba(239,68,68,0.1)' }}>
+            <LogOut size={18} />
+          </div>
+          <div style={styles.textGroup}>
+            <strong style={styles.rowTitle}>Session</strong>
+            <span style={styles.rowDesc}>Sign out of your active session on this device</span>
+          </div>
+          <button type="button" onClick={handleSignOut} style={styles.logoutBtn}>
+            Log out
+          </button>
         </div>
       </div>
     </section>
   );
+};
+
+const styles = {
+  container: {
+    maxWidth: '680px',
+    margin: '0 auto',
+    padding: '3rem 1.5rem',
+    color: theme.color.text,
+    fontFamily: theme.font.body,
+  },
+  header: { marginBottom: '2rem' },
+  eyebrow: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '0.4rem',
+    fontSize: '0.75rem',
+    fontWeight: '700',
+    color: theme.color.amber,
+    textTransform: 'uppercase',
+    letterSpacing: '1px',
+    marginBottom: '0.5rem',
+  },
+  title: { fontSize: '2rem', fontWeight: '800', margin: '0 0 0.5rem 0', color: theme.color.text },
+  intro: { color: theme.color.textDim, margin: 0, fontSize: '0.95rem' },
+  list: { display: 'flex', flexDirection: 'column', gap: '0.75rem' },
+  row: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '1rem',
+    padding: '1rem 1.25rem',
+    background: theme.color.coalCard,
+    border: `1px solid ${theme.color.coalBorder}`,
+    borderRadius: theme.radius.md,
+    color: 'inherit',
+    textDecoration: 'none',
+    transition: 'background 0.2s, border-color 0.2s',
+  },
+  dangerRow: { borderColor: 'rgba(239, 68, 68, 0.36)', background: 'rgba(239, 68, 68, 0.05)' },
+  iconBox: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '38px',
+    height: '38px',
+    borderRadius: '10px',
+    background: 'rgba(212, 175, 55, 0.12)',
+    color: theme.color.amber,
+    flexShrink: 0,
+  },
+  textGroup: { display: 'flex', flexDirection: 'column', flex: 1 },
+  rowTitle: { fontSize: '0.95rem', fontWeight: '600', color: theme.color.text },
+  rowDesc: { fontSize: '0.825rem', color: theme.color.textFaint, marginTop: '0.15rem' },
+  chevron: { color: theme.color.textDim, flexShrink: 0 },
+  logoutBtn: {
+    background: theme.color.amber,
+    color: '#1a1204',
+    border: 'none',
+    padding: '0.55rem 1rem',
+    borderRadius: '8px',
+    fontWeight: '700',
+    fontSize: '0.85rem',
+    cursor: 'pointer',
+    flexShrink: 0,
+  },
 };
 
 export default Settings;

@@ -1,313 +1,214 @@
-import { Link } from 'react-router-dom';
-import theme from '../theme.js';
-
-const clubs = [
-  {icon: 'https://plus.unsplash.com/premium_photo-1764691504277-6d9d4a9d1ba4?q=80&w=1032&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    name: 'Sci-Fi Enthusiasts',
-    members: '1,204 members',
-  },
-  {
-    icon: 'https://images.unsplash.com/photo-1682632618859-47904338bea1?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    name: 'Comedy',
-    members: '842 members',
-  },
-  {
-    icon: 'https://images.unsplash.com/photo-1690650553995-cc5109870e00?q=80&w=387&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    name: 'Horror House',
-    members: '678 members',
-  },
-];
-
-const movies = [
-   {
-    title: 'The Invite',
-    genre: 'Comedy',
-    image: 'https://media.themoviedb.org/t/p/w300_and_h450_face/b7Dr8Chzse8VagexAporUu2RtLx.jpg',
-  },
-  {
-    title: 'M3GAN',
-    genre: 'Sci-Fi',
-    image: 'https://media.themoviedb.org/t/p/w300_and_h450_face/d9nBoowhjiiYc4FBNtQkPY7c11H.jpg',
-    
-  },
-  {
-    title: 'Spider-Man: Brand New Day',
-    genre: 'Action',
-    image: 'https://media.themoviedb.org/t/p/w220_and_h330_face/bjiS5ipwxb9JFy3XRRN4OAilSeX.jpg',
-  },
-  {
-    title: 'Crime 101',
-    genre: 'Thriller',
-    image: 'https://media.themoviedb.org/t/p/w300_and_h450_face/tVvpFIoteRHNnoZMhdnwIVwJpCA.jpg',
-  },
-];
-
-const discussions = [
-  {
-    title: 'What makes a great 90s thriller?',
-    club: 'Movie Classics',
-    replies: 24,
-  },
-  {
-    title: 'Best superhero movie of all time?',
-    club: 'Action Fans',
-    replies: 18,
-  },
-  {
-    title: 'The ending of Interstellar...',
-    club: 'Sci-Fi Enthusiasts',
-    replies: 31,
-  },
-  {
-    title: 'Underrated horror movies',
-    club: 'Horror House',
-    replies: 12,
-  },
-];
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import theme from "../theme.js";
+import { getTrendingMovies } from "../services/movieService";
+import { getClubs } from "../services/clubService";
+import { getFeed } from "../services/postService";
 
 const Home = () => {
+  const [trending, setTrending] = useState([]);
+  const [myClubs, setMyClubs] = useState([]);
+  const [recentPosts, setRecentPosts] = useState([]);
+  const [currentFeaturedIndex, setCurrentFeaturedIndex] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+
+    Promise.allSettled([
+      getTrendingMovies(),
+      getClubs(1, 50),
+      getFeed(1, 4),
+    ]).then(([trendingRes, clubsRes, feedRes]) => {
+      if (!active) return;
+
+      if (trendingRes.status === "fulfilled") {
+        setTrending(trendingRes.value.data?.items || []);
+      }
+
+      if (clubsRes.status === "fulfilled") {
+        const allClubs = clubsRes.value.data?.items || clubsRes.value.data || [];
+        setMyClubs(allClubs.filter((c) => c.is_member));
+      }
+
+      if (feedRes.status === "fulfilled") {
+        setRecentPosts(feedRes.value.data?.items || feedRes.value.data || []);
+      }
+
+      setLoading(false);
+    });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  // Rotate the hero through up to 3 trending movies
+  useEffect(() => {
+    if (trending.length < 2) return;
+    const interval = setInterval(() => {
+      setCurrentFeaturedIndex((prev) => (prev + 1) % Math.min(trending.length, 3));
+    }, 30000);
+    return () => clearInterval(interval);
+  }, [trending]);
+
+  const heroCandidates = trending.slice(0, 3);
+  const featured = heroCandidates[currentFeaturedIndex];
+
   return (
     <main
       className="home-page"
       style={{
-        minHeight: '100vh',
-        boxSizing: 'border-box',
+        minHeight: "100vh",
+        boxSizing: "border-box",
         background: theme.color.coal,
         color: theme.color.text,
-        padding: '32px',
+        padding: "32px",
       }}
     >
-      <div
-        style={{
-          width: '100%',
-          maxWidth: '1250px',
-          margin: '0 auto',
-        }}
-      >
-
+      <div style={{ width: "100%", maxWidth: "1250px", margin: "0 auto" }}>
         {/* ================= HERO ================= */}
         <section
           style={{
-            position: 'relative',
-            minHeight: '360px',
-            overflow: 'hidden',
+            position: "relative",
+            minHeight: "420px",
+            overflow: "hidden",
             borderRadius: theme.radius.lg,
             border: `1px solid ${theme.color.coalBorder}`,
-            backgroundImage: `
-              linear-gradient(
-                90deg,
-                rgba(10, 10, 8, 0.98) 0%,
-                rgba(10, 10, 8, 0.88) 42%,
-                rgba(10, 10, 8, 0.35) 100%
-              ),
-              url("https://www.imdb.com/title/tt1599348/mediaviewer/rm1765519616/?ref_=tt_ov_i")
-            `,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
             boxShadow: theme.shadow.card,
-            display: 'flex',
-            alignItems: 'center',
+            display: "flex",
+            alignItems: "center",
           }}
         >
+          {heroCandidates.map((movie, index) => (
+            <div
+              key={movie.tmdb_id}
+              style={{
+                position: "absolute",
+                inset: 0,
+                opacity: index === currentFeaturedIndex ? 1 : 0,
+                transition: "opacity 1.5s ease-in-out",
+                backgroundImage: `
+                  linear-gradient(90deg, rgba(9,9,11,0.98) 0%, rgba(9,9,11,0.8) 45%, rgba(9,9,11,0.2) 100%),
+                  linear-gradient(0deg, rgba(9,9,11,0.6) 0%, rgba(9,9,11,0) 30%),
+                  url("${movie.poster_url || ""}")
+                `,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                zIndex: 0,
+              }}
+            />
+          ))}
+
           <div
-            style={{
-              position: 'relative',
-              zIndex: 2,
-              maxWidth: '620px',
-              padding: '50px',
-            }}
+            key={featured?.tmdb_id || "empty"}
+            style={{ position: "relative", zIndex: 2, maxWidth: "620px", padding: "50px" }}
           >
             <div
               style={{
                 color: theme.color.amber,
-                fontSize: '12px',
+                fontSize: "12px",
                 fontWeight: 800,
-                letterSpacing: '1.5px',
-                textTransform: 'uppercase',
-                marginBottom: '12px',
+                letterSpacing: "1.5px",
+                textTransform: "uppercase",
+                marginBottom: "12px",
               }}
             >
-              Featured this week
+              Trending this week
             </div>
 
             <h1
               style={{
                 fontFamily: theme.font.heading,
-                fontSize: 'clamp(48px, 6vw, 76px)',
+                fontSize: "clamp(48px, 6vw, 76px)",
                 lineHeight: 0.95,
-                margin: '0 0 18px',
+                margin: "0 0 18px",
                 color: theme.color.text,
               }}
             >
-              Safe House
+              {loading ? "Loading..." : featured?.title || "Nothing trending yet"}
             </h1>
 
-            <p
-              style={{
-                color: theme.color.textDim,
-                maxWidth: '570px',
-                lineHeight: 1.7,
-                fontSize: '15px',
-                margin: '0 0 22px',
-              }}
-            >
-              A young CIA agent is tasked with looking after a
-              dangerous fugitive in a safe house. But when the
-              house is attacked, he finds himself on the run.
+            <p style={{ color: theme.color.textDim, maxWidth: "570px", lineHeight: 1.7, fontSize: "15px", margin: "0 0 22px" }}>
+              {featured?.year ? `Released ${featured.year} · ` : ""}
+              {featured ? "See what the community is watching this week." : "Check back once movies start trending."}
             </p>
 
-            <div
-              style={{
-                display: 'flex',
-                gap: '10px',
-                flexWrap: 'wrap',
-              }}
-            >
-              <Link
-                to="/movies"
-                style={{
-                  background: theme.color.amber,
-                  color: '#181207',
-                  padding: '11px 20px',
-                  borderRadius: '7px',
-                  textDecoration: 'none',
-                  fontWeight: 700,
-                  fontSize: '14px',
-                }}
-              >
-                ▶ View Details
-              </Link>
-
-              <button
-                type="button"
-                style={{
-                  background: 'rgba(20,20,18,0.75)',
-                  color: theme.color.text,
-                  border: `1px solid ${theme.color.coalBorder}`,
-                  padding: '10px 18px',
-                  borderRadius: '7px',
-                  cursor: 'pointer',
-                  fontSize: '14px',
-                }}
-              >
-                ✓ Watchlist
-              </button>
+            <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+              {featured && (
+                <Link
+                  to={`/movies/${featured.tmdb_id}`}
+                  style={{
+                    background: theme.color.amber,
+                    color: "#181207",
+                    padding: "11px 20px",
+                    borderRadius: "7px",
+                    textDecoration: "none",
+                    fontWeight: 700,
+                    fontSize: "14px",
+                  }}
+                >
+                  ▶ View Details
+                </Link>
+              )}
             </div>
           </div>
         </section>
 
         {/* ================= MAIN GRID ================= */}
-        <div className="home-main-grid"
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'minmax(0, 1fr) 280px',
-            gap: '20px',
-            marginTop: '22px',
-          }}
-        >
-
-          {/* LEFT CONTENT */}
+        <div className="home-main-grid" style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) 280px", gap: "20px", marginTop: "22px" }}>
           <div className="home-content-column">
-
             {/* ================= CLUBS ================= */}
-            <section style={{ marginBottom: '30px' }}>
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  marginBottom: '12px',
-                }}
-              >
-                <h2
-                  style={{
-                    fontFamily: theme.font.heading,
-                    fontSize: '21px',
-                    margin: 0,
-                  }}
-                >
-                  My Active Clubs
-                </h2>
-
-                <Link
-                  to="/clubs"
-                  style={{
-                    color: theme.color.textDim,
-                    fontSize: '12px',
-                    textDecoration: 'none',
-                  }}
-                >
-                  View all →
-                </Link>
+            <section style={{ marginBottom: "30px" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "12px" }}>
+                <h2 style={{ fontFamily: theme.font.heading, fontSize: "21px", margin: 0 }}>My Active Clubs</h2>
+                <Link to="/clubs" style={{ color: theme.color.textDim, fontSize: "12px", textDecoration: "none" }}>View all →</Link>
               </div>
 
-              <div className="home-club-grid"
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns:
-                    'repeat(3, minmax(0, 1fr))',
-                  gap: '12px',
-                }}
-              >
-                {clubs.map((club) => (
+              {!loading && myClubs.length === 0 && (
+                <p style={{ color: theme.color.textDim, fontSize: 13 }}>
+                  You haven't joined any clubs yet. <Link to="/clubs" style={{ color: theme.color.amber }}>Browse clubs →</Link>
+                </p>
+              )}
+
+              <div className="home-club-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: "12px" }}>
+                {myClubs.slice(0, 3).map((club) => (
                   <Link
-                    key={club.name}
-                    to="/clubs"
+                    key={club.id}
+                    to={`/clubs/${club.id}`}
                     style={{
-                      textDecoration: 'none',
+                      textDecoration: "none",
                       color: theme.color.text,
                       background: theme.color.coalCard,
                       border: `1px solid ${theme.color.coalBorder}`,
-                      borderRadius: '8px',
-                      padding: '14px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '12px',
-                      transition: 'transform 0.2s ease',
+                      borderRadius: "8px",
+                      padding: "14px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "12px",
                     }}
                   >
                     <div
                       style={{
-                        width: '40px',
-                        height: '40px',
+                        width: "40px",
+                        height: "40px",
                         flexShrink: 0,
-                        borderRadius: '8px',
+                        borderRadius: "8px",
                         background: theme.color.coalSoft,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '20px',
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: "16px",
+                        fontWeight: 800,
+                        color: theme.color.amber,
                       }}
                     >
-                      {typeof club.icon === 'string' && club.icon.startsWith('http') ? (
-  <img 
-    src={club.icon} 
-    alt={club.name} 
-    style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '6px' }} 
-  />
-) : (
-  club.icon
-)}
+                      {club.name?.[0]?.toUpperCase() || "?"}
                     </div>
-
                     <div>
-                      <div
-                        style={{
-                          fontSize: '13px',
-                          fontWeight: 700,
-                          marginBottom: '4px',
-                        }}
-                      >
-                        {club.name}
-                      </div>
-
-                      <div
-                        style={{
-                          color: theme.color.textDim,
-                          fontSize: '11px',
-                        }}
-                      >
-                        {club.members}
+                      <div style={{ fontSize: "13px", fontWeight: 700, marginBottom: "4px" }}>{club.name}</div>
+                      <div style={{ color: theme.color.textDim, fontSize: "11px" }}>
+                        {club.member_count ?? 0} members
                       </div>
                     </div>
                   </Link>
@@ -315,164 +216,60 @@ const Home = () => {
               </div>
             </section>
 
-            {/* ================= RECOMMENDED ================= */}
+            {/* ================= RECOMMENDED (trending movies) ================= */}
             <section>
-              <div className="home-recommendations"
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  marginBottom: '14px',
-                }}
-              >
-                <h2
-                  style={{
-                    fontFamily: theme.font.heading,
-                    fontSize: '21px',
-                    margin: 0,
-                  }}
-                >
-                  Recommended for You
-                </h2>
-
-                <Link
-                  to="/movies"
-                  style={{
-                    color: theme.color.textDim,
-                    fontSize: '12px',
-                    textDecoration: 'none',
-                  }}
-                >
-                  View all →
-                </Link>
+              <div className="home-recommendations" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
+                <h2 style={{ fontFamily: theme.font.heading, fontSize: "21px", margin: 0 }}>Trending Now</h2>
+                <Link to="/movies" style={{ color: theme.color.textDim, fontSize: "12px", textDecoration: "none" }}>View all →</Link>
               </div>
 
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns:
-                    'repeat(4, minmax(0, 1fr))',
-                  gap: '14px',
-                }}
-              >
-                {movies.map((movie) => (
-                  <Link
-                    key={movie.title}
-                    to="/movies"
-                    style={{
-                      textDecoration: 'none',
-                      color: theme.color.text,
-                    }}
-                  >
-                    <div
-                      style={{
-                        height: '230px',
-                        borderRadius: '7px',
-                        overflow: 'hidden',
-                        background: theme.color.coalCard,
-                        border: `1px solid ${theme.color.coalBorder}`,
-                      }}
-                    >
-                      <img
-                        src={movie.image}
-                        alt={movie.title}
-                        style={{
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'cover',
-                          display: 'block',
-                        }}
-                      />
-                    </div>
+              {!loading && trending.length === 0 && (
+                <p style={{ color: theme.color.textDim, fontSize: 13 }}>No trending movies available right now.</p>
+              )}
 
-                    <div
-                      style={{
-                        fontSize: '13px',
-                        fontWeight: 700,
-                        marginTop: '8px',
-                      }}
-                    >
-                      {movie.title}
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: "14px" }}>
+                {trending.slice(0, 4).map((movie) => (
+                  <Link key={movie.tmdb_id} to={`/movies/${movie.tmdb_id}`} style={{ textDecoration: "none", color: theme.color.text }}>
+                    <div style={{ height: "230px", borderRadius: "7px", overflow: "hidden", background: theme.color.coalCard, border: `1px solid ${theme.color.coalBorder}` }}>
+                      {movie.poster_url ? (
+                        <img src={movie.poster_url} alt={movie.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                      ) : null}
                     </div>
-
-                    <div
-                      style={{
-                        color: theme.color.textDim,
-                        fontSize: '11px',
-                        marginTop: '4px',
-                      }}
-                    >
-                      {movie.genre}
-                    </div>
+                    <div style={{ fontSize: "13px", fontWeight: 700, marginTop: "8px" }}>{movie.title}</div>
+                    <div style={{ color: theme.color.textDim, fontSize: "11px", marginTop: "4px" }}>{movie.year}</div>
                   </Link>
                 ))}
               </div>
             </section>
-
           </div>
 
-          {/* ================= TRENDING THREADS ================= */}
-          <aside className="home-thread-panel"
-            style={{
-              background: theme.color.coalCard,
-              border: `1px solid ${theme.color.coalBorder}`,
-              borderRadius: theme.radius.md,
-              padding: '18px',
-              alignSelf: 'start',
-            }}
+          {/* ================= RECENT ACTIVITY ================= */}
+          <aside
+            className="home-thread-panel"
+            style={{ background: theme.color.coalCard, border: `1px solid ${theme.color.coalBorder}`, borderRadius: theme.radius.md, padding: "18px", alignSelf: "start" }}
           >
-            <h2
-              style={{
-                fontFamily: theme.font.heading,
-                fontSize: '17px',
-                margin: '0 0 15px',
-              }}
-            >
-              💬 Trending Threads
-            </h2>
+            <h2 style={{ fontFamily: theme.font.heading, fontSize: "17px", margin: "0 0 15px" }}>💬 Recent Activity</h2>
 
-            {discussions.map((discussion, index) => (
+            {!loading && recentPosts.length === 0 && (
+              <p style={{ color: theme.color.textDim, fontSize: 13 }}>No posts yet — be the first to share what you watched.</p>
+            )}
+
+            {recentPosts.map((post, index) => (
               <div
-                key={discussion.title}
+                key={post.id}
                 style={{
-                  padding: '14px 0',
-                  borderBottom:
-                    index !== discussions.length - 1
-                      ? `1px solid ${theme.color.coalBorder}`
-                      : 'none',
+                  padding: "14px 0",
+                  borderBottom: index !== recentPosts.length - 1 ? `1px solid ${theme.color.coalBorder}` : "none",
                 }}
               >
-                <Link
-                  to="/feed"
-                  style={{
-                    color: theme.color.text,
-                    fontSize: '13px',
-                    fontWeight: 700,
-                    lineHeight: 1.4,
-                    textDecoration: 'none',
-                  }}
-                >
-                  {discussion.title}
+                <Link to={`/posts/${post.id}`} style={{ color: theme.color.text, fontSize: "13px", fontWeight: 700, lineHeight: 1.4, textDecoration: "none" }}>
+                  {post.movie_title || "Untitled"}
                 </Link>
-
-                <div
-                  style={{
-                    color: theme.color.textDim,
-                    fontSize: '11px',
-                    marginTop: '7px',
-                  }}
-                >
-                  {discussion.club}
+                <div style={{ color: theme.color.textDim, fontSize: "11px", marginTop: "7px" }}>
+                  {post.description ? post.description.slice(0, 60) : ""}
                 </div>
-
-                <div
-                  style={{
-                    color: theme.color.textDim,
-                    fontSize: '11px',
-                    marginTop: '8px',
-                  }}
-                >
-                  💬 {discussion.replies} replies
+                <div style={{ color: theme.color.textDim, fontSize: "11px", marginTop: "8px" }}>
+                  💬 {post.review_count ?? 0} reviews
                 </div>
               </div>
             ))}
@@ -480,21 +277,20 @@ const Home = () => {
             <Link
               to="/feed"
               style={{
-                display: 'block',
-                textAlign: 'center',
-                marginTop: '14px',
-                padding: '9px',
+                display: "block",
+                textAlign: "center",
+                marginTop: "14px",
+                padding: "9px",
                 border: `1px solid ${theme.color.coalBorder}`,
-                borderRadius: '6px',
+                borderRadius: "6px",
                 color: theme.color.text,
-                textDecoration: 'none',
-                fontSize: '12px',
+                textDecoration: "none",
+                fontSize: "12px",
               }}
             >
-              View All Discussions
+              View Full Feed
             </Link>
           </aside>
-
         </div>
       </div>
     </main>

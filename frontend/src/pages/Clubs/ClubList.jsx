@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import theme from '../../theme';
 import { getClubs } from '../../services/clubService.js';
 import Loader from '../../components/common/Loader.jsx';
 import EmptyState from '../../components/common/EmptyState.jsx';
@@ -73,8 +74,8 @@ const ClubList = () => {
         width: 'calc(100% - 220px)',
         boxSizing: 'border-box',
         padding: '32px',
-        background: '#0d0d0b',
-        color: '#f4efe5',
+        background: theme.color.coal,
+        color: theme.color.text,
       }}
     >
       <div
@@ -96,9 +97,9 @@ const ClubList = () => {
             minHeight: '220px',
             boxSizing: 'border-box',
             borderRadius: '18px',
-            border: '1px solid #3b3426',
-            background:
-              'linear-gradient(135deg, #242019 0%, #171612 100%)',
+            border: `1px solid ${theme.color.coalBorder}`,
+            background: `linear-gradient(135deg, ${theme.color.coalCard} 0%, ${theme.color.coalSoft} 100%)`,
+            boxShadow: theme.shadow.card,
           }}
         >
           <div
@@ -109,7 +110,7 @@ const ClubList = () => {
             <p
               style={{
                 margin: '0 0 12px',
-                color: '#f5b82e',
+                color: theme.color.amber,
                 fontSize: '11px',
                 fontWeight: 800,
                 letterSpacing: '2px',
@@ -122,10 +123,10 @@ const ClubList = () => {
             <h1
               style={{
                 margin: 0,
-                fontFamily: 'Georgia, serif',
+                fontFamily: theme.font.heading,
                 fontSize: 'clamp(42px, 5vw, 68px)',
                 lineHeight: 0.95,
-                color: '#f4efe5',
+                color: theme.color.text,
               }}
             >
               Every genre needs a room.
@@ -141,7 +142,7 @@ const ClubList = () => {
               justifyContent: 'center',
               padding: '13px 22px',
               borderRadius: '999px',
-              background: '#f5b82e',
+              background: theme.color.amber,
               color: '#17130b',
               textDecoration: 'none',
               fontSize: '14px',
@@ -159,8 +160,8 @@ const ClubList = () => {
             style={{
               padding: '40px',
               borderRadius: '16px',
-              border: '1px solid #3b3426',
-              background: '#191815',
+              border: `1px solid ${theme.color.coalBorder}`,
+              background: theme.color.coalCard,
             }}
           >
             <EmptyState
@@ -188,9 +189,9 @@ const ClubList = () => {
                   padding: '24px',
                   boxSizing: 'border-box',
                   borderRadius: '16px',
-                  border: '1px solid #3b3426',
-                  background: '#1b1915',
-                  color: '#f4efe5',
+                  border: `1px solid ${theme.color.coalBorder}`,
+                  background: theme.color.coalCard,
+                  color: theme.color.text,
                   textDecoration: 'none',
                   transition: 'transform 0.2s ease, border-color 0.2s ease',
                 }}
@@ -198,7 +199,7 @@ const ClubList = () => {
                 <p
                   style={{
                     margin: '0 0 34px',
-                    color: '#f5b82e',
+                    color: theme.color.amber,
                     fontSize: '10px',
                     fontWeight: 800,
                     letterSpacing: '1.8px',
@@ -211,9 +212,10 @@ const ClubList = () => {
                 <h2
                   style={{
                     margin: '0 0 10px',
-                    fontFamily: 'Georgia, serif',
+                    fontFamily: theme.font.heading,
                     fontSize: '25px',
                     lineHeight: 1.1,
+                    color: theme.color.text,
                   }}
                 >
                   {club.name}
@@ -222,7 +224,7 @@ const ClubList = () => {
                 <p
                   style={{
                     margin: 0,
-                    color: '#aaa398',
+                    color: theme.color.textDim,
                     fontSize: '14px',
                     lineHeight: 1.6,
                   }}
