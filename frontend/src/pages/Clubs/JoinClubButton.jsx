@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { joinClub, leaveClub } from '../../services/clubService';
+import { useState } from "react";
+import { joinClub, leaveClub } from "../../services/clubService";
 
 const JoinClubButton = ({
   clubId,
@@ -31,48 +31,44 @@ const JoinClubButton = ({
         onMembershipChange?.(true);
       }
     } catch (error) {
-      console.error('Unable to update club membership:', error);
+      console.error("Unable to update club membership:", error);
     } finally {
       setLoading(false);
     }
   };
 
   const buttonStyle = {
-    border: 'none',
-    borderRadius: '7px',
-    padding: '9px 15px',
-    fontSize: '12px',
+    border: "none",
+    borderRadius: "7px",
+    padding: "9px 15px",
+    fontSize: "12px",
     fontWeight: 700,
-    cursor: loading || isAdmin ? 'not-allowed' : 'pointer',
-    transition: 'all 0.2s ease',
-    whiteSpace: 'nowrap',
+    cursor: loading || isAdmin ? "not-allowed" : "pointer",
+    transition: "all 0.2s ease",
+    whiteSpace: "nowrap",
     opacity: loading ? 0.7 : 1,
 
     ...(isAdmin
       ? {
-          background: '#2a2925',
-          color: '#b8b5ac',
-          border: '1px solid #3a3832',
+          background: "#2a2925",
+          color: "#b8b5ac",
+          border: "1px solid #3a3832",
         }
       : joined
         ? {
-            background: 'transparent',
-            color: '#d6a84f',
-            border: '1px solid #d6a84f',
+            background: "transparent",
+            color: "#d6a84f",
+            border: "1px solid #d6a84f",
           }
         : {
-            background: '#d6a84f',
-            color: '#17140e',
+            background: "#d6a84f",
+            color: "#17140e",
           }),
   };
 
   if (isAdmin) {
     return (
-      <button
-        type="button"
-        disabled
-        style={buttonStyle}
-      >
+      <button type="button" disabled style={buttonStyle}>
         Club Admin
       </button>
     );
@@ -81,15 +77,12 @@ const JoinClubButton = ({
   return (
     <button
       type="button"
+      className={joined ? "" : "hover-glow"}
       onClick={handleMembership}
       disabled={loading}
       style={buttonStyle}
     >
-      {loading
-        ? 'Updating...'
-        : joined
-          ? 'Joined ✓'
-          : 'Join Club'}
+      {loading ? "Updating..." : joined ? "Joined ✓" : "Join Club"}
     </button>
   );
 };

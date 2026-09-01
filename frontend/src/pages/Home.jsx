@@ -1,130 +1,185 @@
-import { Link } from 'react-router-dom';
-import theme from '../theme.js';
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import theme from "../theme.js";
+
+const featuredMovies = [
+  {
+    title: "Safe House",
+    description: "A young CIA agent is tasked with looking after a dangerous fugitive in a safe house. But when the house is attacked, he finds himself on the run.",
+    image: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=2000&auto=format&fit=crop",
+  },
+  {
+    title: "Interstellar",
+    description: "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival as Earth faces a global crop blight.",
+    image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2000&auto=format&fit=crop",
+  },
+  {
+    title: "The Dark Knight",
+    description: "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests.",
+    image: "https://images.unsplash.com/photo-1509347528160-9a9e33742cdb?q=80&w=2000&auto=format&fit=crop",
+  },
+];
 
 const clubs = [
-  {icon: 'https://plus.unsplash.com/premium_photo-1764691504277-6d9d4a9d1ba4?q=80&w=1032&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    name: 'Sci-Fi Enthusiasts',
-    members: '1,204 members',
+  {
+    icon: "https://plus.unsplash.com/premium_photo-1764691504277-6d9d4a9d1ba4?q=80&w=1032&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    name: "Sci-Fi Enthusiasts",
+    members: "1,204 members",
   },
   {
-    icon: 'https://images.unsplash.com/photo-1682632618859-47904338bea1?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    name: 'Comedy',
-    members: '842 members',
+    icon: "https://images.unsplash.com/photo-1682632618859-47904338bea1?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    name: "Comedy",
+    members: "842 members",
   },
   {
-    icon: 'https://images.unsplash.com/photo-1690650553995-cc5109870e00?q=80&w=387&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    name: 'Horror House',
-    members: '678 members',
+    icon: "https://images.unsplash.com/photo-1690650553995-cc5109870e00?q=80&w=387&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    name: "Horror House",
+    members: "678 members",
   },
 ];
 
 const movies = [
-   {
-    title: 'The Invite',
-    genre: 'Comedy',
-    image: 'https://media.themoviedb.org/t/p/w300_and_h450_face/b7Dr8Chzse8VagexAporUu2RtLx.jpg',
+  {
+    title: "The Invite",
+    genre: "Comedy",
+    image:
+      "https://media.themoviedb.org/t/p/w300_and_h450_face/b7Dr8Chzse8VagexAporUu2RtLx.jpg",
   },
   {
-    title: 'M3GAN',
-    genre: 'Sci-Fi',
-    image: 'https://media.themoviedb.org/t/p/w300_and_h450_face/d9nBoowhjiiYc4FBNtQkPY7c11H.jpg',
-    
+    title: "M3GAN",
+    genre: "Sci-Fi",
+    image:
+      "https://media.themoviedb.org/t/p/w300_and_h450_face/d9nBoowhjiiYc4FBNtQkPY7c11H.jpg",
   },
   {
-    title: 'Spider-Man: Brand New Day',
-    genre: 'Action',
-    image: 'https://media.themoviedb.org/t/p/w220_and_h330_face/bjiS5ipwxb9JFy3XRRN4OAilSeX.jpg',
+    title: "Spider-Man: Brand New Day",
+    genre: "Action",
+    image:
+      "https://media.themoviedb.org/t/p/w220_and_h330_face/bjiS5ipwxb9JFy3XRRN4OAilSeX.jpg",
   },
   {
-    title: 'Crime 101',
-    genre: 'Thriller',
-    image: 'https://media.themoviedb.org/t/p/w300_and_h450_face/tVvpFIoteRHNnoZMhdnwIVwJpCA.jpg',
+    title: "Crime 101",
+    genre: "Thriller",
+    image:
+      "https://media.themoviedb.org/t/p/w300_and_h450_face/tVvpFIoteRHNnoZMhdnwIVwJpCA.jpg",
   },
 ];
 
 const discussions = [
   {
-    title: 'What makes a great 90s thriller?',
-    club: 'Movie Classics',
+    title: "What makes a great 90s thriller?",
+    club: "Movie Classics",
     replies: 24,
   },
   {
-    title: 'Best superhero movie of all time?',
-    club: 'Action Fans',
+    title: "Best superhero movie of all time?",
+    club: "Action Fans",
     replies: 18,
   },
   {
-    title: 'The ending of Interstellar...',
-    club: 'Sci-Fi Enthusiasts',
+    title: "The ending of Interstellar...",
+    club: "Sci-Fi Enthusiasts",
     replies: 31,
   },
   {
-    title: 'Underrated horror movies',
-    club: 'Horror House',
+    title: "Underrated horror movies",
+    club: "Horror House",
     replies: 12,
   },
 ];
 
 const Home = () => {
+  const [currentFeaturedIndex, setCurrentFeaturedIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentFeaturedIndex((prevIndex) => (prevIndex + 1) % featuredMovies.length);
+    }, 30000); // 30 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const featured = featuredMovies[currentFeaturedIndex];
+
   return (
     <main
       className="home-page"
       style={{
-        minHeight: '100vh',
-        boxSizing: 'border-box',
+        minHeight: "100vh",
+        boxSizing: "border-box",
         background: theme.color.coal,
         color: theme.color.text,
-        padding: '32px',
+        padding: "32px",
       }}
     >
       <div
         style={{
-          width: '100%',
-          maxWidth: '1250px',
-          margin: '0 auto',
+          width: "100%",
+          maxWidth: "1250px",
+          margin: "0 auto",
         }}
       >
-
         {/* ================= HERO ================= */}
         <section
           style={{
-            position: 'relative',
-            minHeight: '360px',
-            overflow: 'hidden',
+            position: "relative",
+            minHeight: "420px",
+            overflow: "hidden",
             borderRadius: theme.radius.lg,
             border: `1px solid ${theme.color.coalBorder}`,
-            backgroundImage: `
-              linear-gradient(
-                90deg,
-                rgba(10, 10, 8, 0.98) 0%,
-                rgba(10, 10, 8, 0.88) 42%,
-                rgba(10, 10, 8, 0.35) 100%
-              ),
-              url("https://www.imdb.com/title/tt1599348/mediaviewer/rm1765519616/?ref_=tt_ov_i")
-            `,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
             boxShadow: theme.shadow.card,
-            display: 'flex',
-            alignItems: 'center',
+            display: "flex",
+            alignItems: "center",
           }}
         >
+          {/* Background Images with Fade Transition */}
+          {featuredMovies.map((movie, index) => (
+            <div
+              key={movie.title}
+              style={{
+                position: "absolute",
+                inset: 0,
+                opacity: index === currentFeaturedIndex ? 1 : 0,
+                transition: "opacity 1.5s ease-in-out",
+                backgroundImage: `
+                  linear-gradient(
+                    90deg,
+                    rgba(9, 9, 11, 0.98) 0%,
+                    rgba(9, 9, 11, 0.8) 45%,
+                    rgba(9, 9, 11, 0.2) 100%
+                  ),
+                  linear-gradient(
+                    0deg,
+                    rgba(9, 9, 11, 0.6) 0%,
+                    rgba(9, 9, 11, 0) 30%
+                  ),
+                  url("${movie.image}")
+                `,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                zIndex: 0,
+              }}
+            />
+          ))}
+
           <div
+            className="animate-fade-in-up"
+            key={featured.title}
             style={{
-              position: 'relative',
+              position: "relative",
               zIndex: 2,
-              maxWidth: '620px',
-              padding: '50px',
+              maxWidth: "620px",
+              padding: "50px",
             }}
           >
             <div
               style={{
                 color: theme.color.amber,
-                fontSize: '12px',
+                fontSize: "12px",
                 fontWeight: 800,
-                letterSpacing: '1.5px',
-                textTransform: 'uppercase',
-                marginBottom: '12px',
+                letterSpacing: "1.5px",
+                textTransform: "uppercase",
+                marginBottom: "12px",
               }}
             >
               Featured this week
@@ -133,9 +188,9 @@ const Home = () => {
             <h1
               style={{
                 fontFamily: theme.font.heading,
-                fontSize: 'clamp(48px, 6vw, 76px)',
+                fontSize: "clamp(48px, 6vw, 76px)",
                 lineHeight: 0.95,
-                margin: '0 0 18px',
+                margin: "0 0 18px",
                 color: theme.color.text,
               }}
             >
@@ -145,34 +200,36 @@ const Home = () => {
             <p
               style={{
                 color: theme.color.textDim,
-                maxWidth: '570px',
+                maxWidth: "570px",
                 lineHeight: 1.7,
-                fontSize: '15px',
-                margin: '0 0 22px',
+                fontSize: "15px",
+                margin: "0 0 22px",
               }}
             >
-              A young CIA agent is tasked with looking after a
-              dangerous fugitive in a safe house. But when the
-              house is attacked, he finds himself on the run.
+              A young CIA agent is tasked with looking after a dangerous
+              fugitive in a safe house. But when the house is attacked, he finds
+              himself on the run.
             </p>
 
             <div
               style={{
-                display: 'flex',
-                gap: '10px',
-                flexWrap: 'wrap',
+                display: "flex",
+                gap: "10px",
+                flexWrap: "wrap",
               }}
             >
               <Link
                 to="/movies"
+                className="hover-glow"
                 style={{
                   background: theme.color.amber,
-                  color: '#181207',
-                  padding: '11px 20px',
-                  borderRadius: '7px',
-                  textDecoration: 'none',
+                  color: "#181207",
+                  padding: "11px 20px",
+                  borderRadius: "7px",
+                  textDecoration: "none",
                   fontWeight: 700,
-                  fontSize: '14px',
+                  fontSize: "14px",
+                  transition: "all 0.2s ease",
                 }}
               >
                 ▶ View Details
@@ -181,13 +238,13 @@ const Home = () => {
               <button
                 type="button"
                 style={{
-                  background: 'rgba(20,20,18,0.75)',
+                  background: "rgba(20,20,18,0.75)",
                   color: theme.color.text,
                   border: `1px solid ${theme.color.coalBorder}`,
-                  padding: '10px 18px',
-                  borderRadius: '7px',
-                  cursor: 'pointer',
-                  fontSize: '14px',
+                  padding: "10px 18px",
+                  borderRadius: "7px",
+                  cursor: "pointer",
+                  fontSize: "14px",
                 }}
               >
                 ✓ Watchlist
@@ -197,32 +254,31 @@ const Home = () => {
         </section>
 
         {/* ================= MAIN GRID ================= */}
-        <div className="home-main-grid"
+        <div
+          className="home-main-grid"
           style={{
-            display: 'grid',
-            gridTemplateColumns: 'minmax(0, 1fr) 280px',
-            gap: '20px',
-            marginTop: '22px',
+            display: "grid",
+            gridTemplateColumns: "minmax(0, 1fr) 280px",
+            gap: "20px",
+            marginTop: "22px",
           }}
         >
-
           {/* LEFT CONTENT */}
           <div className="home-content-column">
-
             {/* ================= CLUBS ================= */}
-            <section style={{ marginBottom: '30px' }}>
+            <section style={{ marginBottom: "30px" }}>
               <div
                 style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  marginBottom: '12px',
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginBottom: "12px",
                 }}
               >
                 <h2
                   style={{
                     fontFamily: theme.font.heading,
-                    fontSize: '21px',
+                    fontSize: "21px",
                     margin: 0,
                   }}
                 >
@@ -233,20 +289,20 @@ const Home = () => {
                   to="/clubs"
                   style={{
                     color: theme.color.textDim,
-                    fontSize: '12px',
-                    textDecoration: 'none',
+                    fontSize: "12px",
+                    textDecoration: "none",
                   }}
                 >
                   View all →
                 </Link>
               </div>
 
-              <div className="home-club-grid"
+              <div
+                className="home-club-grid"
                 style={{
-                  display: 'grid',
-                  gridTemplateColumns:
-                    'repeat(3, minmax(0, 1fr))',
-                  gap: '12px',
+                  display: "grid",
+                  gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+                  gap: "12px",
                 }}
               >
                 {clubs.map((club) => (
@@ -254,48 +310,54 @@ const Home = () => {
                     key={club.name}
                     to="/clubs"
                     style={{
-                      textDecoration: 'none',
+                      textDecoration: "none",
                       color: theme.color.text,
                       background: theme.color.coalCard,
                       border: `1px solid ${theme.color.coalBorder}`,
-                      borderRadius: '8px',
-                      padding: '14px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '12px',
-                      transition: 'transform 0.2s ease',
+                      borderRadius: "8px",
+                      padding: "14px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "12px",
+                      transition: "transform 0.2s ease",
                     }}
                   >
                     <div
                       style={{
-                        width: '40px',
-                        height: '40px',
+                        width: "40px",
+                        height: "40px",
                         flexShrink: 0,
-                        borderRadius: '8px',
+                        borderRadius: "8px",
                         background: theme.color.coalSoft,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '20px',
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: "20px",
                       }}
                     >
-                      {typeof club.icon === 'string' && club.icon.startsWith('http') ? (
-  <img 
-    src={club.icon} 
-    alt={club.name} 
-    style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '6px' }} 
-  />
-) : (
-  club.icon
-)}
+                      {typeof club.icon === "string" &&
+                      club.icon.startsWith("http") ? (
+                        <img
+                          src={club.icon}
+                          alt={club.name}
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                            borderRadius: "6px",
+                          }}
+                        />
+                      ) : (
+                        club.icon
+                      )}
                     </div>
 
                     <div>
                       <div
                         style={{
-                          fontSize: '13px',
+                          fontSize: "13px",
                           fontWeight: 700,
-                          marginBottom: '4px',
+                          marginBottom: "4px",
                         }}
                       >
                         {club.name}
@@ -304,7 +366,7 @@ const Home = () => {
                       <div
                         style={{
                           color: theme.color.textDim,
-                          fontSize: '11px',
+                          fontSize: "11px",
                         }}
                       >
                         {club.members}
@@ -317,18 +379,19 @@ const Home = () => {
 
             {/* ================= RECOMMENDED ================= */}
             <section>
-              <div className="home-recommendations"
+              <div
+                className="home-recommendations"
                 style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  marginBottom: '14px',
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: "14px",
                 }}
               >
                 <h2
                   style={{
                     fontFamily: theme.font.heading,
-                    fontSize: '21px',
+                    fontSize: "21px",
                     margin: 0,
                   }}
                 >
@@ -339,8 +402,8 @@ const Home = () => {
                   to="/movies"
                   style={{
                     color: theme.color.textDim,
-                    fontSize: '12px',
-                    textDecoration: 'none',
+                    fontSize: "12px",
+                    textDecoration: "none",
                   }}
                 >
                   View all →
@@ -349,10 +412,9 @@ const Home = () => {
 
               <div
                 style={{
-                  display: 'grid',
-                  gridTemplateColumns:
-                    'repeat(4, minmax(0, 1fr))',
-                  gap: '14px',
+                  display: "grid",
+                  gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+                  gap: "14px",
                 }}
               >
                 {movies.map((movie) => (
@@ -360,15 +422,15 @@ const Home = () => {
                     key={movie.title}
                     to="/movies"
                     style={{
-                      textDecoration: 'none',
+                      textDecoration: "none",
                       color: theme.color.text,
                     }}
                   >
                     <div
                       style={{
-                        height: '230px',
-                        borderRadius: '7px',
-                        overflow: 'hidden',
+                        height: "230px",
+                        borderRadius: "7px",
+                        overflow: "hidden",
                         background: theme.color.coalCard,
                         border: `1px solid ${theme.color.coalBorder}`,
                       }}
@@ -377,19 +439,19 @@ const Home = () => {
                         src={movie.image}
                         alt={movie.title}
                         style={{
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'cover',
-                          display: 'block',
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                          display: "block",
                         }}
                       />
                     </div>
 
                     <div
                       style={{
-                        fontSize: '13px',
+                        fontSize: "13px",
                         fontWeight: 700,
-                        marginTop: '8px',
+                        marginTop: "8px",
                       }}
                     >
                       {movie.title}
@@ -398,8 +460,8 @@ const Home = () => {
                     <div
                       style={{
                         color: theme.color.textDim,
-                        fontSize: '11px',
-                        marginTop: '4px',
+                        fontSize: "11px",
+                        marginTop: "4px",
                       }}
                     >
                       {movie.genre}
@@ -408,24 +470,24 @@ const Home = () => {
                 ))}
               </div>
             </section>
-
           </div>
 
           {/* ================= TRENDING THREADS ================= */}
-          <aside className="home-thread-panel"
+          <aside
+            className="home-thread-panel"
             style={{
               background: theme.color.coalCard,
               border: `1px solid ${theme.color.coalBorder}`,
               borderRadius: theme.radius.md,
-              padding: '18px',
-              alignSelf: 'start',
+              padding: "18px",
+              alignSelf: "start",
             }}
           >
             <h2
               style={{
                 fontFamily: theme.font.heading,
-                fontSize: '17px',
-                margin: '0 0 15px',
+                fontSize: "17px",
+                margin: "0 0 15px",
               }}
             >
               💬 Trending Threads
@@ -435,21 +497,21 @@ const Home = () => {
               <div
                 key={discussion.title}
                 style={{
-                  padding: '14px 0',
+                  padding: "14px 0",
                   borderBottom:
                     index !== discussions.length - 1
                       ? `1px solid ${theme.color.coalBorder}`
-                      : 'none',
+                      : "none",
                 }}
               >
                 <Link
                   to="/feed"
                   style={{
                     color: theme.color.text,
-                    fontSize: '13px',
+                    fontSize: "13px",
                     fontWeight: 700,
                     lineHeight: 1.4,
-                    textDecoration: 'none',
+                    textDecoration: "none",
                   }}
                 >
                   {discussion.title}
@@ -458,8 +520,8 @@ const Home = () => {
                 <div
                   style={{
                     color: theme.color.textDim,
-                    fontSize: '11px',
-                    marginTop: '7px',
+                    fontSize: "11px",
+                    marginTop: "7px",
                   }}
                 >
                   {discussion.club}
@@ -468,8 +530,8 @@ const Home = () => {
                 <div
                   style={{
                     color: theme.color.textDim,
-                    fontSize: '11px',
-                    marginTop: '8px',
+                    fontSize: "11px",
+                    marginTop: "8px",
                   }}
                 >
                   💬 {discussion.replies} replies
@@ -480,21 +542,20 @@ const Home = () => {
             <Link
               to="/feed"
               style={{
-                display: 'block',
-                textAlign: 'center',
-                marginTop: '14px',
-                padding: '9px',
+                display: "block",
+                textAlign: "center",
+                marginTop: "14px",
+                padding: "9px",
                 border: `1px solid ${theme.color.coalBorder}`,
-                borderRadius: '6px',
+                borderRadius: "6px",
                 color: theme.color.text,
-                textDecoration: 'none',
-                fontSize: '12px',
+                textDecoration: "none",
+                fontSize: "12px",
               }}
             >
               View All Discussions
             </Link>
           </aside>
-
         </div>
       </div>
     </main>
