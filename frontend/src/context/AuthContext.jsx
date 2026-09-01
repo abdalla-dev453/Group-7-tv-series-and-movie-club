@@ -4,6 +4,11 @@ import { TOKEN_KEY, USER_KEY } from '../services/api';
 
 const AuthContext = createContext(null);
 
+const clearSession = () => {
+  localStorage.removeItem(TOKEN_KEY);
+  localStorage.removeItem(USER_KEY);
+};
+
 const saveSession = (data) => {
   if (!data?.access_token || !data?.user) throw new Error('Invalid auth response');
   localStorage.setItem(TOKEN_KEY, data.access_token);
@@ -31,8 +36,7 @@ export function AuthProvider({ children }) {
       setToken(storedToken);
       setUser(parsedUser);
     } catch {
-      localStorage.removeItem(TOKEN_KEY);
-      localStorage.removeItem(USER_KEY);
+      clearSession();
     } finally {
       setLoading(false);
     }
@@ -62,8 +66,7 @@ export function AuthProvider({ children }) {
     } finally {
       setToken(null);
       setUser(null);
-      localStorage.removeItem(TOKEN_KEY);
-      localStorage.removeItem(USER_KEY);
+      clearSession();
     }
   };
 

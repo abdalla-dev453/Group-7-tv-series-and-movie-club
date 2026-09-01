@@ -184,6 +184,8 @@ const ClubDetail = () => {
     );
   }
 
+  const clubBanner = state.club?.background_url || state.club?.cover_image || state.club?.coverImage || '';
+
   return (
     <div
       style={{
@@ -206,11 +208,18 @@ const ClubDetail = () => {
         {/* CLUB HEADER */}
         <section
           style={{
-            background: '#211f18',
+            background: clubBanner
+              ? `linear-gradient(135deg, rgba(9,9,11,0.72), rgba(9,9,11,0.82)), url("${clubBanner}") center center / cover no-repeat`
+              : '#211f18',
             border: '1px solid #3a3528',
             borderRadius: '12px',
             padding: '30px',
             marginBottom: '20px',
+            minHeight: '260px',
+            display: 'flex',
+            alignItems: 'flex-end',
+            backgroundColor: '#181611',
+            boxShadow: clubBanner ? 'inset 0 0 0 1px rgba(255,255,255,0.04)' : 'none',
           }}
         >
           <p

@@ -1,13 +1,55 @@
 import { useEffect, useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 import {
+  getClub,
   getClubMembers,
+  updateClub,
   updateMemberRole,
   removeClubMember,
 } from '../../services/clubService.js';
 import { useAuth } from '../../context/AuthContext.jsx';
 import Loader from '../../components/common/Loader.jsx';
 import ErrorMessage from '../../components/common/ErrorMessage.jsx';
+
+const toBannerDataUrl = (file) => new Promise((resolve, reject) => {
+  const img = new Image();
+  const objectUrl = URL.createObjectURL(file);
+
+  img.onload = () => {
+    const canvas = document.createElement('canvas');
+    const width = 1600;
+    const height = 500;
+    canvas.width = width;
+    canvas.height = height;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+      URL.revokeObjectURL(objectUrl);
+      reject(new Error('Could not prepare image.'));
+      return;
+    }
+
+    ctx.fillStyle = '#09090b';
+    ctx.fillRect(0, 0, width, height);
+
+    const scale = Math.max(width / img.width, height / img.height);
+    const drawWidth = img.width * scale;
+    const drawHeight = img.height * scale;
+    const x = (width - drawWidth) / 2;
+    const y = (height - drawHeight) / 2;
+
+    ctx.drawImage(img, x, y, drawWidth, drawHeight);
+    resolve(canvas.toDataURL('image/jpeg', 0.9));
+    URL.revokeObjectURL(objectUrl);
+  };
+
+  img.onerror = () => {
+    URL.revokeObjectURL(objectUrl);
+    reject(new Error('This image could not be processed.'));
+  };
+
+  img.src = objectUrl;
+});
 
 const ClubManage = () => {
   const { id } = useParams();
@@ -17,24 +59,36 @@ const ClubManage = () => {
     status: 'loading',
     isAdmin: false,
     members: [],
+    club: null,
   });
 
+  const [form, setForm] = useState({
+    background_url: '',
+    description: '',
+  });
   const [actionError, setActionError] = useState('');
   const [processingId, setProcessingId] = useState(null);
+  const [saving, setSaving] = useState(false);
 
   const loadMembers = async () => {
-    const { data } = await getClubMembers(id);
+    const [clubResponse, membersResponse] = await Promise.all([
+      getClub(id),
+      getClubMembers(id),
+    ]);
 
-    const members = Array.isArray(data) ? data : [];
-
-    const currentMembership = members.find(
-      (member) => member.user_id === user?.id
-    );
+    const club = clubResponse.data;
+    const members = Array.isArray(membersResponse.data) ? membersResponse.data : [];
+    const currentMembership = members.find((member) => member.user_id === user?.id);
 
     setState({
       status: 'success',
       isAdmin: currentMembership?.role === 'admin',
       members,
+      club,
+    });
+    setForm({
+      background_url: club.background_url || '',
+      description: club.description || '',
     });
   };
 
@@ -43,20 +97,26 @@ const ClubManage = () => {
 
     const load = async () => {
       try {
-        const { data } = await getClubMembers(id);
+        const [clubResponse, membersResponse] = await Promise.all([
+          getClub(id),
+          getClubMembers(id),
+        ]);
 
         if (!mounted) return;
 
-        const members = Array.isArray(data) ? data : [];
-
-        const currentMembership = members.find(
-          (member) => member.user_id === user?.id
-        );
+        const club = clubResponse.data;
+        const members = Array.isArray(membersResponse.data) ? membersResponse.data : [];
+        const currentMembership = members.find((member) => member.user_id === user?.id);
 
         setState({
           status: 'success',
           isAdmin: currentMembership?.role === 'admin',
           members,
+          club,
+        });
+        setForm({
+          background_url: club.background_url || '',
+          description: club.description || '',
         });
       } catch (error) {
         if (!mounted) return;
@@ -65,6 +125,7 @@ const ClubManage = () => {
           status: 'error',
           isAdmin: false,
           members: [],
+          club: null,
         });
       }
     };
@@ -75,6 +136,48 @@ const ClubManage = () => {
       mounted = false;
     };
   }, [id, user?.id]);
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setForm((current) => ({ ...current, [name]: value }));
+  };
+
+  const handleBackgroundUpload = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const bannerUrl = await toBannerDataUrl(file);
+      setForm((current) => ({ ...current, background_url: bannerUrl }));
+    } catch (error) {
+      setActionError(error.message || 'Could not upload that image.');
+    }
+  };
+
+  const handleSaveClub = async (event) => {
+    event.preventDefault();
+    if (saving) return;
+
+    setActionError('');
+    setSaving(true);
+
+    try {
+      const payload = {
+        description: form.description.trim() || null,
+        background_url: form.background_url.trim() || null,
+      };
+      const { data } = await updateClub(id, payload);
+      setState((current) => ({ ...current, club: data }));
+      setForm({
+        background_url: data.background_url || '',
+        description: data.description || '',
+      });
+    } catch (error) {
+      setActionError(error.response?.data?.error || 'Could not save this club settings.');
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const handleRoleChange = async (member) => {
     if (processingId) return;
@@ -229,6 +332,129 @@ const ClubManage = () => {
             {actionError}
           </div>
         )}
+
+        <form
+          onSubmit={handleSaveClub}
+          style={{
+            marginBottom: '24px',
+            background: '#211f18',
+            border: '1px solid #3a3528',
+            borderRadius: '12px',
+            padding: '20px',
+            display: 'grid',
+            gap: '16px',
+          }}
+        >
+          <div>
+            <p style={{ margin: '0 0 8px', color: '#ffbf1a', fontSize: '11px', fontWeight: 800, letterSpacing: '1.5px', textTransform: 'uppercase' }}>
+              Club appearance
+            </p>
+            <h2 style={{ margin: 0, fontSize: '22px' }}>Customize your club</h2>
+          </div>
+
+          <div style={{ display: 'grid', gap: '12px' }}>
+            <label style={{ display: 'grid', gap: '8px' }}>
+              <span style={{ color: '#f4efe5', fontWeight: 600 }}>Club background</span>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleBackgroundUpload}
+                style={{
+                  width: '100%',
+                  boxSizing: 'border-box',
+                  background: '#181611',
+                  color: '#f4efe5',
+                  border: '1px solid #4a4436',
+                  borderRadius: '8px',
+                  padding: '10px 12px',
+                }}
+              />
+            </label>
+
+            <label style={{ display: 'grid', gap: '8px' }}>
+              <span style={{ color: '#f4efe5', fontWeight: 600 }}>Or paste a background image URL</span>
+              <input
+                type="url"
+                name="background_url"
+                value={form.background_url}
+                onChange={handleInputChange}
+                placeholder="https://example.com/club-banner.jpg"
+                style={{
+                  width: '100%',
+                  boxSizing: 'border-box',
+                  background: '#181611',
+                  color: '#f4efe5',
+                  border: '1px solid #4a4436',
+                  borderRadius: '8px',
+                  padding: '10px 12px',
+                }}
+              />
+            </label>
+          </div>
+
+          {form.background_url && (
+            <div
+              style={{
+                borderRadius: '12px',
+                overflow: 'hidden',
+                border: '1px solid #4a4436',
+                background: '#181611',
+                height: '200px',
+                position: 'relative',
+                boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.04)',
+              }}
+            >
+              <img
+                src={form.background_url}
+                alt="Club banner preview"
+                style={{
+                  display: 'block',
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  objectPosition: 'center',
+                  backgroundColor: '#181611',
+                }}
+              />
+            </div>
+          )}
+
+          <label style={{ display: 'grid', gap: '8px' }}>
+            <span style={{ color: '#f4efe5', fontWeight: 600 }}>Club text / description</span>
+            <textarea
+              name="description"
+              rows={5}
+              value={form.description}
+              onChange={handleInputChange}
+              placeholder="Tell members what this club is about..."
+              style={{
+                width: '100%',
+                boxSizing: 'border-box',
+                background: '#181611',
+                color: '#f4efe5',
+                border: '1px solid #4a4436',
+                borderRadius: '8px',
+                padding: '10px 12px',
+                resize: 'vertical',
+              }}
+            />
+          </label>
+
+          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+            <button type="submit" disabled={saving} style={{
+              background: '#ffbf1a',
+              color: '#181207',
+              border: 'none',
+              borderRadius: '8px',
+              padding: '10px 16px',
+              fontWeight: 700,
+              cursor: saving ? 'not-allowed' : 'pointer',
+              opacity: saving ? 0.7 : 1,
+            }}>
+              {saving ? 'Saving...' : 'Save club settings'}
+            </button>
+          </div>
+        </form>
 
         {/* MEMBERS */}
         <div

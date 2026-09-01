@@ -40,6 +40,7 @@ const ClubCard = ({ club, onMembershipChange }) => {
     0;
 
   const image =
+    club.background_url ||
     club.cover_image ||
     club.coverImage ||
     club.image ||
@@ -87,6 +88,8 @@ const ClubCard = ({ club, onMembershipChange }) => {
                 height: '100%',
                 maxWidth: '100%',
                 objectFit: 'cover',
+                objectPosition: 'center',
+                backgroundColor: '#181611',
               }}
             />
           ) : (
@@ -129,6 +132,8 @@ const ClubCard = ({ club, onMembershipChange }) => {
                   width: '100%',
                   height: '100%',
                   objectFit: 'cover',
+                  objectPosition: 'center',
+                  backgroundColor: '#181611',
                 }}
               />
             ) : (
