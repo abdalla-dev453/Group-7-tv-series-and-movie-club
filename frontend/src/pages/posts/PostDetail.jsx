@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { getPost } from '../../services/postService';
 import { getReviewsForPost, createReview, updateReview } from '../../services/reviewService';
 import { useAuth } from '../../context/AuthContext';
+import theme, { buttonStyles } from '../../theme';
 
 function PostDetail() {
   const { id } = useParams();
@@ -28,8 +29,6 @@ function PostDetail() {
       .finally(() => setLoading(false));
   }, [id]);
 
-  // Backend rejects this for the post's own author (self-review guard, fix 1.2) —
-  // reflect that in the UI rather than letting it round-trip to a 403.
   const isOwnPost = post && user && post.user_id === user.id;
   const myReview = reviews.find((r) => r.user_id === user?.id);
 
@@ -49,70 +48,123 @@ function PostDetail() {
   };
 
   if (loading) return <p style={{ padding: 24 }}>Loading...</p>;
-  if (error) return <p style={{ padding: 24, color: 'var(--danger)' }}>{error}</p>;
+  if (error) return <p style={{ padding: 24, color: theme.color.textFaint }}>{error}</p>;
   if (!post) return null;
 
   return (
-    <div style={{ maxWidth: 640, margin: '0 auto', padding: 24 }}>
-      {/* tmdb_id is optional — older posts or ones created without a movie
-          pick won't have it, so fall back to plain text rather than a dead link */}
-      {post.tmdb_id ? (
-        <Link to={`/movies/${post.tmdb_id}`}>
-          <h2 style={{ color: 'var(--amber)' }}>{post.movie_title}</h2>
-        </Link>
-      ) : (
-        <h2>{post.movie_title}</h2>
-      )}
-      <p style={{ color: 'var(--text-dim)' }}>{post.author_name}</p>
-      <p>{post.description}</p>
+    <div style={{ maxWidth: 760, margin: '0 auto', padding: '32px 24px 48px' }}>
+      <div
+        style={{
+          background: theme.color.coalCard,
+          border: `1px solid ${theme.color.coalBorder}`,
+          borderRadius: theme.radius.lg,
+          padding: '28px 24px',
+          boxShadow: theme.shadow.card,
+        }}
+      >
+        {post.tmdb_id ? (
+          <Link to={`/movies/${post.tmdb_id}`} style={{ textDecoration: 'none' }}>
+            <h2 style={{ color: theme.color.amber, margin: 0, fontFamily: theme.font.heading, fontSize: 36 }}>{post.movie_title}</h2>
+          </Link>
+        ) : (
+          <h2 style={{ margin: 0, fontFamily: theme.font.heading, fontSize: 36 }}>{post.movie_title}</h2>
+        )}
 
-      <h3 style={{ marginTop: 32 }}>Reviews ({reviews.length})</h3>
-      {reviews.map((r) => (
-        <div key={r.id} style={{ borderBottom: '1px solid var(--border)', padding: '12px 0' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <strong>{r.author_name}</strong>
-            <span aria-label={`${r.rating} out of 5 stars`}>
-              {[1, 2, 3, 4, 5].map((value) => (
-                <span key={value} style={{ color: value <= r.rating ? 'var(--amber)' : 'var(--text-dim)' }}>★</span>
-              ))}
-            </span>
-          </div>
-          <p>{r.comment_text}</p>
-        </div>
-      ))}
+        <p style={{ color: theme.color.textDim, margin: '8px 0 16px' }}>by {post.author_name}</p>
+        <p style={{ margin: 0, color: theme.color.text, lineHeight: 1.7 }}>{post.description}</p>
 
-      {!isOwnPost && (
-        <div style={{ marginTop: 20 }}>
-          <div role="group" aria-label="Rating">
-            {[1, 2, 3, 4, 5].map((value) => (
-              <button
-                key={value}
-                type="button"
-                onClick={() => setRating(value)}
-                aria-label={`${value} out of 5 stars`}
-                aria-pressed={rating === value}
+        <div style={{ marginTop: 32 }}>
+          <h3 style={{ margin: '0 0 16px', color: theme.color.text, fontSize: 18, letterSpacing: '0.02em' }}>
+            Reviews ({reviews.length})
+          </h3>
+
+          <div style={{ display: 'grid', gap: 14 }}>
+            {reviews.map((r) => (
+              <div
+                key={r.id}
                 style={{
-                  border: 0,
-                  background: 'transparent',
-                  color: value <= rating ? 'var(--amber)' : 'var(--text-dim)',
-                  cursor: 'pointer',
-                  fontSize: 28,
-                  padding: '0 3px',
+                  background: 'rgba(255,255,255,0.02)',
+                  border: `1px solid ${theme.color.coalBorder}`,
+                  borderRadius: theme.radius.md,
+                  padding: '16px 18px',
                 }}
               >
-                ★
-              </button>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', marginBottom: 8 }}>
+                  <strong style={{ color: theme.color.text }}>{r.author_name}</strong>
+                  <span aria-label={`${r.rating} out of 5 stars`} style={{ display: 'inline-flex', gap: 2 }}>
+                    {[1, 2, 3, 4, 5].map((value) => (
+                      <span key={value} style={{ color: value <= r.rating ? theme.color.amber : theme.color.textFaint, fontSize: 13 }}>★</span>
+                    ))}
+                  </span>
+                </div>
+                <p style={{ margin: 0, color: theme.color.textDim, lineHeight: 1.7 }}>{r.comment_text}</p>
+              </div>
             ))}
           </div>
-          <textarea
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-            placeholder={myReview ? 'Edit your review...' : 'Write a review...'}
-            style={{ width: '100%', minHeight: 80 }}
-          />
-          <button type="button" disabled={!rating} onClick={submitReview}>{myReview ? 'Update review' : 'Post review'}</button>
         </div>
-      )}
+
+        {!isOwnPost && (
+          <div style={{ marginTop: 28, paddingTop: 20, borderTop: `1px solid ${theme.color.coalBorder}` }}>
+            <p style={{ margin: '0 0 10px', color: theme.color.textDim, fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase', fontSize: 12 }}>
+              Your review
+            </p>
+            <div role="group" aria-label="Rating" style={{ display: 'flex', gap: 4, marginBottom: 12 }}>
+              {[1, 2, 3, 4, 5].map((value) => (
+                <button
+                  key={value}
+                  type="button"
+                  onClick={() => setRating(value)}
+                  aria-label={`${value} out of 5 stars`}
+                  aria-pressed={rating === value}
+                  style={{
+                    border: 0,
+                    background: 'transparent',
+                    color: value <= rating ? theme.color.amber : theme.color.textFaint,
+                    cursor: 'pointer',
+                    fontSize: 28,
+                    padding: '0 2px',
+                    lineHeight: 1,
+                  }}
+                >
+                  ★
+                </button>
+              ))}
+            </div>
+
+            <textarea
+              value={draft}
+              onChange={(e) => setDraft(e.target.value)}
+              placeholder={myReview ? 'Edit your review...' : 'Write a review...'}
+              style={{
+                width: '100%',
+                minHeight: 110,
+                resize: 'vertical',
+                background: theme.color.coal,
+                border: `1px solid ${theme.color.coalBorder}`,
+                borderRadius: theme.radius.md,
+                color: theme.color.text,
+                padding: '12px 14px',
+                boxSizing: 'border-box',
+                marginBottom: 16,
+              }}
+            />
+
+            <button
+              type="button"
+              disabled={!rating}
+              onClick={submitReview}
+              style={{
+                ...buttonStyles.base,
+                ...buttonStyles.primary,
+                ...( !rating ? buttonStyles.disabled : {}),
+                minWidth: 150,
+              }}
+            >
+              {myReview ? 'Update review' : 'Post review'}
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
