@@ -119,27 +119,48 @@ const ProfileEdit = () => {
   if (loading) return <section className="page-panel"><p className="muted">Loading profile...</p></section>;
   return (
     <form className="page-panel profile-form" onSubmit={submit}>
-      <h1>Edit profile</h1>
+      <h1 className="profile-form__title">Edit profile</h1>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 20 }}>
+      <div className="profile-form__header">
         <img
           src={form.profileImageUrl || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256"><rect width="256" height="256" fill="%23f5b942"/><text x="50%" y="54%" text-anchor="middle" fill="%231a1204" font-size="110" font-family="Arial" font-weight="700">' + (form.username || 'U').slice(0, 1).toUpperCase() + '</text></svg>'}
           alt="Profile preview"
-          width={64}
-          height={64}
-          style={{ width: 64, height: 64, objectFit: 'cover', borderRadius: '50%', border: '2px solid #f5b942' }}
+          className="profile-form__avatar"
         />
-        <small className="muted">Fixed 256×256 square photo</small>
+        <small className="profile-form__meta">Fixed 256×256 square photo</small>
       </div>
 
-      <label>Username<input value={form.username} onChange={(event) => setForm({ ...form, username: event.target.value })} required /></label>
-      <label className="upload-input">
-        <span>Profile photo</span>
-        <input type="file" accept="image/*" onChange={handleImageUpload} />
+      <label className="profile-form__field">
+        <span>Username</span>
+        <input
+          value={form.username}
+          onChange={(event) => setForm({ ...form, username: event.target.value })}
+          required
+        />
       </label>
-      <label>Bio<textarea value={form.bio} onChange={(event) => setForm({ ...form, bio: event.target.value })} rows="4" /></label>
+
+      <label className="profile-form__field profile-form__upload">
+        <span>Profile photo</span>
+        <div className="profile-form__uploadBox">
+          <input type="file" accept="image/*" onChange={handleImageUpload} />
+          <span>{form.profileImageUrl ? 'Replace photo' : 'Choose file'}</span>
+        </div>
+      </label>
+
+      <label className="profile-form__field">
+        <span>Bio</span>
+        <textarea
+          value={form.bio}
+          onChange={(event) => setForm({ ...form, bio: event.target.value })}
+          rows="5"
+        />
+      </label>
+
       {error && <p className="error-message">{error}</p>}
-      <button className="button" type="submit" disabled={saving}>{saving ? 'Saving...' : 'Save profile'}</button>
+
+      <button className="button profile-form__button" type="submit" disabled={saving}>
+        {saving ? 'Saving...' : 'Save profile'}
+      </button>
     </form>
   );
 };
