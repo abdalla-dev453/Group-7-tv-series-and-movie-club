@@ -566,23 +566,46 @@ input:focus {
   border-bottom: 1px solid var(--border);
 }
 
-.club-tile,
-.club-card,
-.watched-item,
-.feed-list > article {
-  transition:
-    background 160ms ease,
-    border-color 160ms ease,
-    transform 160ms ease;
+.club-tile, .club-card, .movie-card, .watched-item, .feed-list > article {
+  transition: background 160ms ease, border-color 160ms ease, transform 160ms ease;
 }
 
-.club-tile:hover,
-.club-card:hover,
-.watched-item:hover,
-.feed-list > article:hover {
+.club-tile:hover, .club-card:hover, .movie-card:hover, .watched-item:hover, .feed-list > article:hover {
   background: var(--card-hover);
   border-color: #655329;
   transform: translateY(-2px);
+}
+
+.movie-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+
+.movie-card__poster {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  display: block;
+  object-fit: cover;
+  background: var(--panel);
+}
+
+.movie-card h3 {
+  margin: 0.6rem 0.75rem 0.15rem;
+  font-size: 0.95rem;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.movie-card small {
+  margin: 0 0.75rem 0.75rem;
+  color: var(--muted);
 }
 
 .discover-person__identity {

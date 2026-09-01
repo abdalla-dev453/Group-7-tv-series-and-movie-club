@@ -9,13 +9,6 @@
     border-color 250ms ease,
     box-shadow 250ms ease;
 }
-
-.club-card:hover {
-  transform: translateY(-8px);
-  border-color: var(--accent);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-}
-
 .club-card__link {
   display: block;
   color: inherit;
