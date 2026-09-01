@@ -53,7 +53,7 @@ const ClubCreate = () => {
 
   return (
     <main className="page-container">
-      <form className="page-panel form-stack" onSubmit={submit}>
+      <form className="page-panel form-stack club-create-form" onSubmit={submit}>
         <p className="eyebrow">Open the room</p>
 
         <h1>Start a proper club.</h1>
