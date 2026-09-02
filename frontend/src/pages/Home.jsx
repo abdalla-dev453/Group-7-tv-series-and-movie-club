@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import theme from "../theme.js";
 import { getTrendingMovies } from "../services/movieService";
-import { getClubs } from "../services/clubService";
+import { getClubs, getPublicClubs } from "../services/clubService";
 import { getFeed } from "../services/postService";
 
 const Home = () => {
@@ -11,15 +12,15 @@ const Home = () => {
   const [recentPosts, setRecentPosts] = useState([]);
   const [currentFeaturedIndex, setCurrentFeaturedIndex] = useState(0);
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
 
   useEffect(() => {
     let active = true;
 
-    Promise.allSettled([
-      getTrendingMovies(),
-      getClubs(1, 50),
-      getFeed(1, 4),
-    ]).then(([trendingRes, clubsRes, feedRes]) => {
+    const clubRequest = user ? getClubs(1, 50) : getPublicClubs(1, 6);
+    const feedRequest = user ? getFeed(1, 4) : Promise.resolve(null);
+
+    Promise.allSettled([getTrendingMovies(), clubRequest, feedRequest]).then(([trendingRes, clubsRes, feedRes]) => {
       if (!active) return;
 
       if (trendingRes.status === "fulfilled") {
@@ -28,10 +29,10 @@ const Home = () => {
 
       if (clubsRes.status === "fulfilled") {
         const allClubs = clubsRes.value.data?.items || clubsRes.value.data || [];
-        setMyClubs(allClubs.filter((c) => c.is_member));
+        setMyClubs(user ? allClubs.filter((c) => c.is_member) : allClubs);
       }
 
-      if (feedRes.status === "fulfilled") {
+      if (feedRes?.status === "fulfilled" && feedRes.value) {
         setRecentPosts(feedRes.value.data?.items || feedRes.value.data || []);
       }
 
@@ -41,7 +42,7 @@ const Home = () => {
     return () => {
       active = false;
     };
-  }, []);
+  }, [user]);
 
   // Rotate the hero through up to 3 trending movies
   useEffect(() => {
@@ -161,8 +162,8 @@ const Home = () => {
             {/* ================= CLUBS ================= */}
             <section style={{ marginBottom: "30px" }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "12px" }}>
-                <h2 style={{ fontFamily: theme.font.heading, fontSize: "21px", margin: 0 }}>My Active Clubs</h2>
-                <Link to="/clubs" style={{ color: theme.color.textDim, fontSize: "12px", textDecoration: "none" }}>View all →</Link>
+                <h2 style={{ fontFamily: theme.font.heading, fontSize: "21px", margin: 0 }}>{user ? "My Active Clubs" : "Active Clubs"}</h2>
+                <Link to={user ? "/clubs" : "/signup"} style={{ color: theme.color.textDim, fontSize: "12px", textDecoration: "none" }}>{user ? "View all →" : "Join the club →"}</Link>
               </div>
 
               {!loading && myClubs.length === 0 && (
@@ -188,7 +189,9 @@ const Home = () => {
                       gap: "12px",
                     }}
                   >
-                    <div
+                    {club.background_url ? (
+                      <img src={club.background_url} alt="" style={{ width: "40px", height: "40px", flexShrink: 0, borderRadius: "8px", objectFit: "cover" }} />
+                    ) : <div
                       style={{
                         width: "40px",
                         height: "40px",
@@ -204,12 +207,13 @@ const Home = () => {
                       }}
                     >
                       {club.name?.[0]?.toUpperCase() || "?"}
-                    </div>
+                    </div>}
                     <div>
                       <div style={{ fontSize: "13px", fontWeight: 700, marginBottom: "4px" }}>{club.name}</div>
                       <div style={{ color: theme.color.textDim, fontSize: "11px" }}>
                         {club.member_count ?? 0} members
                       </div>
+                      {!user && <div style={{ color: theme.color.amber, fontSize: "11px", marginTop: "5px" }}>Log in to join conversation</div>}
                     </div>
                   </Link>
                 ))}
@@ -220,7 +224,7 @@ const Home = () => {
             <section>
               <div className="home-recommendations" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
                 <h2 style={{ fontFamily: theme.font.heading, fontSize: "21px", margin: 0 }}>Trending Now</h2>
-                <Link to="/movies" style={{ color: theme.color.textDim, fontSize: "12px", textDecoration: "none" }}>View all →</Link>
+                <Link to={user ? "/movies" : "/login"} style={{ color: theme.color.textDim, fontSize: "12px", textDecoration: "none" }}>{user ? "View all →" : "Log in to discuss →"}</Link>
               </div>
 
               {!loading && trending.length === 0 && (
@@ -229,7 +233,7 @@ const Home = () => {
 
               <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: "14px" }}>
                 {trending.slice(0, 4).map((movie) => (
-                  <Link key={movie.tmdb_id} to={`/movies/${movie.tmdb_id}`} style={{ textDecoration: "none", color: theme.color.text }}>
+                  <Link key={movie.tmdb_id} to={user ? `/movies/${movie.tmdb_id}` : "/login"} style={{ textDecoration: "none", color: theme.color.text }}>
                     <div style={{ height: "230px", borderRadius: "7px", overflow: "hidden", background: theme.color.coalCard, border: `1px solid ${theme.color.coalBorder}` }}>
                       {movie.poster_url ? (
                         <img src={movie.poster_url} alt={movie.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
@@ -237,6 +241,7 @@ const Home = () => {
                     </div>
                     <div style={{ fontSize: "13px", fontWeight: 700, marginTop: "8px" }}>{movie.title}</div>
                     <div style={{ color: theme.color.textDim, fontSize: "11px", marginTop: "4px" }}>{movie.year}</div>
+                    {!user && <div style={{ color: theme.color.amber, fontSize: "11px", marginTop: "5px" }}>Log in to join the conversation</div>}
                   </Link>
                 ))}
               </div>

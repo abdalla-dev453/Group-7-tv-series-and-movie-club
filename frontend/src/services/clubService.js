@@ -1,5 +1,8 @@
 import api from './api.js';
 
+export const getPublicClubs = (page = 1, perPage = 6) =>
+  api.get('/api/clubs/public', { params: { page, perPage } });
+
 export const getClubs = async (page = 1, perPage = 10) =>
   api.get('/api/clubs', {
     params: { page, perPage },
