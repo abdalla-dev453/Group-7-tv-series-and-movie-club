@@ -7,9 +7,13 @@ body {
 }
 
 main {
-  margin-left: 140px;
+  margin-left: 220px;
 
   min-height: 100vh;
+}
+
+.home-page {
+  margin-left: 0;
 }
 
 @media (max-width: 720px) {
