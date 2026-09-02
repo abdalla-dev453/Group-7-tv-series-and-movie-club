@@ -13,7 +13,7 @@ const Footer = () => {
               marginRight: "0.4rem",
             }}
           />
-          No, we won't pause the discussion while you get snacks.
+          No, we won&apos;t pause the movie while you get snacks.
         </p>
 
         <p style={styles.copyright}>
@@ -27,32 +27,32 @@ const Footer = () => {
 
 const styles = {
   footer: {
+    width: "100%",
+    boxSizing: "border-box",
     background: "rgba(9, 9, 11, 0.9)",
     color: "#e4e4e7",
     fontFamily: "Inter, system-ui, sans-serif",
-    paddingTop: "1.5rem",
-    paddingBottom: "1.5rem",
+    padding: "1.5rem 1rem",
     marginTop: "auto",
     borderTop: "1px solid rgba(255, 255, 255, 0.08)",
   },
 
   bottomBar: {
-    maxWidth: "1200px",
-    margin: "0 auto",
-    padding: "0 1.5rem",
+    width: "100%",
     display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: "column",
+    justifyContent: "center",
     alignItems: "center",
-    flexWrap: "wrap",
-    gap: "1rem",
+    gap: "0.6rem",
     fontSize: "0.85rem",
     color: "#71717a",
+    textAlign: "center",
   },
 
   joke: {
     display: "flex",
     alignItems: "center",
+    justifyContent: "center",
     margin: 0,
     color: "#a1a1aa",
     fontStyle: "italic",
@@ -61,7 +61,9 @@ const styles = {
   copyright: {
     display: "flex",
     alignItems: "center",
+    justifyContent: "center",
     margin: 0,
+    color: "#71717a",
   },
 };
 
