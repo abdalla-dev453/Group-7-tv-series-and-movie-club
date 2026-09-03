@@ -11,16 +11,18 @@ import {
   Users,
   Film,
   Menu,
+  ShieldCheck,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext.jsx";
 import theme from "../theme.js";
 
 const links = [
-  { to: '/', label: 'Home', icon: House },
-  { to: '/feed', label: 'Feed', icon: MessageSquareText },
-  { to: '/discover', label: 'Discover', icon: Compass },
-  { to: '/clubs', label: 'Clubs', icon: Users },
-  { to: '/watched', label: 'Watched', icon: Film },
+  { to: "/", label: "Home", icon: House },
+  { to: "/feed", label: "Feed", icon: MessageSquareText },
+  { to: "/discover", label: "Discover", icon: Compass },
+  { to: "/clubs", label: "Clubs", icon: Users },
+  { to: "/watched", label: "Watched", icon: Film },
+  { to: "/admin-portal", label: "Admin", icon: ShieldCheck },
 ];
 
 export default function Navbar() {

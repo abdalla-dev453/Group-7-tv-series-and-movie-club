@@ -44,6 +44,10 @@ main > * {
   background: rgba(39, 39, 42, 0.5);
 }
 
+.home-page {
+  margin-left: 0;
+}
+
 @media (max-width: 720px) {
   main {
     margin-left: 0;
