@@ -29,6 +29,15 @@ export const leaveClub = async (id) =>
 export const getClubMembers = async (id) =>
   api.get(`/api/clubs/${id}/members`);
 
+export const getClubMessages = async (clubId) =>
+  api.get(`/api/clubs/${clubId}/messages`);
+
+export const createClubMessage = async (clubId, message) =>
+  api.post(`/api/clubs/${clubId}/messages`, { message });
+
+export const deleteClubMessage = async (clubId, messageId) =>
+  api.delete(`/api/clubs/${clubId}/messages/${messageId}`);
+
 // Admin actions
 export const updateMemberRole = async (clubId, userId, role) =>
   api.put(`/api/clubs/${clubId}/members/${userId}`, {
