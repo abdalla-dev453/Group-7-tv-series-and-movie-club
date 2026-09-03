@@ -1,15 +1,47 @@
 body {
   margin: 0;
-  background: var(--bg, #09090b);
+  background:
+    radial-gradient(circle at 1px 1px, rgba(255,255,255,0.12) 1px, transparent 0) 0 0 / 22px 22px,
+    #17171b;
+  color-scheme: dark;
 }
+
+html {
+  scroll-behavior: smooth;
+}
+
 #root {
   min-height: 100vh;
 }
 
 main {
   margin-left: 220px;
-
   min-height: 100vh;
+  padding: 30px 24px 36px;
+  box-sizing: border-box;
+}
+
+main > * {
+  border-radius: 24px;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(212, 175, 55, 0.8) rgba(39, 39, 42, 0.8);
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.7);
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-track {
+  background: rgba(39, 39, 42, 0.5);
 }
 
 .home-page {

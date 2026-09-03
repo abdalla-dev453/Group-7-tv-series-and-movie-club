@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { ArrowRight, Search, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import MovieCard from '../../components/movies/MovieCard';
 import ClubCard from '../Clubs/ClubCard';
@@ -138,8 +139,16 @@ function Discover() {
   return (
     <div className="discover-page">
       <header className="discover-header">
-        <div><p className="discover-kicker">Your next watch is here</p><h1>Discover</h1><p className="discover-intro">Find something worth talking about, then bring the right people into the conversation.</p></div>
-        <Link to="/movies" className="discover-search-link">Search the catalogue <span aria-hidden="true">→</span></Link>
+        <div>
+          <p className="section-kicker">Your next watch is here</p>
+          <h1>Discover</h1>
+          <p className="discover-intro">Find something worth talking about, then bring the right people into the conversation.</p>
+        </div>
+        <Link to="/movies" className="discover-search-link">
+          <Search size={15} />
+          Search the catalogue
+          <ArrowRight size={15} />
+        </Link>
       </header>
 
       {error && <p className="discover-message discover-message--error">{error}</p>}
@@ -157,7 +166,13 @@ function Discover() {
           {!loading && content.clubs.length === 0 && <p className="discover-muted">No clubs to suggest yet.</p>}
         </section>
         <section className="discover-section" aria-labelledby="people-heading">
-          <div className="discover-section__heading"><div><p className="discover-kicker">Make a connection</p><h2 id="people-heading">People to follow</h2></div></div>
+          <div className="discover-section__heading">
+            <div>
+              <p className="discover-kicker">Make a connection</p>
+              <h2 id="people-heading">People to follow</h2>
+            </div>
+            <span className="panel-chip"><Users size={14} /> Find friends</span>
+          </div>
           <div style={{ marginBottom: '12px' }}>
             <input
               type="text"

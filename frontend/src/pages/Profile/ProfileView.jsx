@@ -107,45 +107,41 @@ const ProfileView = () => {
 
   return (
     <section className="page-panel profile-page">
+      <div className="profile-hero">
+        <div className="profile-hero__avatar-wrap">
+          <UserAvatar name={name} imageUrl={getProfileImage(profile)} size={256} className="profile-avatar" />
+        </div>
 
-      {/* Avatar */}
-      <UserAvatar name={name} imageUrl={getProfileImage(profile)} size={256} className="profile-avatar" />
+        <div className="profile-hero__content">
+          <h1>{name}</h1>
+          <p className="profile-bio">
+            {profile.bio || 'Cinema enthusiast'}
+          </p>
 
-      {/* Profile information */}
-      <h1>{name}</h1>
+          <div className="profile-stats">
+            <div className="profile-stat">
+              <strong>{profile.post_count ?? profile.posts_count ?? 0}</strong>
+              <span>Posts</span>
+            </div>
+            <div className="profile-stat">
+              <strong>{profile.follower_count ?? profile.followers_count ?? 0}</strong>
+              <span>Followers</span>
+            </div>
+            <div className="profile-stat">
+              <strong>{profile.following_count ?? profile.following?.length ?? 0}</strong>
+              <span>Following</span>
+            </div>
+          </div>
 
-      <p className="muted">
-        {profile.bio || 'Cinema enthusiast'}
-      </p>
-
-      {/* Stats */}
-      <div className="profile-stats">
-        <span>
-          <strong>
-            {profile.post_count ??
-              profile.posts_count ??
-              0}
-          </strong>{' '}
-          posts
-        </span>
-
-        <span>
-          <strong>
-            {profile.follower_count ??
-              profile.followers_count ??
-              0}
-          </strong>{' '}
-          followers
-        </span>
-
-        <span>
-          <strong>
-            {profile.following_count ??
-              profile.following?.length ??
-              0}
-          </strong>{' '}
-          following
-        </span>
+          <div className="profile-actions">
+            {!isOwnProfile && <FollowButton userId={profile.id || id} />}
+            {isOwnProfile && (
+              <Link className="button" to={`/profile/${id}/edit`}>
+                Edit profile
+              </Link>
+            )}
+          </div>
+        </div>
       </div>
 
       {mutual.length > 0 && (
@@ -217,34 +213,6 @@ const ProfileView = () => {
     </div>
   </>
 )}
-      {/* ACTIONS */}
-      <div
-        style={{
-          display: 'flex',
-          gap: '10px',
-          marginTop: '20px',
-          alignItems: 'center',
-        }}
-      >
-
-        {/* Don't show Follow on your own profile */}
-        {!isOwnProfile && (
-          <FollowButton
-            userId={profile.id || id}
-          />
-        )}
-
-        {/* Only show Edit on your own profile */}
-        {isOwnProfile && (
-          <Link
-            className="button"
-            to={`/profile/${id}/edit`}
-          >
-            Edit profile
-          </Link>
-        )}
-
-      </div>
     </section>
   );
 };

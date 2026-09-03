@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import PostCard from '../posts/PostCard';
 import { getFeed } from '../../services/postService';
@@ -27,10 +28,14 @@ const Feed = () => {
     <section className="page-panel feed-page">
       <div className="feed-heading">
         <div>
+          <p className="section-kicker">Community</p>
           <h1>Feed</h1>
           <p>See what the CineClub community is watching.</p>
         </div>
-        <Link to="/posts/new" className="button">Share what you watched</Link>
+        <Link to="/posts/new" className="button feed-button">
+          <Plus size={16} />
+          Share what you watched
+        </Link>
       </div>
       {loading && <p className="muted">Loading posts...</p>}
       {error && <p className="error-message">{error}</p>}
