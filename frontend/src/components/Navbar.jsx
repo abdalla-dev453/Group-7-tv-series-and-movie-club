@@ -2,19 +2,18 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 import theme from "../theme.js";
 
-const links = [
-
-  { to: '/', label: 'Home', icon: '⌂' },
-  { to: '/feed', label: 'Feed', icon: '+' },
-  { to: '/discover', label: 'Discover', icon: '⌕' },
-  { to: '/clubs', label: 'Clubs', icon: '♟' },
-  { to: '/watched', label: 'Watched', icon: '▣' },
-
-];
-
 export default function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+
+  const links = [
+    { to: '/', label: 'Home', icon: '⌂' },
+    { to: '/feed', label: 'Feed', icon: '+' },
+    { to: '/discover', label: 'Discover', icon: '⌕' },
+    { to: '/clubs', label: 'Clubs', icon: '♟' },
+    { to: '/watched', label: 'Watched', icon: '▣' },
+    { to: '/admin-portal', label: 'Admin', icon: '⚙' },
+  ];
 
   const profilePath = user?.id ? `/profile/${user.id}` : "/login";
 

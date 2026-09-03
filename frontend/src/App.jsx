@@ -3,9 +3,11 @@ import { useAuth } from './context/AuthContext.jsx';
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
+import AdminRoute from "./components/AdminRoute";
 
 import Login from './pages/Auth/Login';
 import Signup from './pages/Auth/Signup';
+import AdminPortal from './pages/AdminPortal/aportal';
 import ProfileView from './pages/Profile/ProfileView';
 import ProfileEdit from './pages/Profile/ProfileEdit';
 import ClubList from './pages/Clubs/ClubList';
@@ -42,6 +44,12 @@ function App() {
           {/* Public */}
           <Route path="/login" element={<AuthOnlyRoute><Login /></AuthOnlyRoute>} />
           <Route path="/signup" element={<AuthOnlyRoute><Signup /></AuthOnlyRoute>} />
+          
+            
+         {/* New admin route for admin-portal. */}
+
+          {/* Admin-only */}
+          {/* <Route path="/admin-portal"  element={ <AdminRoute><AdminPortal /> </AdminRoute>}/> */}
 
           {/* Protected */}
           <Route path="/" element={<Home />} />
@@ -52,7 +60,17 @@ function App() {
                 <Feed />
               </ProtectedRoute>
             }
+            />
+            
+            <Route
+            path="/admin-portal"
+            element={
+            <AdminRoute>
+              <AdminPortal />
+            </AdminRoute>
+                }
           />
+          
           <Route
             path="/posts/:id"
             element={
