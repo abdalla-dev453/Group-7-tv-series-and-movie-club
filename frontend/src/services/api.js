@@ -3,8 +3,11 @@ import axios from 'axios';
 export const TOKEN_KEY = 'reelclub_token';
 export const USER_KEY = 'reelclub_user';
 
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || import.meta.env.REACT_APP_API_URL || '',
+const configuredApiUrl = import.meta.env.VITE_API_URL || import.meta.env.REACT_APP_API_URL;
+const apiBaseUrl = (configuredApiUrl || 'https://series-movies-club-backend.onrender.com').replace(/\/$/, '');
+
+gitconst api = axios.create({
+  baseURL: apiBaseUrl,
 });
 
 // Attach the JWT to every outgoing request, if present
