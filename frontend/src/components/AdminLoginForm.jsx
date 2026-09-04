@@ -1,26 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
-import { TOKEN_KEY } from '../services/api';
 import theme from '../theme.js';
-
-// Hardcoded developer admin credentials (frontend-only convenience).
-// NOTE: This is NOT production-secure — anyone can read these from the
-// source. It exists so developers can access the admin portal without
-// needing a backend-seeded admin account.
-
-const ADMIN_CREDENTIALS = {
-  username: 'Admin',
-  password: '0000',
-};
-
-const ADMIN_USER = {
-  id: 'admin-dev',
-  username: 'Admin',
-  email: 'admin@cineclub.dev',
-  is_superuser: true,
-  role: 'superuser',
-};
 
 const AdminLoginForm = () => {
   const [username, setUsername] = useState('');
@@ -28,7 +9,7 @@ const AdminLoginForm = () => {
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
-  const { login, updateStoredUser } = useAuth();
+  const { login } = useAuth();
 
   const submit = async (event) => {
     event.preventDefault();
@@ -39,15 +20,7 @@ const AdminLoginForm = () => {
     setSubmitting(true);
 
     try {
-      // Hardcoded developer admin credentials — no backend call needed
-      if (username.trim() === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
-
-        localStorage.setItem(TOKEN_KEY, `dev-admin-token-${Date.now()}`);
-        updateStoredUser(ADMIN_USER);
-      } else {
-        // Fall back to the real backend login for member/admin accounts
-        await login(username.trim(), password);
-      }
+      await login(username.trim(), password);
       // On success, AdminRoute will re-render and either show the portal
       // (if the account is an admin) or the Access Denied message..
     } catch (err) {
