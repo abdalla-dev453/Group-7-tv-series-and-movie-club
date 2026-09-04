@@ -14,6 +14,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext.jsx";
+import { isAdmin } from "./AdminRoute.jsx";
 import theme from "../theme.js";
 
 const links = [
@@ -28,6 +29,7 @@ const links = [
 export default function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const visibleLinks = links.filter((link) => link.to !== "/admin-portal" || isAdmin(user));
 
   const profilePath = user?.id ? `/profile/${user.id}` : "/login";
 
@@ -63,7 +65,7 @@ export default function Navbar() {
       </div>
 
       <nav className="app-navbar__nav" style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-        {links.map((link) => {
+        {visibleLinks.map((link) => {
           const Icon = link.icon;
 
           return (
