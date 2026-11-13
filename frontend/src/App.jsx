@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { useAuth } from './context/AuthContext.jsx';
 import Footer from "./components/Footer";
@@ -5,26 +6,26 @@ import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminRoute from "./components/AdminRoute";
 
-import Login from './pages/Auth/Login';
-import Signup from './pages/Auth/Signup';
-import AdminPortal from './pages/AdminPortal/aportal';
-import ProfileView from './pages/Profile/ProfileView';
-import ProfileEdit from './pages/Profile/ProfileEdit';
-import ClubList from './pages/Clubs/ClubList';
-import ClubDetail from './pages/Clubs/ClubDetail';
-import ClubCreate from './pages/Clubs/ClubCreate';
-import ClubManage from './pages/Clubs/ClubManage';
-import Feed from './pages/Feed/Feed';
-import PostDetail from './pages/posts/PostDetail';
-import WatchedList from './pages/Watched/WatchedList';
-import CreatePost from './pages/posts/CreatePost';
-import Movies from './pages/movies/Movies';
-import MovieDetailsPage from './pages/movies/MovieDetails';
+const Login = lazy(() => import('./pages/Auth/Login'));
+const Signup = lazy(() => import('./pages/Auth/Signup'));
+const AdminPortal = lazy(() => import('./pages/AdminPortal/aportal'));
+const ProfileView = lazy(() => import('./pages/Profile/ProfileView'));
+const ProfileEdit = lazy(() => import('./pages/Profile/ProfileEdit'));
+const ClubList = lazy(() => import('./pages/Clubs/ClubList'));
+const ClubDetail = lazy(() => import('./pages/Clubs/ClubDetail'));
+const ClubCreate = lazy(() => import('./pages/Clubs/ClubCreate'));
+const ClubManage = lazy(() => import('./pages/Clubs/ClubManage'));
+const Feed = lazy(() => import('./pages/Feed/Feed'));
+const PostDetail = lazy(() => import('./pages/posts/PostDetail'));
+const WatchedList = lazy(() => import('./pages/Watched/WatchedList'));
+const CreatePost = lazy(() => import('./pages/posts/CreatePost'));
+const Movies = lazy(() => import('./pages/movies/Movies'));
+const MovieDetailsPage = lazy(() => import('./pages/movies/MovieDetails'));
 import Home from './pages/Home';
-import Discover from './pages/Discover/Discover';
-import NotFound from './pages/NotFound/NotFound';
-import Settings from './pages/Settings/Settings';
-import Help from './pages/Help/Help';
+const Discover = lazy(() => import('./pages/Discover/Discover'));
+const NotFound = lazy(() => import('./pages/NotFound/NotFound'));
+const Settings = lazy(() => import('./pages/Settings/Settings'));
+const Help = lazy(() => import('./pages/Help/Help'));
 import './App.css';
 
 function AuthOnlyRoute({ children }) {
@@ -40,6 +41,7 @@ function App() {
     <>
       <Navbar />
       <main className="animate-fade-in-up">
+        <Suspense fallback={<div className="route-loading" role="status">Loading page…</div>}>
         <Routes>
           {/* Public */}
           <Route path="/login" element={<AuthOnlyRoute><Login /></AuthOnlyRoute>} />
@@ -178,6 +180,7 @@ function App() {
           <Route path="/help" element={<Help />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
+        </Suspense>
       </main>
       <Footer />
     </>
