@@ -57,7 +57,7 @@ const Home = () => {
   const featured = heroCandidates[currentFeaturedIndex];
 
   return (
-    <main
+    <section
       className="home-page"
       style={{
         minHeight: "100vh",
@@ -231,7 +231,7 @@ const Home = () => {
                 <p style={{ color: theme.color.textDim, fontSize: 13 }}>No trending movies available right now.</p>
               )}
 
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: "14px" }}>
+              <div className="home-movie-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: "14px" }}>
                 {trending.slice(0, 4).map((movie) => (
                   <Link key={movie.tmdb_id} to={user ? `/movies/${movie.tmdb_id}` : "/login"} style={{ textDecoration: "none", color: theme.color.text }}>
                     <div style={{ height: "230px", borderRadius: "7px", overflow: "hidden", background: theme.color.coalCard, border: `1px solid ${theme.color.coalBorder}` }}>
@@ -298,7 +298,7 @@ const Home = () => {
           </aside>
         </div>
       </div>
-    </main>
+    </section>
   );
 };
 

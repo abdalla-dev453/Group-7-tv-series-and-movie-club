@@ -1,156 +1,72 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { X } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import Button from '../../components/Button';
+import AuthLayout from '../../components/auth/AuthLayout';
+import AuthCard from '../../components/auth/AuthCard';
+import FormField from '../../components/auth/FormField';
+import PasswordInput from '../../components/auth/PasswordInput';
+import PrimaryButton from '../../components/auth/PrimaryButton';
 
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [errors, setErrors] = useState({});
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
-
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const submit = async (event) => {
     event.preventDefault();
-
     if (submitting) return;
+    const nextErrors = {};
+    if (!username.trim()) nextErrors.username = 'Enter your username.';
+    if (!password) nextErrors.password = 'Enter your password.';
+    setErrors(nextErrors);
+    if (Object.keys(nextErrors).length) return;
 
     setError(null);
     setSubmitting(true);
-
     try {
       await login(username.trim(), password);
-
       navigate('/', { replace: true });
     } catch (err) {
-      console.error('Login error:', err);
-
       const status = err.response?.status;
-
-      if (status === 401 || status === 400) {
-        setError('Invalid username or password.');
-      } else if (!err.response) {
-        setError(
-          'Unable to connect to the server. Please check your connection.'
-        );
-      } else {
-        setError('Something went wrong. Please try again.');
-      }
+      setError(status === 401 || status === 400
+        ? 'Invalid username or password.'
+        : !err.response
+          ? 'Unable to connect to the server. Please check your connection.'
+          : 'Something went wrong. Please try again.');
     } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <section className="auth-shell">
-
-      {/* ================= LEFT SIDE ================= */}
-
-      <aside className="auth-poster">
-        <p className="eyebrow">
-          The after-credits club
-        </p>
-
-        <h1>
-          Stories are better when they linger.
-        </h1>
-
-        <p>
-          Find the people who notice the details you do.
-        </p>
-      </aside>
-
-      {/* ================= LOGIN FORM ================= */}
-
-      <form
-        className="auth-form"
-        onSubmit={submit}
+    <AuthLayout>
+      <AuthCard
+        title="Welcome back"
+        subtitle="Sign in to catch up on the films and conversations you love."
+        footer={<>New to CineClub? <Link to="/signup">Create an account</Link></>}
       >
-        <p className="eyebrow">
-          Welcome back
-        </p>
-
-        <h2>
-          Resume your feature.
-        </h2>
-
-        {error && (
-          <p
-            className="error-message"
-            role="alert"
-          >
-            {error}
-          </p>
-        )}
-
-        <div className="form-stack">
-
-          {/* Username */}
-
-          <label>
-            <span className="field-label">
-              Username
-            </span>
-
-            <input
-              name="username"
-              type="text"
-              autoComplete="username"
-              placeholder="Enter your username"
-              value={username}
-              onChange={(event) =>
-                setUsername(event.target.value)
-              }
-              required
-            />
-          </label>
-
-          {/* Password */}
-
-          <label>
-            <span className="field-label">
-              Password
-            </span>
-
-            <input
-              name="password"
-              type="password"
-              autoComplete="current-password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(event) =>
-                setPassword(event.target.value)
-              }
-              required
-            />
-          </label>
-
-          {/* Submit */}
-
-          <Button
-            type="submit"
-            disabled={submitting}
-          >
-            {submitting
-              ? 'Logging in…'
-              : 'Continue'}
-
-            <span>→</span>
-          </Button>
-
-        </div>
-
-        <p>
-          No account?{' '}
-          <Link to="/signup">
-            Join the club
-          </Link>
-        </p>
-
-      </form>
-    </section>
+        <form className="auth-form" onSubmit={submit} noValidate>
+          {error && (
+            <div className="auth-alert" role="alert">
+              <span>{error}</span>
+              <button type="button" onClick={() => setError(null)} aria-label="Dismiss error"><X size={17} /></button>
+            </div>
+          )}
+          <FormField id="login-username" label="Username" error={errors.username}>
+            {(fieldProps) => <input {...fieldProps} name="username" type="text" autoComplete="username" placeholder="Your username" value={username} onChange={(event) => setUsername(event.target.value)} required />}
+          </FormField>
+          <FormField id="login-password" label="Password" error={errors.password}>
+            {(fieldProps) => <PasswordInput {...fieldProps} name="password" autoComplete="current-password" placeholder="Enter your password" value={password} onChange={(event) => setPassword(event.target.value)} invalid={fieldProps['aria-invalid']} describedBy={fieldProps['aria-describedby']} />}
+          </FormField>
+          <PrimaryButton type="submit" loading={submitting} loadingLabel="Signing in…">Sign in <span aria-hidden="true">→</span></PrimaryButton>
+        </form>
+      </AuthCard>
+    </AuthLayout>
   );
 }
 
