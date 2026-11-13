@@ -1,4 +1,5 @@
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import {
   Clapperboard,
   Compass,
@@ -28,6 +29,9 @@ const links = [
 export default function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const isAuthPage = location.pathname === '/login' || location.pathname === '/signup';
 
   const profilePath = user?.id ? `/profile/${user.id}` : "/login";
 
@@ -37,10 +41,10 @@ export default function Navbar() {
   };
 
   return (
-    <aside className="app-navbar">
+    <aside className={`app-navbar${mobileOpen ? ' app-navbar--open' : ''}${isAuthPage ? ' app-navbar--auth' : ''}`}>
       <div className="app-navbar__top">
-        <button type="button" className="app-navbar__menu" aria-label="Toggle navigation">
-          <Menu size={16} />
+        <button type="button" className="app-navbar__menu" aria-label={mobileOpen ? 'Close navigation' : 'Open navigation'} aria-expanded={mobileOpen} aria-controls="primary-navigation" onClick={() => setMobileOpen((open) => !open)}>
+          <Menu size={19} aria-hidden="true" />
         </button>
 
         <Link
@@ -62,7 +66,7 @@ export default function Navbar() {
         </Link>
       </div>
 
-      <nav className="app-navbar__nav" style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+      <nav id="primary-navigation" className="app-navbar__nav" aria-label="Main navigation" style={{ display: "flex", flexDirection: "column", gap: 6 }}>
         {links.map((link) => {
           const Icon = link.icon;
 
@@ -71,6 +75,7 @@ export default function Navbar() {
               key={link.to}
               to={link.to}
               end={link.to === "/"}
+              onClick={() => setMobileOpen(false)}
               className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
               style={({ isActive }) => ({
                 display: "flex",

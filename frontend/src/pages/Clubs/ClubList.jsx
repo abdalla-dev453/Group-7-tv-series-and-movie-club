@@ -37,41 +37,41 @@ const ClubList = () => {
   /* ================= LOADING ================= */
   if (state.status === 'loading') {
     return (
-      <main
+      <section className="club-list-route"
         style={{
-          marginLeft: '220px',
+          marginLeft: 0,
           minHeight: '100vh',
           boxSizing: 'border-box',
           padding: '32px',
         }}
       >
         <Loader />
-      </main>
+      </section>
     );
   }
 
   /* ================= ERROR ================= */
   if (state.status === 'error') {
     return (
-      <main
+      <section className="club-list-route"
         style={{
-          marginLeft: '220px',
+          marginLeft: 0,
           minHeight: '100vh',
           boxSizing: 'border-box',
           padding: '32px',
         }}
       >
         <ErrorMessage message="Could not load clubs. Please try again." />
-      </main>
+      </section>
     );
   }
 
   return (
-    <main
+    <section className="club-list-route"
       style={{
-        marginLeft: '220px',
+        marginLeft: 0,
         minHeight: '100vh',
-        width: 'calc(100% - 220px)',
+        width: '100%',
         boxSizing: 'border-box',
         padding: '32px',
         background: theme.color.coal,
@@ -86,7 +86,7 @@ const ClubList = () => {
         }}
       >
         {/* ================= PAGE HEADER ================= */}
-        <header
+        <header className="club-list-route__header"
           style={{
             display: 'flex',
             alignItems: 'flex-end',
@@ -171,7 +171,7 @@ const ClubList = () => {
           </div>
         ) : (
           /* ================= CLUB GRID ================= */
-          <div
+          <div className="club-list-route__grid"
             style={{
               display: 'grid',
               gridTemplateColumns:
@@ -237,7 +237,7 @@ const ClubList = () => {
           </div>
         )}
       </div>
-    </main>
+    </section>
   );
 };
 

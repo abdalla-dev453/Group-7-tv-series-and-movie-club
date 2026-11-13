@@ -217,7 +217,7 @@ const ClubDetail = () => {
     return (
       <div
         style={{
-          marginLeft: '80px',
+          marginLeft: 0,
           minHeight: '100vh',
           padding: '40px',
           boxSizing: 'border-box',
@@ -234,7 +234,7 @@ const ClubDetail = () => {
     return (
       <div
         style={{
-          marginLeft: '80px',
+          marginLeft: 0,
           minHeight: '100vh',
           padding: '40px',
           boxSizing: 'border-box',
@@ -252,8 +252,8 @@ const ClubDetail = () => {
   return (
     <div
       style={{
-        marginLeft: '80px',
-        width: 'calc(100% - 80px)',
+        marginLeft: 0,
+        width: '100%',
         minHeight: '100vh',
         boxSizing: 'border-box',
         padding: '24px',

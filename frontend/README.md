@@ -14,6 +14,9 @@ CineClub is a React community app for discovering movies, sharing watch posts, j
 - Profile and watched-movie pages
 - Responsive dark interface with amber accents
 - Official movie trailers and country-specific legal streaming, rental, and purchase options
+- Responsive page, grid, section heading, and form components shared across key screens
+
+The login and registration pages use a shared centered auth layout with accessible field labels, inline validation, password visibility controls, and clear request states. The shared layout components are in `src/components/layout`, and the auth components are in `src/components/auth`.
 
 The movie detail page's **Watch** section plays official YouTube trailers returned by the CineClub backend and links provider options to their official TMDB watch pages. It does not host or link to unauthorized movie sources. The selected country is saved in `cineclub_watch_region` in browser local storage.
 
