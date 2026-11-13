@@ -7,6 +7,10 @@ export default class AppErrorBoundary extends Component {
     return { hasError: true };
   }
 
+  componentDidCatch(error, errorInfo) {
+    console.error('Unhandled CineClub render error', error, errorInfo.componentStack);
+  }
+
   render() {
     if (this.state.hasError) {
       return (

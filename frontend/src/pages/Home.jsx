@@ -6,43 +6,91 @@ import { getTrendingMovies } from "../services/movieService";
 import { getClubs, getPublicClubs } from "../services/clubService";
 import { getFeed } from "../services/postService";
 
+const getItems = (data) => {
+  if (Array.isArray(data)) return data;
+  if (Array.isArray(data?.items)) return data.items;
+  if (Array.isArray(data?.results)) return data.results;
+  return [];
+};
+
+const readPublicCache = (key) => {
+  try {
+    const cached = JSON.parse(localStorage.getItem(key));
+    if (Array.isArray(cached?.items) && Date.now() - cached.savedAt < 24 * 60 * 60 * 1000) {
+      return cached.items;
+    }
+  } catch {
+    // Storage may be disabled or contain an invalid value.
+  }
+  return null;
+};
+
+const writePublicCache = (key, items) => {
+  try {
+    localStorage.setItem(key, JSON.stringify({ items, savedAt: Date.now() }));
+  } catch {
+    // Public data still loads normally when storage is unavailable.
+  }
+};
+
 const Home = () => {
-  const [trending, setTrending] = useState([]);
-  const [myClubs, setMyClubs] = useState([]);
+  const { user } = useAuth();
+  const [cachedTrending] = useState(() => readPublicCache('cineclub_home_trending'));
+  const [cachedPublicClubs] = useState(() => readPublicCache('cineclub_home_public_clubs'));
+  const [trending, setTrending] = useState(cachedTrending || []);
+  const [myClubs, setMyClubs] = useState(() => user ? [] : (cachedPublicClubs || []));
   const [recentPosts, setRecentPosts] = useState([]);
   const [currentFeaturedIndex, setCurrentFeaturedIndex] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const { user } = useAuth();
+  const [trendingLoading, setTrendingLoading] = useState(!cachedTrending);
+  const [clubsLoading, setClubsLoading] = useState(() => user ? true : !cachedPublicClubs);
+  const [postsLoading, setPostsLoading] = useState(Boolean(user));
 
   useEffect(() => {
     let active = true;
+    getTrendingMovies()
+      .then(({ data }) => {
+        const items = getItems(data);
+        writePublicCache('cineclub_home_trending', items);
+        if (active) setTrending(items);
+      })
+      .catch(() => { if (active && !cachedTrending) setTrending([]); })
+      .finally(() => { if (active) setTrendingLoading(false); });
 
+    return () => { active = false; };
+  }, [cachedTrending]);
+
+  useEffect(() => {
+    let active = true;
+    setClubsLoading(true);
+    if (user) setMyClubs([]);
+    else if (cachedPublicClubs) setMyClubs(cachedPublicClubs);
+    setPostsLoading(Boolean(user));
     const clubRequest = user ? getClubs(1, 50) : getPublicClubs(1, 6);
-    const feedRequest = user ? getFeed(1, 4) : Promise.resolve(null);
 
-    Promise.allSettled([getTrendingMovies(), clubRequest, feedRequest]).then(([trendingRes, clubsRes, feedRes]) => {
-      if (!active) return;
+    clubRequest
+      .then(({ data }) => {
+        if (!active) return;
+        const clubs = getItems(data);
+        if (!user) writePublicCache('cineclub_home_public_clubs', clubs);
+        setMyClubs(user ? clubs.filter((club) => club.is_member) : clubs);
+      })
+      .catch(() => { if (active && (user || !cachedPublicClubs)) setMyClubs([]); })
+      .finally(() => { if (active) setClubsLoading(false); });
 
-      if (trendingRes.status === "fulfilled") {
-        setTrending(trendingRes.value.data?.items || []);
-      }
-
-      if (clubsRes.status === "fulfilled") {
-        const allClubs = clubsRes.value.data?.items || clubsRes.value.data || [];
-        setMyClubs(user ? allClubs.filter((c) => c.is_member) : allClubs);
-      }
-
-      if (feedRes?.status === "fulfilled" && feedRes.value) {
-        setRecentPosts(feedRes.value.data?.items || feedRes.value.data || []);
-      }
-
-      setLoading(false);
-    });
+    if (user) {
+      getFeed(1, 4)
+        .then(({ data }) => { if (active) setRecentPosts(getItems(data)); })
+        .catch(() => { if (active) setRecentPosts([]); })
+        .finally(() => { if (active) setPostsLoading(false); });
+    } else {
+      setRecentPosts([]);
+      setPostsLoading(false);
+    }
 
     return () => {
       active = false;
     };
-  }, [user]);
+  }, [user, cachedPublicClubs]);
 
   // Rotate the hero through up to 3 trending movies
   useEffect(() => {
@@ -127,7 +175,7 @@ const Home = () => {
                 color: theme.color.text,
               }}
             >
-              {loading ? "Loading..." : featured?.title || "Nothing trending yet"}
+              {featured?.title || (trendingLoading ? "Loading..." : "Nothing trending yet")}
             </h1>
 
             <p style={{ color: theme.color.textDim, maxWidth: "570px", lineHeight: 1.7, fontSize: "15px", margin: "0 0 22px" }}>
@@ -166,7 +214,7 @@ const Home = () => {
                 <Link to={user ? "/clubs" : "/signup"} style={{ color: theme.color.textDim, fontSize: "12px", textDecoration: "none" }}>{user ? "View all →" : "Join the club →"}</Link>
               </div>
 
-              {!loading && myClubs.length === 0 && (
+              {!clubsLoading && myClubs.length === 0 && (
                 <p style={{ color: theme.color.textDim, fontSize: 13 }}>
                   You haven't joined any clubs yet. <Link to="/clubs" style={{ color: theme.color.amber }}>Browse clubs →</Link>
                 </p>
@@ -227,7 +275,7 @@ const Home = () => {
                 <Link to={user ? "/movies" : "/login"} style={{ color: theme.color.textDim, fontSize: "12px", textDecoration: "none" }}>{user ? "View all →" : "Log in to discuss →"}</Link>
               </div>
 
-              {!loading && trending.length === 0 && (
+              {!trendingLoading && trending.length === 0 && (
                 <p style={{ color: theme.color.textDim, fontSize: 13 }}>No trending movies available right now.</p>
               )}
 
@@ -255,7 +303,7 @@ const Home = () => {
           >
             <h2 style={{ fontFamily: theme.font.heading, fontSize: "17px", margin: "0 0 15px" }}>💬 Recent Activity</h2>
 
-            {!loading && recentPosts.length === 0 && (
+            {!postsLoading && recentPosts.length === 0 && (
               <p style={{ color: theme.color.textDim, fontSize: 13 }}>No posts yet — be the first to share what you watched.</p>
             )}
 
