@@ -1,0 +1,44 @@
+.watch-section {
+  margin-top: 24px;
+  padding: clamp(20px, 4vw, 32px);
+  color: #f4efe5;
+  background: linear-gradient(135deg, rgba(18, 17, 20, .98), rgba(26, 25, 28, .96));
+  border: 1px solid rgba(212, 175, 55, .2);
+  border-radius: 22px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, .2);
+}
+.watch-section-heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
+.watch-section-heading h2 { margin: 0; font: 700 clamp(28px, 4vw, 36px)/1.1 Georgia, serif; }
+.watch-eyebrow { margin: 0 0 7px; color: #d4af37; font-size: 11px; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
+.watch-content { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(260px, .85fr); gap: clamp(22px, 4vw, 36px); }
+.watch-content h3, .watch-options-heading h3 { margin: 0 0 14px; font-size: 17px; }
+.watch-video-frame { position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 14px; background: #100f11; }
+.watch-video-frame iframe { width: 100%; height: 100%; border: 0; }
+.watch-trailer-placeholder { display: grid; width: 100%; height: 100%; place-items: center; background-color: #201d16; background-position: center; background-size: cover; }
+.watch-play-button { display: inline-flex; align-items: center; gap: 10px; padding: 12px 18px; color: #17140d; font-weight: 800; background: #d4af37; border: 0; border-radius: 999px; cursor: pointer; }
+.watch-play-button:hover { background: #f0c84e; }
+.watch-play-button:focus-visible, .watch-youtube-link:focus-visible, .watch-provider-link:focus-visible, .watch-country-label select:focus-visible, .watch-error button:focus-visible { outline: 3px solid #f0c84e; outline-offset: 3px; }
+.watch-youtube-link { display: inline-block; margin-top: 12px; color: #edc54c; font-size: 14px; font-weight: 700; text-decoration: none; }
+.watch-youtube-link:hover { text-decoration: underline; }
+.watch-options-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.watch-country-label { display: grid; gap: 5px; color: #c5bda9; font-size: 12px; }
+.watch-country-label select { max-width: 170px; padding: 8px 28px 8px 10px; color: #f4efe5; background: #242125; border: 1px solid rgba(212, 175, 55, .35); border-radius: 8px; }
+.watch-country-label option { color: #f4efe5; background: #242125; }
+.watch-provider-group + .watch-provider-group { margin-top: 19px; }
+.watch-provider-group h4 { margin: 0 0 9px; color: #d4af37; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; }
+.watch-provider-list { display: grid; gap: 8px; }
+.watch-provider-link { display: flex; min-height: 56px; align-items: center; gap: 11px; padding: 7px 11px; color: #f4efe5; background: rgba(255,255,255,.035); border: 1px solid rgba(255,255,255,.08); border-radius: 11px; font-size: 13px; font-weight: 650; text-decoration: none; transition: border-color .15s, background .15s; }
+.watch-provider-link:hover { background: rgba(212,175,55,.08); border-color: rgba(212,175,55,.4); }
+.watch-provider-link > span:nth-last-child(1) { margin-left: auto; color: #d4af37; }
+.watch-provider-link img, .watch-provider-logo-fallback { width: 38px; height: 38px; flex: 0 0 38px; border-radius: 9px; object-fit: cover; background: #302b20; }
+.watch-provider-logo-fallback { display: grid; place-items: center; color: #d4af37; font-size: 17px; }
+.watch-empty { margin: 0; color: #c5bda9; font-size: 14px; line-height: 1.6; }
+.watch-error { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin: 0 0 20px; padding: 12px 14px; color: #ffe3dc; background: rgba(156, 55, 38, .18); border: 1px solid rgba(238, 120, 91, .32); border-radius: 10px; }
+.watch-error p { margin: 0; font-size: 14px; }
+.watch-error button { padding: 7px 12px; color: #17140d; font-weight: 750; background: #d4af37; border: 0; border-radius: 7px; cursor: pointer; }
+.watch-skeleton { display: block; min-height: 50px; background: linear-gradient(90deg, #242125 25%, #302c2f 50%, #242125 75%); background-size: 200% 100%; border-radius: 10px; animation: watch-shimmer 1.4s infinite linear; }
+.watch-trailer-skeleton { aspect-ratio: 16 / 9; }
+.watch-provider-skeletons { display: grid; gap: 8px; }
+@keyframes watch-shimmer { to { background-position: -200% 0; } }
+@media (max-width: 700px) { .watch-content { grid-template-columns: minmax(0, 1fr); } .watch-options-heading { align-items: center; } }
+@media (prefers-reduced-motion: reduce) { .watch-skeleton { animation: none; } }
