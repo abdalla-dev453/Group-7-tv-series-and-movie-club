@@ -8,7 +8,8 @@ export default function useMovieWatch(tmdbId) {
   const [providers, setProviders] = useState(null);
   const [trailerLoading, setTrailerLoading] = useState(true);
   const [providersLoading, setProvidersLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [trailerError, setTrailerError] = useState(null);
+  const [providersError, setProvidersError] = useState(null);
   const [retryKey, setRetryKey] = useState(0);
 
   const setCountry = useCallback((nextCountry) => {
@@ -26,12 +27,12 @@ export default function useMovieWatch(tmdbId) {
     if (!tmdbId) return undefined;
     const controller = new AbortController();
     setTrailerLoading(true);
-    setError(null);
+    setTrailerError(null);
     getMovieWatch(tmdbId, { signal: controller.signal })
       .then(({ data }) => setWatchData(data))
       .catch((err) => {
         if (err.name !== 'CanceledError' && err.code !== 'ERR_CANCELED') {
-          setError('Watch information is temporarily unavailable. Please try again.');
+          setTrailerError('Watch information is temporarily unavailable. Please try again.');
         }
       })
       .finally(() => {
@@ -44,13 +45,14 @@ export default function useMovieWatch(tmdbId) {
     if (!tmdbId) return undefined;
     const controller = new AbortController();
     setProvidersLoading(true);
+    setProvidersError(null);
     getMovieWatchProviders(tmdbId, country, { signal: controller.signal })
       .then(({ data }) => {
         setProviders(data?.watch_providers || data || null);
       })
       .catch((err) => {
         if (err.name !== 'CanceledError' && err.code !== 'ERR_CANCELED') {
-          setError('Watch information is temporarily unavailable. Please try again.');
+          setProvidersError('Watch options are temporarily unavailable for this region.');
         }
       })
       .finally(() => {
@@ -58,6 +60,8 @@ export default function useMovieWatch(tmdbId) {
       });
     return () => controller.abort();
   }, [tmdbId, country, retryKey]);
+
+  const error = trailerError || providersError;
 
   return {
     watchData,
@@ -68,6 +72,8 @@ export default function useMovieWatch(tmdbId) {
     providersLoading,
     loading: trailerLoading || providersLoading,
     error,
+    trailerError,
+    providersError,
     refetch,
   };
 }

@@ -1,23 +1,7 @@
-body {
-  margin: 0;
-  background:
-    radial-gradient(circle at 1px 1px, rgba(255,255,255,0.12) 1px, transparent 0) 0 0 / 22px 22px,
-    #17171b;
-  color-scheme: dark;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-#root {
-  min-height: 100vh;
-}
-
 main {
-  margin-left: 220px;
+  margin-left: 0;
   min-height: 100vh;
-  padding: 30px 24px 36px;
+  padding: 96px 24px 36px;
   box-sizing: border-box;
 }
 
@@ -25,95 +9,30 @@ main > * {
   border-radius: 24px;
 }
 
-* {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(212, 175, 55, 0.8) rgba(39, 39, 42, 0.8);
-}
-
-*::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-
-*::-webkit-scrollbar-thumb {
-  background: rgba(212, 175, 55, 0.7);
-  border-radius: 999px;
-}
-
-*::-webkit-scrollbar-track {
-  background: rgba(39, 39, 42, 0.5);
-}
-
 .home-page {
   margin-left: 0;
 }
 
-@media (max-width: 720px) {
-  main {
-    margin-left: 0;
-  }
+.page-container,
+.app-content {
+  margin-left: 0;
+  min-height: 0;
+  box-sizing: border-box;
 }
 
-/* ================================
-
-   PAGE LAYOUT
-
-================================ */
-
 .page-container {
-  margin-left: 220px;
-
-  min-height: 100vh;
-
-  box-sizing: border-box;
-
   padding: 32px;
 }
 
-/* Main panel used by pages */
-
 .page-panel {
   width: 100%;
-
   max-width: 1250px;
-
   margin: 0 auto;
-
   box-sizing: border-box;
 }
-
-/* Forms */
 
 .page-panel.form-stack {
   max-width: 700px;
-}
-
-/* ================================
-
-   RESPONSIVE
-
-================================ */
-
-@media (max-width: 900px) {
-  .page-container {
-    margin-left: 0;
-
-    padding: 24px;
-  }
-}
-
-@media (max-width: 600px) {
-  .page-container {
-    padding: 16px;
-  }
-}
-
-.app-content {
-  margin-left: 220px;
-
-  min-height: 100vh;
-
-  box-sizing: border-box;
 }
 
 .auth-poster {
@@ -133,4 +52,12 @@ main > * {
 .auth-poster p {
   margin-left: auto;
   margin-right: auto;
+}
+
+@media (max-width: 900px) {
+  .page-container { padding: 24px; }
+}
+
+@media (max-width: 600px) {
+  .page-container { padding: 16px; }
 }
