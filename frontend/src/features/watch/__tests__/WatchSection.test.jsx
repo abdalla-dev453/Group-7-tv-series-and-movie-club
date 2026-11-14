@@ -2,24 +2,45 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import WatchSection from '../WatchSection';
 import { getMovieWatch, getMovieWatchProviders } from '../watchApi';
+import { logWatched } from '../../../services/watchedService';
 
 vi.mock('../watchApi', () => ({
   getMovieWatch: vi.fn(),
   getMovieWatchProviders: vi.fn(),
 }));
 
-const trailerResponse = { data: { primary_trailer: { key: 'official123', site: 'YouTube', name: 'Official Trailer' }, videos: [] } };
-const providerResponse = { data: { watch_providers: {
-  country_code: 'KE',
-  stream: [{ provider_id: 8, provider_name: 'Netflix', logo_path: '/netflix.jpg', deep_link: 'https://www.themoviedb.org/movie/123/watch?locale=KE' }],
-  rent: [], buy: [],
-} } };
+vi.mock('../../../services/watchedService', () => ({
+  logWatched: vi.fn(),
+}));
+
+const trailerResponse = {
+  data: {
+    title: 'Inception',
+    primary_trailer: { key: 'official123', site: 'YouTube', name: 'Official Trailer' },
+    videos: [
+      { key: 'official123', site: 'YouTube', name: 'Official Trailer', type: 'Trailer' },
+      { key: 'teaser456', site: 'YouTube', name: 'Official Teaser', type: 'Teaser' },
+    ],
+  },
+};
+
+const providerResponse = {
+  data: {
+    watch_providers: {
+      country_code: 'KE',
+      stream: [{ provider_id: 8, provider_name: 'Netflix', logo_path: '/netflix.jpg', deep_link: 'https://www.themoviedb.org/movie/123/watch?locale=KE' }],
+      rent: [],
+      buy: [],
+    },
+  },
+};
 
 beforeEach(() => {
   vi.clearAllMocks();
   localStorage.clear();
   getMovieWatch.mockResolvedValue(trailerResponse);
   getMovieWatchProviders.mockResolvedValue(providerResponse);
+  logWatched.mockResolvedValue({ data: { id: 1, movie_title: 'Inception' } });
 });
 
 describe('WatchSection', () => {
@@ -28,9 +49,40 @@ describe('WatchSection', () => {
     const playButton = await screen.findByRole('button', { name: 'Play trailer' });
     fireEvent.click(playButton);
     expect(screen.getByTitle('Official Trailer for this movie')).toHaveAttribute(
-      'src', 'https://www.youtube-nocookie.com/embed/official123?autoplay=0&rel=0&modestbranding=1',
+      'src',
+      'https://www.youtube-nocookie.com/embed/official123?autoplay=1&rel=0&modestbranding=1',
     );
     expect(screen.getByRole('link', { name: 'Open trailer on YouTube' })).toHaveAttribute('target', '_blank');
+  });
+
+  it('switches videos when selecting another clip pill', async () => {
+    render(<WatchSection tmdbId="123" />);
+    const teaserPill = await screen.findByRole('tab', { name: /Official Teaser/i });
+    fireEvent.click(teaserPill);
+    expect(screen.getByTitle('Official Teaser for this movie')).toHaveAttribute(
+      'src',
+      'https://www.youtube-nocookie.com/embed/teaser456?autoplay=1&rel=0&modestbranding=1',
+    );
+  });
+
+  it('toggles theater mode', async () => {
+    render(<WatchSection tmdbId="123" />);
+    const theaterBtn = await screen.findByRole('button', { name: 'Enter theater mode' });
+    fireEvent.click(theaterBtn);
+    expect(screen.getByRole('button', { name: 'Exit theater mode' })).toBeInTheDocument();
+  });
+
+  it('allows user to quickly mark movie as watched', async () => {
+    render(<WatchSection tmdbId="123" movieTitle="Inception" />);
+    const markButton = await screen.findByRole('button', { name: 'Mark movie as watched' });
+    fireEvent.click(markButton);
+    await waitFor(() => {
+      expect(logWatched).toHaveBeenCalledWith({
+        movie_title: 'Inception',
+        poster_url: null,
+      });
+      expect(screen.getByText('✓ In Watched List')).toBeInTheDocument();
+    });
   });
 
   it('shows the no official trailer message when no video is available', async () => {

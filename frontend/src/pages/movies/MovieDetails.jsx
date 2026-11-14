@@ -27,7 +27,11 @@ function MovieDetailsPage() {
   return (
     <div style={{ maxWidth: 900, margin: '0 auto', padding: 24 }}>
       <MovieDetailsPanel movie={movie} />
-      <WatchSection tmdbId={tmdbId} poster={movie.poster_url || movie.backdrop_url || movie.image_url} />
+      <WatchSection
+        tmdbId={tmdbId}
+        movieTitle={movie?.title}
+        poster={movie?.poster_url || movie?.backdrop_url || movie?.image_url}
+      />
     </div>
   );
 }
