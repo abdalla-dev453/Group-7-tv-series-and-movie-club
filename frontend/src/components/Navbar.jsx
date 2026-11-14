@@ -5,18 +5,18 @@ import {
   Compass,
   House,
   LogOut,
+  Menu,
   MessageSquareText,
   Settings,
+  ShieldCheck,
   Sparkles,
   UserCircle2,
   Users,
   Film,
-  Menu,
-  ShieldCheck,
+  X,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext.jsx";
 import { isAdmin } from "./AdminRoute.jsx";
-import theme from "../theme.js";
 
 const links = [
   { to: "/", label: "Home", icon: House },
@@ -32,201 +32,90 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const isAuthPage = location.pathname === '/login' || location.pathname === '/signup';
+  const isAuthPage = location.pathname === "/login" || location.pathname === "/signup";
   const visibleLinks = links.filter((link) => link.to !== "/admin-portal" || isAdmin(user));
-
   const profilePath = user?.id ? `/profile/${user.id}` : "/login";
 
+  const closeMenu = () => setMobileOpen(false);
   const signOut = async () => {
     await logout();
+    closeMenu();
     navigate("/login");
   };
 
   return (
-    <aside className={`app-navbar${mobileOpen ? ' app-navbar--open' : ''}${isAuthPage ? ' app-navbar--auth' : ''}`}>
-      <div className="app-navbar__top">
-        <button type="button" className="app-navbar__menu" aria-label={mobileOpen ? 'Close navigation' : 'Open navigation'} aria-expanded={mobileOpen} aria-controls="primary-navigation" onClick={() => setMobileOpen((open) => !open)}>
-          <Menu size={19} aria-hidden="true" />
+    <header className={`app-navbar${mobileOpen ? " app-navbar--open" : ""}${isAuthPage ? " app-navbar--auth" : ""}`}>
+      <div className="app-navbar__inner">
+        <Link to="/" className="app-navbar__brand" onClick={closeMenu}>
+          <Clapperboard size={21} aria-hidden="true" />
+          <span>CineClub</span>
+        </Link>
+
+        <button
+          type="button"
+          className="app-navbar__menu"
+          aria-label={mobileOpen ? "Close navigation" : "Open navigation"}
+          aria-expanded={mobileOpen}
+          aria-controls="primary-navigation"
+          onClick={() => setMobileOpen((open) => !open)}
+        >
+          {mobileOpen ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
         </button>
 
-        <Link
-          to="/"
-          style={{
-            textDecoration: "none",
-            color: theme.color.amber,
-            fontFamily: theme.font.heading,
-            fontSize: 26,
-            fontWeight: 700,
-            fontStyle: "italic",
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 8,
-          }}
-        >
-          <Clapperboard size={18} />
-          CineClub
-        </Link>
-      </div>
-
-      <nav className="app-navbar__nav" style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-        {visibleLinks.map((link) => {
-          const Icon = link.icon;
-
-          return (
+        <nav id="primary-navigation" className="app-navbar__nav" aria-label="Main navigation">
+          {visibleLinks.map(({ to, label, icon: Icon }) => (
             <NavLink
-              key={link.to}
-              to={link.to}
-              end={link.to === "/"}
-              onClick={() => setMobileOpen(false)}
-              className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-              style={({ isActive }) => ({
-                display: "flex",
-                alignItems: "center",
-                gap: 12,
-                textDecoration: "none",
-                padding: "11px 12px",
-                borderRadius: theme.radius.sm,
-                color: isActive ? theme.color.amber : theme.color.textDim,
-                background: isActive ? "rgba(245, 185, 66, 0.10)" : "transparent",
-                borderLeft: isActive ? `2px solid ${theme.color.amber}` : "2px solid transparent",
-                fontSize: 14,
-                fontWeight: isActive ? 700 : 500,
-                transition: "all 0.2s ease",
-              })}
+              key={to}
+              to={to}
+              end={to === "/"}
+              onClick={closeMenu}
+              className={({ isActive }) => `nav-link${isActive ? " active" : ""}`}
             >
-              <Icon size={16} />
-              {link.label}
+              <Icon size={16} aria-hidden="true" />
+              <span>{label}</span>
             </NavLink>
-          );
-        })}
-      </nav>
+          ))}
+          <NavLink to="/settings" onClick={closeMenu} className={({ isActive }) => `app-navbar__mobile-utility${isActive ? " active" : ""}`}>
+            <Settings size={16} aria-hidden="true" /><span>Settings</span>
+          </NavLink>
+          <NavLink to="/help" onClick={closeMenu} className={({ isActive }) => `app-navbar__mobile-utility${isActive ? " active" : ""}`}>
+            <Sparkles size={16} aria-hidden="true" /><span>Help</span>
+          </NavLink>
+        </nav>
 
-      <div style={{ flex: 1 }} />
-
-      {user && (
-        <Link
-          to={profilePath}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 10,
-            textDecoration: "none",
-            color: theme.color.textDim,
-            padding: "10px 12px",
-            borderTop: `1px solid ${theme.color.coalBorder}`,
-            marginBottom: 10,
-            paddingTop: 18,
-          }}
-        >
-          {user.profile_image_url || user.profileImageUrl || user.avatar_url || user.avatarUrl || user.image_url || user.imageUrl ? (
-            <img
-              src={user.profile_image_url || user.profileImageUrl || user.avatar_url || user.avatarUrl || user.image_url || user.imageUrl}
-              alt={`${user.username || 'User'} profile picture`}
-              width={30}
-              height={30}
-              style={{ width: 30, height: 30, objectFit: 'cover', borderRadius: '50%' }}
-            />
+        <div className="app-navbar__actions">
+          <Link to="/settings" className="app-navbar__utility" aria-label="Settings" title="Settings"><Settings size={17} /></Link>
+          <Link to="/help" className="app-navbar__utility" aria-label="Help" title="Help"><Sparkles size={17} /></Link>
+          {user ? (
+            <>
+              <Link to={profilePath} className="app-navbar__profile">
+                {user.profile_image_url || user.profileImageUrl || user.avatar_url || user.avatarUrl || user.image_url || user.imageUrl ? (
+                  <img src={user.profile_image_url || user.profileImageUrl || user.avatar_url || user.avatarUrl || user.image_url || user.imageUrl} alt="" />
+                ) : <span className="app-navbar__avatar">{(user.username || "U")[0].toUpperCase()}</span>}
+                <span>@{user.username || "member"}</span>
+              </Link>
+              <button type="button" className="app-navbar__signout" onClick={signOut}><LogOut size={15} /><span>Sign out</span></button>
+            </>
           ) : (
-            <div
-              style={{
-                width: 30,
-                height: 30,
-                borderRadius: '50%',
-                background: theme.color.amber,
-                color: '#1a1204',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontWeight: 800,
-                fontSize: 13,
-              }}
-            >
-              {(user.username || 'U')[0].toUpperCase()}
-            </div>
+            <>
+              <Link to="/login" className="app-navbar__login"><UserCircle2 size={16} /><span>Log in</span></Link>
+              <Link to="/signup" className="app-navbar__signup"><Sparkles size={15} /><span>Sign up</span></Link>
+            </>
           )}
-          <span style={{ fontSize: 13, overflow: "hidden", textOverflow: "ellipsis" }}>
-            @{user.username || "member"}
-          </span>
-        </Link>
-      )}
+        </div>
 
-      <div className="rail-links">
-        <NavLink to="/settings">
-          <span className="rail-links__icon"><Settings size={14} /></span>
-          Settings
-        </NavLink>
-        <NavLink to="/help">
-          <span className="rail-links__icon"><Sparkles size={14} /></span>
-          Help
-        </NavLink>
+        <div className="app-navbar__mobile-actions">
+          {user ? (
+            <>
+              <Link to={profilePath} className="app-navbar__profile" onClick={closeMenu}>
+                {user.profile_image_url || user.profileImageUrl || user.avatar_url || user.avatarUrl || user.image_url || user.imageUrl ? <img src={user.profile_image_url || user.profileImageUrl || user.avatar_url || user.avatarUrl || user.image_url || user.imageUrl} alt="" /> : <span className="app-navbar__avatar">{(user.username || "U")[0].toUpperCase()}</span>}
+                <span>@{user.username || "member"}</span>
+              </Link>
+              <button type="button" className="app-navbar__signout" onClick={signOut}><LogOut size={15} /><span>Sign out</span></button>
+            </>
+          ) : <><Link to="/login" onClick={closeMenu}>Log in</Link><Link to="/signup" className="app-navbar__signup" onClick={closeMenu}>Sign up</Link></>}
+        </div>
       </div>
-
-      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        {user ? (
-          <button
-            type="button"
-            onClick={signOut}
-            style={{
-              width: "100%",
-              padding: "11px",
-              borderRadius: theme.radius.sm,
-              border: `1px solid ${theme.color.coalBorder}`,
-              background: "transparent",
-              color: theme.color.textDim,
-              cursor: "pointer",
-              fontSize: 13,
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 8,
-            }}
-          >
-            <LogOut size={14} />
-            Sign out
-          </button>
-        ) : (
-          <>
-            <Link
-              to="/login"
-              style={{
-                textDecoration: "none",
-                textAlign: "center",
-                color: theme.color.textDim,
-                padding: "9px",
-                fontSize: 13,
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 8,
-              }}
-            >
-              <UserCircle2 size={14} />
-              Log in
-            </Link>
-
-            <Link
-              to="/signup"
-              style={{
-                textDecoration: "none",
-                textAlign: "center",
-                background: theme.color.amber,
-                color: "#1a1204",
-                padding: "11px",
-                borderRadius: theme.radius.sm,
-                fontWeight: 700,
-                fontSize: 13,
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 8,
-              }}
-            >
-              <Sparkles size={14} />
-              Sign up
-            </Link>
-          </>
-        )}
-      </div>
-    </aside>
+    </header>
   );
 }
